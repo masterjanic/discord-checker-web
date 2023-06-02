@@ -6,7 +6,7 @@ useHead({
 });
 
 const { ANALYTICS_URL } = useRuntimeConfig().public;
-const tokenRegex = /[a-zA-Z0-9_-]{23,28}\.[a-zA-Z0-9_-]{6,7}\.[a-zA-Z0-9_-]{27,}/;
+const tokenRegex = /[a-zA-Z0-9_-]{23,28}\.[a-zA-Z0-9_-]{6,7}\.[a-zA-Z0-9_-]{27,}/g;
 
 const onlyShowNitro = ref<boolean>(false);
 
