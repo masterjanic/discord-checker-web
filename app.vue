@@ -6,8 +6,7 @@ useHead({
 });
 
 const { ANALYTICS_URL } = useRuntimeConfig().public;
-// TODO: Remove length 27 group when not supported anymore
-const tokenRegex = /[A-Za-z\d]{24}\.[\w-]{6}\.[\w-]{27,38}/g;
+const tokenRegex = /[a-zA-Z0-9_-]{23,28}\.[a-zA-Z0-9_-]{6,7}\.[a-zA-Z0-9_-]{27,}/;
 
 const onlyShowNitro = ref<boolean>(false);
 
