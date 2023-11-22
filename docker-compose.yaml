@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - DATABASE_PRISMA_URL=${DATABASE_PRISMA_URL}
+        - DATABASE_URL=${DATABASE_URL}
         - DATABASE_URL_NON_POOLING=${DATABASE_URL_NON_POOLING}
     restart: unless-stopped
     depends_on:
