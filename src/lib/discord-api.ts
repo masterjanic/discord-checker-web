@@ -42,7 +42,6 @@ async function apiRequest<ReturnType>(
           ? parseInt(retryHeader, 10)
           : 1000 * Math.pow(2, retryCount);
 
-        console.log("Retry after", retryAfter, "ms");
         return await apiRequest(
           {
             ...config,
@@ -96,5 +95,39 @@ export const fetchGuilds = async (
   return apiRequest<APIGuild[]>({
     ...config,
     url: `/users/@me/guilds?with_counts=${withCounts}`,
+  });
+};
+
+interface IBillingObject {
+  id: string;
+  type: number;
+  invalid: boolean;
+  flags: number;
+  last_4: string;
+  brand: string;
+  expires_month: number;
+  expires_year: number;
+  default: boolean;
+  billing_address: {
+    country: string;
+    postal_code: string;
+    name: string;
+    line_1: string;
+    line_2: string;
+    city: string;
+    state: string;
+  };
+  country: string;
+  payment_gateway: number;
+}
+
+/**
+ * Fetches the billing information (payment methods) for the current user.
+ * @param config
+ */
+export const fetchBilling = async (config: IRequestConfig) => {
+  return apiRequest<IBillingObject[]>({
+    ...config,
+    url: "/users/@me/billing/payment-sources",
   });
 };

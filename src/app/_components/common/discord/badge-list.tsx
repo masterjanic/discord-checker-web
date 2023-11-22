@@ -11,11 +11,13 @@ interface IBadgeListProps extends React.HTMLAttributes<HTMLDivElement> {
     flags?: APIUser["flags"] | bigint | null;
     premium_type?: APIUser["premium_type"] | null;
   };
+  size?: number;
 }
 
 const BadgeList: React.FC<IBadgeListProps> = ({
   user,
   className,
+  size = 12,
   ...props
 }) => {
   return (
@@ -28,10 +30,11 @@ const BadgeList: React.FC<IBadgeListProps> = ({
                 <Image
                   src={`/images/badges/${flag.toLowerCase()}.svg`}
                   alt={toTitleCase(flag)}
-                  width={12}
-                  height={12}
+                  width={size}
+                  height={size}
                   draggable={false}
-                  className="h-3 w-auto flex-shrink-0 select-none"
+                  style={{ height: `${size}px` }}
+                  className="w-auto flex-shrink-0 select-none"
                 />
               </Tooltip>
             ))
@@ -48,9 +51,10 @@ const BadgeList: React.FC<IBadgeListProps> = ({
           <Image
             src={`/images/badges/nitro.svg`}
             alt="Discord Nitro"
-            width={12}
-            height={12}
-            className="h-3 w-auto flex-shrink-0 select-none"
+            width={size}
+            height={size}
+            style={{ height: `${size}px` }}
+            className="w-auto flex-shrink-0 select-none"
             draggable={false}
           />
         </Tooltip>

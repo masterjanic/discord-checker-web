@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
-import { fetchGuilds } from "~/lib/discord-api";
+import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
 import {
   adminProcedure,
   createTRPCRouter,
@@ -201,6 +201,42 @@ export const accountRouter = createTRPCRouter({
       const response = await fetchGuilds({
         token: token.value,
       });
+      return response?.data ?? [];
+    }),
+  getBilling: protectedProcedure
+    .input(z.string().min(17))
+    .query(async ({ ctx, input }) => {
+      const { user } = ctx.session;
+      const isAdmin = user.role === Role.ADMIN;
+
+      const account = await ctx.db.discordAccount.findUnique({
+        where: {
+          id: input,
+          ownerId: isAdmin ? undefined : user.id,
+        },
+        select: {
+          tokens: {
+            orderBy: {
+              lastCheckedAt: "desc",
+            },
+            take: 1,
+          },
+        },
+      });
+      if (!account) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const [token] = account.tokens;
+      if (!token) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const response = await fetchBilling({
+        token: token.value,
+      });
+      console.log(response?.data);
+
       return response?.data ?? [];
     }),
 });

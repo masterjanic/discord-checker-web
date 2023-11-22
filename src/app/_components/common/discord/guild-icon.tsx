@@ -26,7 +26,11 @@ export default function GuildIcon({ guild, size = 48 }: IGuildIconProps) {
       <Avatar.Fallback className="grid h-full w-full flex-shrink-0 place-items-center rounded-full bg-blueish-grey-700 font-light">
         {guild.name
           .split(" ")
-          .map((word) => word[0])
+          .slice(0, 2)
+          .map((word) => {
+            const upper = word[0]?.toUpperCase() ?? "";
+            return upper.match(/[a-z0-9]/i) ? upper : "";
+          })
           .join("")}
       </Avatar.Fallback>
     </Avatar.Root>
