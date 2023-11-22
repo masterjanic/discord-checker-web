@@ -8,6 +8,7 @@ export const dashboardRouter = createTRPCRouter({
     const isAdmin = user.role === Role.ADMIN;
 
     const ownerId = isAdmin ? undefined : user.id;
+    const adminClause = `"public"."DiscordAccount"."ownerId" = '${user.id}' AND`;
 
     // TODO: Simplify when prisma supports multiple counts in one query
     const [verified, unverified, nitro, disabledQuery] =
@@ -21,8 +22,11 @@ export const dashboardRouter = createTRPCRouter({
         ctx.db.discordAccount.count({
           where: { verified: true, premium_type: { gt: 0 }, ownerId },
         }),
+        // TODO: Remove unsafe query when prisma supports bitwise operations
         ctx.db.$queryRawUnsafe(
-          `SELECT COUNT(*) FROM public."DiscordAccount" WHERE ${generateDisabledFlagsSQL()};`,
+          `SELECT COUNT(*) FROM "public"."DiscordAccount" WHERE ${
+            !isAdmin ? adminClause : ""
+          } ${generateDisabledFlagsSQL()};`,
         ),
       ]);
 
