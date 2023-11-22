@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_NON_POOLING")
+}
+
+model DiscordAccount {
+  id                String         @id @unique
+  username          String         @db.VarChar(32)
+  password          String?        @db.VarChar(256)
+  discriminator     String         @db.VarChar(4)
+  global_name       String?        @db.VarChar(32)
+  avatar            String?
+  avatar_decoration String?
+  email             String?        @db.VarChar(254)
+  verified          Boolean?
+  accent_color      Int?
+  banner            String?
+  bot               Boolean?
+  flags             BigInt?
+  locale            String?        @db.VarChar(5)
+  mfa_enabled       Boolean?
+  premium_type      Int?
+  public_flags      BigInt?
+  system            Boolean?
+  phone             String?        @db.VarChar(32)
+  nsfw_allowed      Boolean?
+  bio               String?        @db.VarChar(190)
+  banner_color      String?
+  tokens            DiscordToken[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  owner             User?          @relation(fields: [ownerId], references: [id])
+  ownerId           String?
+}
+
+/// Track changes in DiscordAccount model
+model DiscordAccountHistory {
+  id        String   @id @default(cuid())
+  accountId String
+  data      Json     @db.JsonB
+  changedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiscordToken {
+  id               String         @id @default(cuid())
+  discordAccountId String
+  value            String         @unique
+  origin           String?        @db.VarChar(64)
+  discordAccount   DiscordAccount @relation(fields: [discordAccountId], references: [id], onDelete: Cascade)
+  lastCheckedAt    DateTime       @default(now())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+// Necessary for Next auth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String?
+  email           String?          @unique
+  emailVerified   DateTime?
+  image           String?
+  role            Role             @default(CUSTOMER)
+  accounts        Account[]
+  sessions        Session[]
+  discordAccounts DiscordAccount[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth bg-blueish-grey-900 leading-relaxed text-neutral-100 antialiased scrollbar-thin scrollbar-track-blueish-grey-600 scrollbar-thumb-blueish-grey-500/60;
+  }
+
+  html,
+  body {
+    @apply max-w-[100vw];
+  }
+
+  ::selection {
+    @apply bg-blueish-grey-500/60 text-neutral-100;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .background-grid {
+    background-size: 60px 60px;
+    background-image: linear-gradient(
+        to right,
+        rgb(84, 118, 242, 0.8) 2px,
+        transparent 2px
+      ),
+      linear-gradient(to bottom, rgb(84, 118, 242, 0.8) 2px, transparent 2px);
+    mask-image: linear-gradient(to bottom, transparent, black, transparent);
+  }
+
+  .background-grid-isometric {
+    background-size: 162px 92px;
+    background-image: repeating-linear-gradient(
+        150deg,
+        rgb(84, 118, 242, 0.8),
+        rgb(84, 118, 242, 0.8) 1px,
+        transparent 2px,
+        transparent 80px
+      ),
+      repeating-linear-gradient(
+        30deg,
+        rgb(84, 118, 242, 0.8),
+        rgb(84, 118, 242, 0.8) 1px,
+        transparent 2px,
+        transparent 80px
+      );
+  }
+
+  .glow {
+    box-shadow: 0 0 40px rgb(84, 118, 242, 0.4);
+  }
+}

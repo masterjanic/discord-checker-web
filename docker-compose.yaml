@@ -1,0 +1,87 @@
+version: '3.8'
+services:
+  # TODO: Rework cron  job
+  cron:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    restart: unless-stopped
+    depends_on:
+      - pgbouncer
+    env_file:
+      - .env
+    networks:
+      - db-network
+  web:
+    platform: "linux/amd64"
+    image: dtc-web:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DATABASE_PRISMA_URL=${DATABASE_PRISMA_URL}
+        - DATABASE_URL_NON_POOLING=${DATABASE_URL_NON_POOLING}
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - pgbouncer
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    working_dir: /app
+    networks:
+      - web-network
+      - db-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      timeout: 5s
+      start_period: 5s
+      interval: 30s
+      retries: 3
+  pgbouncer:
+    image: bitnami/pgbouncer:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "6432:6432"
+    environment:
+      - PGBOUNCER_DATABASE=dtc-web
+      - POSTGRESQL_HOST=postgres
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=dtc-web
+      - PGBOUNCER_POOL_MODE=transaction
+      - PGBOUNCER_MIN_POOL_SIZE=10
+    networks:
+      - db-network
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=dtc-web
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - db-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d dtc-web -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres-data:
+networks:
+  web-network:
+    driver: bridge
+    enable_ipv6: false
+  db-network:
+    enable_ipv6: false
