@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { type IconType } from "react-icons";
-import { FiAlertTriangle, FiCheckCircle, FiStar } from "react-icons/fi";
+import { FiAlertTriangle, FiCheckCircle, FiStar, FiX } from "react-icons/fi";
 import { api } from "~/trpc/react";
 
 const entries = [
@@ -30,6 +30,14 @@ const entries = [
     gradient: "from-purple-700 via-purple-800 to-purple-900",
     borderColor: "border-purple-500",
   },
+  {
+    name: "Disabled Accounts",
+    icon: FiX as IconType,
+    key: "disabled",
+    textColor: "text-red-100",
+    gradient: "from-red-700 via-red-800 to-red-900",
+    borderColor: "border-red-500",
+  },
 ] as const;
 
 export default function AccountStats() {
@@ -38,7 +46,7 @@ export default function AccountStats() {
   });
 
   return (
-    <div className="grid grid-cols-1 grid-rows-1 gap-4 overflow-hidden md:grid-cols-3">
+    <div className="grid grid-cols-1 grid-rows-1 gap-4 overflow-hidden md:grid-cols-4">
       {entries.map(
         ({ gradient, icon: Icon, textColor, borderColor, key, name }) => (
           <div
@@ -58,7 +66,9 @@ export default function AccountStats() {
               >
                 {name}
               </div>
-              <div className={clsx("text-4xl", textColor)}>{stats[key]}</div>
+              <div className={clsx("text-4xl", textColor)}>
+                {Number(stats[key])}
+              </div>
             </div>
             <div
               className={clsx(

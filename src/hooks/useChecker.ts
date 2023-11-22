@@ -84,12 +84,6 @@ export default function useChecker() {
         }
 
         const { data: user } = userResponse;
-        if (user.verified) {
-          // Check if the user is "really" verified, since Discord sometimes returns verified = true for unverified users
-          const billingCountryResponse = await fetchBillingCountry({ token });
-          user.verified = billingCountryResponse !== null;
-        }
-
         await createAccount({
           user,
           tokens: [token],

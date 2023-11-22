@@ -83,3 +83,22 @@ export const DISCORD_BADGE_FLAGS = Object.freeze({
   SUPPORTS_COMMANDS: 1 << 23,
   USES_AUTOMOD: 1 << 24,
 }) as Record<string, number>;
+
+/**
+ * A mapping between Discord undocumented flags and their respective bit offsets.
+ */
+export const DISCORD_UNDOCUMENTED_FLAGS = Object.freeze({
+  MFA_SMS: 1 << 4,
+  PREMIUM_PROMO_DISMISSED: 1 << 5,
+  INTERNAL_APPLICATION: 1 << 11,
+  HAS_UNREAD_URGENT_MESSAGES: 1 << 13,
+  UNDERAGE_DELETED: 1 << 15,
+  SPAMMER: 1 << 20,
+  DISABLE_PREMIUM: 1 << 21,
+  HIGH_GLOBAL_RATE_LIMIT: 1n << 33n,
+  DELETED: 1n << 34n,
+  DISABLED_SUSPICIOUS_ACTIVITY: 1n << 35n,
+  SELF_DELETED: 1n << 36n,
+  DISABLED: 1n << 41n,
+  QUARANTINED: 1n << 44n,
+}) as Record<string, number | bigint>;

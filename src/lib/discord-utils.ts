@@ -2,6 +2,7 @@ import {
   DISCORD_BADGE_FLAGS,
   DISCORD_EPOCH,
   DISCORD_LOCALES_MAP,
+  DISCORD_UNDOCUMENTED_FLAGS,
   TOKEN_REGEX,
   TOKEN_REGEX_LEGACY,
 } from "~/consts/discord";
@@ -57,16 +58,18 @@ export const usernameOrTag = ({
  * Function to check if a user has a specific flag.
  * @param flags
  * @param bit
+ * @param mapping
  */
 export const hasFlag = (
   flags: number | bigint | undefined | null,
   bit: string,
+  mapping: Record<string, number | bigint> = DISCORD_BADGE_FLAGS,
 ): boolean => {
   if (!flags) {
     return false;
   }
 
-  const flagForBit = DISCORD_BADGE_FLAGS[bit];
+  const flagForBit = mapping[bit];
   if (!flagForBit) {
     return false;
   }
@@ -123,4 +126,42 @@ export const removeTokenDuplicates = (tokens: string[]) => {
     seen.add(firstPart);
     return true;
   });
+};
+
+const DISABLED_FLAGS = [
+  "SPAMMER",
+  "DISABLED",
+  "DELETED",
+  "DISABLED_SUSPICIOUS_ACTIVITY",
+  "SELF_DELETED",
+  "QUARANTINED",
+  "UNDERAGE_DELETED",
+] as const;
+
+/**
+ * Function to check whether an account can be logged into.
+ */
+export const canLogin = (flags: number | bigint | undefined | null) => {
+  if (!flags) {
+    return true;
+  }
+
+  for (const flag of DISABLED_FLAGS) {
+    if (hasFlag(flags, flag, DISCORD_UNDOCUMENTED_FLAGS)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Function to generate the SQL query for the disabled flags.
+ */
+export const generateDisabledFlagsSQL = () => {
+  const flags = DISABLED_FLAGS.map((flag) => {
+    return `(flags & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} = ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
+  });
+
+  return flags.join(" OR ");
 };
