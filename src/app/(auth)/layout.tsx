@@ -68,8 +68,8 @@ export default async function AuthLayout({
                         className="border-b border-neutral-100/10 px-6 py-5"
                         key={`sidebar-section-${title.toLowerCase()}`}
                       >
-                        <div className="mb-2 flex space-x-3 font-normal">
-                          <span className="w-full text-sm text-neutral-300">
+                        <div className="mb-2 flex space-x-3 font-light">
+                          <span className="w-full text-xs uppercase text-neutral-300">
                             {title}
                           </span>
                         </div>
