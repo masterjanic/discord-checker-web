@@ -1,8 +1,4 @@
-import axios, {
-  AxiosError,
-  type AxiosRequestConfig,
-  type AxiosResponse,
-} from "axios";
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 import { DISCORD_GATEWAY_URL } from "~/consts/discord";
 import { type APIGuild, type APIUser } from "discord-api-types/v10";
 
@@ -14,13 +10,19 @@ interface IRequestConfig extends AxiosRequestConfig {
 /**
  * Sends a request to the Discord api with the given data. If a rate limit is encountered, wait and retry.
  * @param config
+ * @param retryCount
  */
 async function apiRequest<ReturnType>(
   config: IRequestConfig,
+  retryCount = 0,
 ): Promise<AxiosResponse<ReturnType> | null> {
   const { delay, token, ...rest } = config;
   if (delay && delay > 0) {
     await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  if (retryCount > 5) {
+    return null;
   }
 
   try {
@@ -30,13 +32,24 @@ async function apiRequest<ReturnType>(
       headers: token ? { Authorization: token } : {},
     });
   } catch (err) {
-    if (err instanceof AxiosError) {
-      if (err.response && err.response.status === 429) {
-        const retryAfter = Number(err.response.headers["Retry-After"] ?? 1);
-        return await apiRequest({
-          ...config,
-          delay: retryAfter * 1000,
-        });
+    if (axios.isAxiosError(err)) {
+      if (
+        (err.response && err.response.status === 429) ??
+        ["ECONNABORTED", "ERR_NETWORK"].includes(err.code!)
+      ) {
+        const retryHeader = err.response?.headers["Retry-After"] as string;
+        const retryAfter = retryHeader
+          ? parseInt(retryHeader, 10)
+          : 1000 * Math.pow(2, retryCount);
+
+        console.log("Retry after", retryAfter, "ms");
+        return await apiRequest(
+          {
+            ...config,
+            delay: retryAfter * 1000,
+          },
+          retryCount + 1,
+        );
       }
     }
 
