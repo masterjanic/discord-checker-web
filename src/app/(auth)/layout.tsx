@@ -108,7 +108,7 @@ export default async function AuthLayout({
                   <NavRouterSegment />
                 </div>
               </div>
-              <div className="relative flex-1 flex-grow overflow-auto">
+              <div className="relative flex-1 flex-grow overflow-auto scrollbar-thin">
                 <BackgroundGrid />
 
                 <div className="relative px-5 py-4">{children}</div>

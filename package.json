@@ -37,6 +37,7 @@
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
     "discord-api-types": "^0.37.64",
+    "lodash": "^4.17.21",
     "next": "^14.0.3",
     "next-auth": "^4.24.5",
     "p-map": "^6.0.0",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.44.7",
+    "@types/lodash": "^4.14.202",
     "@types/node": "^20.9.4",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",

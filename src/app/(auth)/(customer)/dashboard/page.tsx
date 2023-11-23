@@ -6,6 +6,14 @@ import ChromeExtensionBanner from "~/app/_components/customer/chrome-extension-b
 import SkeletonAccountStats from "~/app/_components/skeletons/skeleton-account-stats";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 
+export const metadata = {
+  title: "Dashboard - Discord Token Checker",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
+
 export default function Page() {
   return (
     <>

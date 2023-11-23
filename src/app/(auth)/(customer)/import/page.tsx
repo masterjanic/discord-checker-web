@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import TokenInput from "~/app/_components/customer/token-input";
+import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 
 export const metadata = {
   title: "Token Import - Discord Token Checker",
@@ -12,7 +13,7 @@ export const metadata = {
 export default function Page() {
   return (
     <>
-      <div className="leading-[15px]">
+      <div className="mb-4 leading-[15px]">
         <h1 className="text-xl font-bold">Token Import</h1>
         <span className="text-base text-neutral-300">
           You can import as many tokens as you wish. The checked tokens will be
@@ -20,7 +21,7 @@ export default function Page() {
         </span>
       </div>
 
-      <Suspense>
+      <Suspense fallback={<SkeletonDefault className="!h-[649px]" />}>
         <TokenInput />
       </Suspense>
     </>

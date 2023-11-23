@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import { getOwnerId } from "~/lib/auth";
 import { generateDisabledFlagsSQL, localeToCountry } from "~/lib/discord-utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -39,13 +40,8 @@ export const dashboardRouter = createTRPCRouter({
     };
   }),
   getCountryDistribution: protectedProcedure.query(async ({ ctx }) => {
-    const user = ctx.session.user;
-    const isAdmin = user.role === Role.ADMIN;
-
-    const ownerId = isAdmin ? undefined : user.id;
-
     const localeDistribution = await ctx.db.discordAccount.groupBy({
-      where: { ownerId },
+      where: { ownerId: getOwnerId(ctx.session.user) },
       by: ["locale"],
       _count: {
         locale: true,

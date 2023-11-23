@@ -1,5 +1,3 @@
-"use client";
-
 import { type AvatarProps } from "@radix-ui/react-avatar";
 import * as Avatar from "@radix-ui/react-avatar";
 import { type APIGuild } from "discord-api-types/v10";

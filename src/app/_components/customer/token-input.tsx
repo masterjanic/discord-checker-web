@@ -27,7 +27,7 @@ export default function TokenInput() {
     <>
       {!isChecking && (
         <>
-          <div className="mt-4">
+          <div>
             <input
               type="file"
               accept="text/*"

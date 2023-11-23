@@ -103,10 +103,10 @@ interface IBillingObject {
   type: number;
   invalid: boolean;
   flags: number;
-  last_4: string;
-  brand: string;
-  expires_month: number;
-  expires_year: number;
+  last_4?: string;
+  brand?: string;
+  expires_month?: number;
+  expires_year?: number;
   default: boolean;
   billing_address: {
     country: string;

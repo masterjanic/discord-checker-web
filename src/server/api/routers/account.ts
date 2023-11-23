@@ -1,7 +1,7 @@
-import { Role } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
+import { getOwnerId } from "~/lib/auth";
 import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
 import {
   adminProcedure,
@@ -39,13 +39,10 @@ export const accountRouter = createTRPCRouter({
   get: protectedProcedure
     .input(z.string().min(17))
     .query(async ({ ctx, input }) => {
-      const { user } = ctx.session;
-      const isAdmin = user.role === Role.ADMIN;
-
       const account = await ctx.db.discordAccount.findUnique({
         where: {
           id: input,
-          ownerId: isAdmin ? undefined : user.id,
+          ownerId: getOwnerId(ctx.session.user),
         },
         include: {
           tokens: true,
@@ -57,6 +54,28 @@ export const accountRouter = createTRPCRouter({
       }
 
       return account;
+    }),
+  delete: protectedProcedure
+    .input(z.string().min(17))
+    .mutation(async ({ ctx, input }) => {
+      const account = await ctx.db.discordAccount.findUnique({
+        where: {
+          id: input,
+          ownerId: getOwnerId(ctx.session.user),
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!account) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return ctx.db.discordAccount.delete({
+        where: {
+          id: input,
+        },
+      });
     }),
   create: protectedProcedure
     .input(
@@ -118,32 +137,26 @@ export const accountRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { user } = ctx.session;
-      const isAdmin = user.role === Role.ADMIN;
-
       const limit = input.limit ?? 50;
-      const cursor = input.cursor;
-      const search = input.search;
-
-      // TODO: Implement search query operators
-      let searchQuery = {};
-      if (search) {
-        const [key, value] = search.split(":");
-        if (key && value) {
-          searchQuery = {
-            [key]: {
-              search: value,
-            },
-          };
-        }
-      }
+      const { cursor, search } = input;
 
       const items = await ctx.db.discordAccount.findMany({
         where: {
-          ...searchQuery,
+          OR: [
+            {
+              id: {
+                contains: search ?? undefined,
+              },
+            },
+            {
+              username: {
+                contains: search ?? undefined,
+              },
+            },
+          ],
           premium_type: input.nitroOnly ? { gt: 0 } : undefined,
           verified: input.verifiedOnly ? input.verifiedOnly : undefined,
-          ownerId: isAdmin ? undefined : user.id,
+          ownerId: getOwnerId(ctx.session.user),
         },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
@@ -172,13 +185,10 @@ export const accountRouter = createTRPCRouter({
   getGuilds: protectedProcedure
     .input(z.string().min(17))
     .query(async ({ ctx, input }) => {
-      const { user } = ctx.session;
-      const isAdmin = user.role === Role.ADMIN;
-
       const account = await ctx.db.discordAccount.findUnique({
         where: {
           id: input,
-          ownerId: isAdmin ? undefined : user.id,
+          ownerId: getOwnerId(ctx.session.user),
         },
         select: {
           tokens: {
@@ -206,13 +216,10 @@ export const accountRouter = createTRPCRouter({
   getBilling: protectedProcedure
     .input(z.string().min(17))
     .query(async ({ ctx, input }) => {
-      const { user } = ctx.session;
-      const isAdmin = user.role === Role.ADMIN;
-
       const account = await ctx.db.discordAccount.findUnique({
         where: {
           id: input,
-          ownerId: isAdmin ? undefined : user.id,
+          ownerId: getOwnerId(ctx.session.user),
         },
         select: {
           tokens: {
@@ -235,7 +242,6 @@ export const accountRouter = createTRPCRouter({
       const response = await fetchBilling({
         token: token.value,
       });
-      console.log(response?.data);
 
       return response?.data ?? [];
     }),
