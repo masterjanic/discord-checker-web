@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import TitledBox from "~/app/_components/common/box-with-title";
 import AccountActionsRow from "~/app/_components/customer/accounts/account-actions-row";
@@ -6,11 +7,24 @@ import AccountGeneral from "~/app/_components/customer/accounts/account-general"
 import AccountHeader from "~/app/_components/customer/accounts/account-header";
 import AccountServerOverview from "~/app/_components/customer/accounts/account-server-overview";
 import AccountTokens from "~/app/_components/customer/accounts/account-tokens";
+import SkeletonAccountActionsRow from "~/app/_components/skeletons/skeleton-account-actions-row";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import SkeletonServerOverview from "~/app/_components/skeletons/skeleton-server-overview";
+import { isValidSnowflake } from "~/lib/discord-utils";
+
+export const metadata = {
+  title: "View Account - Discord Token Checker",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
+  if (!isValidSnowflake(id)) {
+    redirect("/accounts");
+  }
 
   return (
     <>
@@ -24,9 +38,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-full overflow-hidden">
-          <Suspense
-            fallback={<SkeletonDefault className="!h-[26px] !w-[100px]" />}
-          >
+          <Suspense fallback={<SkeletonAccountActionsRow />}>
             <AccountActionsRow userId={id} />
           </Suspense>
         </div>
