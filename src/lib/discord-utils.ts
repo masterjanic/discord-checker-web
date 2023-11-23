@@ -179,10 +179,10 @@ export const isFlagged = (flags: number | bigint | undefined | null) => {
 };
 
 /**
- * Function to generate the SQL query for the disabled flags.
+ * Function to generate the SQL query for the critical flags.
  */
-export const generateDisabledFlagsSQL = () => {
-  const flags = DISABLED_FLAGS.map((flag) => {
+export const generateFlaggedAccountsQuery = () => {
+  const flags = CRITICAL_FLAGS.map((flag) => {
     return `(flags & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} = ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
   });
 

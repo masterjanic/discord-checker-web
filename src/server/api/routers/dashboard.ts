@@ -1,6 +1,9 @@
 import { Role } from "@prisma/client";
 import { getOwnerId } from "~/lib/auth";
-import { generateDisabledFlagsSQL, localeToCountry } from "~/lib/discord-utils";
+import {
+  generateFlaggedAccountsQuery,
+  localeToCountry,
+} from "~/lib/discord-utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const dashboardRouter = createTRPCRouter({
@@ -12,7 +15,7 @@ export const dashboardRouter = createTRPCRouter({
     const adminClause = `"public"."DiscordAccount"."ownerId" = '${user.id}' AND`;
 
     // TODO: Simplify when prisma supports multiple counts in one query
-    const [verified, unverified, nitro, disabledQuery] =
+    const [verified, unverified, nitro, flaggedQuery] =
       await ctx.db.$transaction([
         ctx.db.discordAccount.count({
           where: { verified: true, ownerId },
@@ -27,16 +30,16 @@ export const dashboardRouter = createTRPCRouter({
         ctx.db.$queryRawUnsafe(
           `SELECT COUNT(*) FROM "public"."DiscordAccount" WHERE ${
             !isAdmin ? adminClause : ""
-          } ${generateDisabledFlagsSQL()};`,
+          } ${generateFlaggedAccountsQuery()};`,
         ),
       ]);
 
-    const { count: disabled } = (disabledQuery as { count: bigint }[])[0]!;
+    const { count: flagged } = (flaggedQuery as { count: bigint }[])[0]!;
     return {
       verified,
       unverified,
       nitro,
-      disabled,
+      flagged,
     };
   }),
   getCountryDistribution: protectedProcedure.query(async ({ ctx }) => {

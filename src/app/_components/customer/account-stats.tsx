@@ -31,9 +31,9 @@ const entries = [
     borderColor: "border-purple-500",
   },
   {
-    name: "Disabled Accounts",
+    name: "Flagged Accounts",
     icon: FiX as IconType,
-    key: "disabled",
+    key: "flagged",
     textColor: "text-red-100",
     gradient: "from-red-700 via-red-800 to-red-900",
     borderColor: "border-red-500",
