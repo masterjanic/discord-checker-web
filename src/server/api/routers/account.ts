@@ -1,8 +1,14 @@
+import { type DiscordAccount } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
 import { getOwnerId } from "~/lib/auth";
 import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
+import {
+  getAccountRating,
+  isFlagged,
+  isValidSnowflake,
+} from "~/lib/discord-utils";
 import {
   adminProcedure,
   createTRPCRouter,
@@ -10,7 +16,7 @@ import {
 } from "~/server/api/trpc";
 
 const zodUserShape = z.object({
-  id: z.string().min(17),
+  id: z.string().refine(isValidSnowflake),
   username: z.string(),
   discriminator: z.string(),
   avatar: z.string().nullish(),
@@ -37,7 +43,7 @@ export const accountRouter = createTRPCRouter({
     return ctx.db.discordAccount.findMany();
   }),
   get: protectedProcedure
-    .input(z.string().min(17))
+    .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({
         where: {
@@ -55,8 +61,28 @@ export const accountRouter = createTRPCRouter({
 
       return account;
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().refine(isValidSnowflake),
+        password: z.string().optional(),
+        notes: z.string().max(1024).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+      return ctx.db.discordAccount.update({
+        where: {
+          id,
+          ownerId: getOwnerId(ctx.session.user),
+        },
+        data: {
+          ...rest,
+        },
+      });
+    }),
   delete: protectedProcedure
-    .input(z.string().min(17))
+    .input(z.string().refine(isValidSnowflake))
     .mutation(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({
         where: {
@@ -96,6 +122,7 @@ export const accountRouter = createTRPCRouter({
         },
         create: {
           ...input.user,
+          rating: getAccountRating(input.user as unknown as DiscordAccount),
           ownerId: session.user.id,
           tokens: {
             createMany: {
@@ -108,6 +135,7 @@ export const accountRouter = createTRPCRouter({
         },
         update: {
           ...input.user,
+          rating: getAccountRating(input.user as unknown as DiscordAccount),
           tokens: {
             upsert: tokens.map((token) => ({
               where: {
@@ -130,15 +158,17 @@ export const accountRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
-        nitroOnly: z.boolean().optional(),
-        verifiedOnly: z.boolean().optional(),
+        nitro: z.boolean().optional(),
+        verified: z.boolean().optional(),
+        phone: z.boolean().optional(),
+        unflagged: z.boolean().optional(),
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 50;
-      const { cursor, search } = input;
+      const { cursor, search, unflagged } = input;
 
       const items = await ctx.db.discordAccount.findMany({
         where: {
@@ -154,8 +184,9 @@ export const accountRouter = createTRPCRouter({
               },
             },
           ],
-          premium_type: input.nitroOnly ? { gt: 0 } : undefined,
-          verified: input.verifiedOnly ? input.verifiedOnly : undefined,
+          phone: input.phone ? { not: null } : undefined,
+          premium_type: input.nitro ? { gt: 0 } : undefined,
+          verified: input.verified ? true : undefined,
           ownerId: getOwnerId(ctx.session.user),
         },
         take: limit + 1,
@@ -170,6 +201,7 @@ export const accountRouter = createTRPCRouter({
           avatar: true,
           flags: true,
           premium_type: true,
+          rating: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -179,12 +211,14 @@ export const accountRouter = createTRPCRouter({
       }
 
       return {
-        items,
+        items: !unflagged
+          ? items
+          : items.filter((item) => !isFlagged(item.flags)),
         nextCursor,
       };
     }),
   getGuilds: protectedProcedure
-    .input(z.string().min(17))
+    .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({
         where: {
@@ -215,7 +249,7 @@ export const accountRouter = createTRPCRouter({
       return response?.data ?? [];
     }),
   getBilling: protectedProcedure
-    .input(z.string().min(17))
+    .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({
         where: {

@@ -11,7 +11,6 @@ datasource db {
 model DiscordAccount {
   id                String                     @id @unique
   username          String                     @db.VarChar(32)
-  password          String?                    @db.VarChar(256)
   discriminator     String                     @db.VarChar(4)
   global_name       String?                    @db.VarChar(32)
   avatar            String?
@@ -31,6 +30,13 @@ model DiscordAccount {
   nsfw_allowed      Boolean?
   bio               String?                    @db.VarChar(190)
   banner_color      String?
+  // Additional fields
+  /// A password to be used for logging in to the account
+  password          String?                    @db.VarChar(256)
+  /// A number between 0 and 100 representing the account's trustworthiness
+  rating            Int?
+  /// Custom notes about the account
+  notes             String?                    @db.VarChar(1024)
   tokens            DiscordToken[]
   createdAt         DateTime                   @default(now())
   updatedAt         DateTime                   @updatedAt

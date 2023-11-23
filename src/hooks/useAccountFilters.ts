@@ -4,8 +4,10 @@ export default function useAccountFilters() {
   const defaultState = {
     limit: 30,
     search: "",
-    nitroOnly: false,
-    verifiedOnly: false,
+    verified: false,
+    nitro: false,
+    phone: false,
+    unflagged: false,
   };
   const [filters, setFilters] = useState<typeof defaultState>(defaultState);
 
@@ -13,10 +15,7 @@ export default function useAccountFilters() {
     setFilters(defaultState);
   };
 
-  const setFilter = (
-    key: keyof typeof defaultState,
-    value: string | number | boolean,
-  ) => {
+  const setFilter = (key: string, value: string | number | boolean) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 

@@ -46,7 +46,7 @@ export default function TokenInput() {
           </div>
 
           <textarea
-            className="mt-4 w-full resize-none rounded-md border border-blurple bg-blueish-grey-700/50 p-2 font-mono font-light leading-tight text-neutral-200 caret-blurple outline-none backdrop-blur scrollbar-thin focus:border-blurple-dark"
+            className="mt-4 w-full resize-none rounded-md border border-blurple bg-blueish-grey-700/50 p-2 font-mono font-light leading-tight text-neutral-200 caret-blurple outline-none backdrop-blur transition duration-300 scrollbar-thin focus:border-blurple-dark"
             spellCheck={false}
             placeholder="Paste your tokens here, one per line."
             rows={15}

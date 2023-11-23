@@ -1,3 +1,4 @@
+import { type DiscordAccount } from "@prisma/client";
 import {
   DISCORD_BADGE_FLAGS,
   DISCORD_EPOCH,
@@ -186,4 +187,69 @@ export const generateDisabledFlagsSQL = () => {
   });
 
   return flags.join(" OR ");
+};
+
+/**
+ * Function to give Discord accounts a rating from 0 to 100.
+ */
+export const getAccountRating = (
+  user: Pick<
+    DiscordAccount,
+    | "verified"
+    | "flags"
+    | "premium_type"
+    | "mfa_enabled"
+    | "phone"
+    | "id"
+    | "discriminator"
+    | "avatar"
+    | "username"
+    | "bio"
+  >,
+) => {
+  let rating = 0;
+
+  if (user.verified) {
+    rating += 30;
+  }
+
+  if (user.premium_type && user.premium_type > 0) {
+    rating += 20;
+  }
+
+  if (user.mfa_enabled) {
+    rating += 10;
+  }
+
+  if (user.phone) {
+    rating += 20;
+  }
+
+  if (!canLogin(user.flags)) {
+    rating -= 50;
+  }
+
+  if (isFlagged(user.flags)) {
+    rating -= 20;
+  }
+
+  if (isMigratedUser(user.discriminator)) {
+    rating += 10;
+  }
+
+  if (user.avatar) {
+    rating += 5;
+  }
+
+  if (user.bio && user.bio.length > 0) {
+    rating += 5;
+  }
+
+  const createdAt = snowflakeToMilliseconds(user.id);
+  const now = Date.now();
+  const ageDays = Math.floor((now - createdAt) / 1000 / 60 / 60 / 24);
+  const ageRating = Math.min(20, ageDays / 7);
+  rating += Math.round(ageRating);
+
+  return Math.max(0, Math.min(100, rating));
 };

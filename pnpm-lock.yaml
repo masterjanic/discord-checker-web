@@ -8,6 +8,9 @@ dependencies:
   '@headlessui/react':
     specifier: ^1.7.17
     version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
+  '@headlessui/tailwindcss':
+    specifier: ^0.2.0
+    version: 0.2.0(tailwindcss@3.3.5)
   '@next-auth/prisma-adapter':
     specifier: ^1.0.7
     version: 1.0.7(@prisma/client@5.6.0)(next-auth@4.24.5)
@@ -48,8 +51,8 @@ dependencies:
     specifier: ^2.0.0
     version: 2.0.0
   discord-api-types:
-    specifier: ^0.37.64
-    version: 0.37.64
+    specifier: ^0.37.65
+    version: 0.37.65
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -241,6 +244,15 @@ packages:
       client-only: 0.0.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@headlessui/tailwindcss@0.2.0(tailwindcss@3.3.5):
+    resolution: {integrity: sha512-fpL830Fln1SykOCboExsWr3JIVeQKieLJ3XytLe/tt1A0XzqUthOftDmjcCYLW62w7mQI7wXcoPXr3tZ9QfGxw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      tailwindcss: ^3.0
+    dependencies:
+      tailwindcss: 3.3.5
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -1797,8 +1809,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /discord-api-types@0.37.64:
-    resolution: {integrity: sha512-9aS+QuoNj+4e9d5uDKfds1DCpQLYn/mHx+M8OFHZ/ZZJVadZJEo275uBOaSsw5KGYGsZ4hxMzlOkIxnWirgqKA==}
+  /discord-api-types@0.37.65:
+    resolution: {integrity: sha512-CQHW3Nu04LEHIj1Xps/sfGhTdrowilxnek2tirpLhwvrmgmLr1C6A+4JFLs+0kJMH2IX2QgDyA9GfNehqN+xPQ==}
     dev: false
 
   /dlv@1.1.3:

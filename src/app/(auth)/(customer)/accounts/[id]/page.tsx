@@ -5,6 +5,7 @@ import AccountActionsRow from "~/app/_components/customer/accounts/account-actio
 import AccountBilling from "~/app/_components/customer/accounts/account-billing";
 import AccountGeneral from "~/app/_components/customer/accounts/account-general";
 import AccountHeader from "~/app/_components/customer/accounts/account-header";
+import AccountNotes from "~/app/_components/customer/accounts/account-notes";
 import AccountServerOverview from "~/app/_components/customer/accounts/account-server-overview";
 import AccountTokens from "~/app/_components/customer/accounts/account-tokens";
 import SkeletonAccountActionsRow from "~/app/_components/skeletons/skeleton-account-actions-row";
@@ -76,6 +77,15 @@ export default function Page({ params }: { params: { id: string } }) {
         >
           <Suspense>
             <AccountBilling userId={id} />
+          </Suspense>
+        </TitledBox>
+
+        <TitledBox
+          title="Notes"
+          className="col-span-full overflow-hidden md:col-span-6"
+        >
+          <Suspense fallback={<SkeletonDefault className="!h-[200px]" />}>
+            <AccountNotes userId={id} />
           </Suspense>
         </TitledBox>
       </div>

@@ -1,6 +1,7 @@
 import { type DiscordAccount } from "@prisma/client";
 import clsx from "clsx";
 import Box from "~/app/_components/common/box";
+import AccountRating from "~/app/_components/common/discord/account-rating";
 import BadgeList from "~/app/_components/common/discord/badge-list";
 import DiscordAvatar from "~/app/_components/common/discord/discord-avatar";
 import { isMigratedUser, usernameOrTag } from "~/lib/discord-utils";
@@ -8,7 +9,7 @@ import { isMigratedUser, usernameOrTag } from "~/lib/discord-utils";
 interface IAccountCardProps extends React.HTMLAttributes<HTMLDivElement> {
   account: Pick<
     DiscordAccount,
-    "id" | "username" | "discriminator" | "flags" | "avatar"
+    "id" | "username" | "discriminator" | "flags" | "avatar" | "rating"
   >;
 }
 
@@ -25,6 +26,9 @@ export default function AccountCard({
       )}
       {...props}
     >
+      <div className="absolute right-4 top-4">
+        <AccountRating user={account} />
+      </div>
       <div className="flex items-center">
         <DiscordAvatar user={account} />
         <div className="ml-4 text-left">
