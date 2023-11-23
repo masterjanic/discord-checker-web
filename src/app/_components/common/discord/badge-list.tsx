@@ -3,7 +3,7 @@ import { type APIUser, UserPremiumType } from "discord-api-types/v10";
 import clsx from "clsx";
 import Tooltip from "~/app/_components/common/tooltip";
 import { DISCORD_BADGE_FLAGS } from "~/consts/discord";
-import { hasFlag, toTitleCase } from "~/lib/discord-utils";
+import { canLogin, hasFlag, toTitleCase } from "~/lib/discord-utils";
 
 interface IBadgeListProps extends React.HTMLAttributes<HTMLDivElement> {
   user: {
@@ -59,6 +59,20 @@ const BadgeList: React.FC<IBadgeListProps> = ({
           />
         </Tooltip>
       ) : null}
+
+      {!canLogin(user.flags) && (
+        <Tooltip text="Account Disabled">
+          <Image
+            src={`/images/badges/disabled.svg`}
+            alt="Disabled Badge"
+            width={size}
+            height={size}
+            style={{ height: `${size}px` }}
+            className="w-auto flex-shrink-0 select-none"
+            draggable={false}
+          />
+        </Tooltip>
+      )}
     </div>
   );
 };
