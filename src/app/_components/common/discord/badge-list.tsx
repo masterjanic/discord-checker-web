@@ -20,73 +20,68 @@ const BadgeList: React.FC<IBadgeListProps> = ({
   size = 12,
   ...props
 }) => {
+  const additionalBadges = [
+    {
+      name: "Discord Nitro",
+      badge: "nitro",
+      tooltip: ["Nitro Classic", "Nitro Full", "Nitro Basic", "Unknown"][
+        (user.premium_type ?? 4) - 1
+      ]!,
+      className: "",
+      crieria: user.premium_type && user.premium_type > UserPremiumType.None,
+    },
+    {
+      name: "Flagged Badge",
+      badge: "flagged",
+      tooltip: "Flagged Account",
+      className: "p-px",
+      crieria: isFlagged(user.flags),
+    },
+    {
+      name: "Disabled Badge",
+      badge: "disabled",
+      tooltip: "Account Disabled",
+      className: "",
+      crieria: !canLogin(user.flags),
+    },
+  ] as const;
+
   return (
     <div className={clsx("flex items-center space-x-1", className)} {...props}>
-      {user.flags
-        ? Object.keys(DISCORD_BADGE_FLAGS)
-            .filter((bit) => hasFlag(user.flags, bit))
-            .map((flag) => (
-              <Tooltip text={toTitleCase(flag)} key={`f-${flag}-${user.id}`}>
-                <Image
-                  src={`/images/badges/${flag.toLowerCase()}.svg`}
-                  alt={toTitleCase(flag)}
-                  width={size}
-                  height={size}
-                  draggable={false}
-                  style={{ height: `${size}px` }}
-                  className="w-auto flex-shrink-0 select-none"
-                />
-              </Tooltip>
-            ))
-        : null}
+      {!!user.flags &&
+        Object.keys(DISCORD_BADGE_FLAGS)
+          .filter((bit) => hasFlag(user.flags, bit))
+          .map((flag) => (
+            <Tooltip text={toTitleCase(flag)} key={`f-${flag}-${user.id}`}>
+              <Image
+                src={`/images/badges/${flag.toLowerCase()}.svg`}
+                alt={toTitleCase(flag)}
+                width={size}
+                height={size}
+                draggable={false}
+                style={{ height: `${size}px` }}
+                className="w-auto flex-shrink-0 select-none"
+              />
+            </Tooltip>
+          ))}
 
-      {user.premium_type && user.premium_type > UserPremiumType.None ? (
-        <Tooltip
-          text={
-            ["Nitro Classic", "Nitro Full", "Nitro Basic"][
-              user.premium_type - 1
-            ] ?? "Unknown"
-          }
-        >
-          <Image
-            src={`/images/badges/nitro.svg`}
-            alt="Discord Nitro"
-            width={size}
-            height={size}
-            style={{ height: `${size}px` }}
-            className="w-auto flex-shrink-0 select-none"
-            draggable={false}
-          />
-        </Tooltip>
-      ) : null}
-
-      {isFlagged(user.flags) && (
-        <Tooltip text="Flagged Account">
-          <Image
-            src={`/images/badges/flagged.svg`}
-            alt="Flagged Badge"
-            width={size}
-            height={size}
-            style={{ height: `${size}px` }}
-            className="w-auto flex-shrink-0 select-none p-px"
-            draggable={false}
-          />
-        </Tooltip>
-      )}
-
-      {!canLogin(user.flags) && (
-        <Tooltip text="Account Disabled">
-          <Image
-            src={`/images/badges/disabled.svg`}
-            alt="Disabled Badge"
-            width={size}
-            height={size}
-            style={{ height: `${size}px` }}
-            className="w-auto flex-shrink-0 select-none"
-            draggable={false}
-          />
-        </Tooltip>
-      )}
+      {additionalBadges.map(({ crieria, tooltip, name, className, badge }) => {
+        if (crieria) {
+          return (
+            <Tooltip text={tooltip} key={`f-${name}-${user.id}`}>
+              <Image
+                src={`/images/badges/${badge}.svg`}
+                alt={name}
+                width={size}
+                height={size}
+                draggable={false}
+                style={{ height: `${size}px` }}
+                className={clsx("w-auto flex-shrink-0 select-none", className)}
+              />
+            </Tooltip>
+          );
+        }
+      })}
     </div>
   );
 };

@@ -169,6 +169,7 @@ export const accountRouter = createTRPCRouter({
           discriminator: true,
           avatar: true,
           flags: true,
+          premium_type: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
