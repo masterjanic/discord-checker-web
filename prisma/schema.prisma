@@ -9,33 +9,34 @@ datasource db {
 }
 
 model DiscordAccount {
-  id                String         @id @unique
-  username          String         @db.VarChar(32)
-  password          String?        @db.VarChar(256)
-  discriminator     String         @db.VarChar(4)
-  global_name       String?        @db.VarChar(32)
+  id                String                     @id @unique
+  username          String                     @db.VarChar(32)
+  password          String?                    @db.VarChar(256)
+  discriminator     String                     @db.VarChar(4)
+  global_name       String?                    @db.VarChar(32)
   avatar            String?
   avatar_decoration String?
-  email             String?        @db.VarChar(254)
+  email             String?                    @db.VarChar(254)
   verified          Boolean?
   accent_color      Int?
   banner            String?
   bot               Boolean?
   flags             BigInt?
-  locale            String?        @db.VarChar(5)
+  locale            String?                    @db.VarChar(5)
   mfa_enabled       Boolean?
   premium_type      Int?
   public_flags      BigInt?
   system            Boolean?
-  phone             String?        @db.VarChar(32)
+  phone             String?                    @db.VarChar(32)
   nsfw_allowed      Boolean?
-  bio               String?        @db.VarChar(190)
+  bio               String?                    @db.VarChar(190)
   banner_color      String?
   tokens            DiscordToken[]
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  owner             User?          @relation(fields: [ownerId], references: [id])
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+  owner             User?                      @relation(fields: [ownerId], references: [id])
   ownerId           String?
+  collections       DiscordAccountCollection[]
 }
 
 /// Track changes in DiscordAccount model
@@ -45,6 +46,17 @@ model DiscordAccountHistory {
   data      Json     @db.JsonB
   changedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+/// Group DiscordAccounts into collections
+model DiscordAccountCollection {
+  id        String           @id @default(cuid())
+  name      String           @db.VarChar(32)
+  accounts  DiscordAccount[]
+  owner     User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 }
 
 model DiscordToken {
@@ -91,15 +103,17 @@ enum Role {
 }
 
 model User {
-  id              String           @id @default(cuid())
-  name            String?
-  email           String?          @unique
-  emailVerified   DateTime?
-  image           String?
-  role            Role             @default(CUSTOMER)
-  accounts        Account[]
-  sessions        Session[]
-  discordAccounts DiscordAccount[]
+  id                        String                     @id @default(cuid())
+  name                      String?
+  email                     String?                    @unique
+  emailVerified             DateTime?
+  image                     String?
+  role                      Role                       @default(CUSTOMER)
+  accounts                  Account[]
+  sessions                  Session[]
+  discordAccounts           DiscordAccount[]
+  discordAccountCollections DiscordAccountCollection[]
+  createdAt                 DateTime                   @default(now())
 }
 
 model VerificationToken {
