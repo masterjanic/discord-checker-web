@@ -129,13 +129,18 @@ export const removeTokenDuplicates = (tokens: string[]) => {
 };
 
 const DISABLED_FLAGS = [
-  "SPAMMER",
   "DISABLED",
   "DELETED",
   "DISABLED_SUSPICIOUS_ACTIVITY",
   "SELF_DELETED",
-  "QUARANTINED",
   "UNDERAGE_DELETED",
+] as const;
+
+const CRITICAL_FLAGS = [
+  ...DISABLED_FLAGS,
+  "SPAMMER",
+  "QUARANTINED",
+  "HIGH_GLOBAL_RATE_LIMIT",
 ] as const;
 
 /**
@@ -153,6 +158,24 @@ export const canLogin = (flags: number | bigint | undefined | null) => {
   }
 
   return true;
+};
+
+/**
+ * Function to check whether an account is flagged as critical.
+ * @param flags
+ */
+export const isFlagged = (flags: number | bigint | undefined | null) => {
+  if (!flags) {
+    return false;
+  }
+
+  for (const flag of CRITICAL_FLAGS) {
+    if (hasFlag(flags, flag, DISCORD_UNDOCUMENTED_FLAGS)) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 /**
