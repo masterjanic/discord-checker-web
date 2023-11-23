@@ -7,7 +7,6 @@ import { isUserSubscribed } from "~/lib/auth";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { Role } from "@prisma/client";
-import { stripe } from "~/server/stripe/client";
 
 /**
  * 1. CONTEXT
@@ -38,7 +37,6 @@ export const createInnerTRPCContext = async (opts: CreateContextOptions) => {
     session,
     headers: opts.headers,
     db,
-    stripe,
   };
 };
 

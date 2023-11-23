@@ -76,18 +76,11 @@ model DiscordToken {
   updatedAt        DateTime       @updatedAt
 }
 
-/// Keeps track of all events that are sent by the Stripe API webhooks
-model StripeEvent {
-  id               String   @id @unique
-  api_version      String?
-  data             Json
-  request          Json?
-  type             String
-  object           String
-  account          String?
-  created          DateTime
-  livemode         Boolean
-  pending_webhooks Int
+/// Keeps track of all events that are sent by the Sellix API
+model SellixEvent {
+  id    String @id @default(cuid())
+  event String
+  data  Json
 }
 
 // Necessary for Next auth
@@ -133,7 +126,6 @@ model User {
   sessions                  Session[]
   discordAccounts           DiscordAccount[]
   discordAccountCollections DiscordAccountCollection[]
-  stripeCustomerId          String?
   subscribedTill            DateTime?
   createdAt                 DateTime                   @default(now())
 }

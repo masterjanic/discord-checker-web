@@ -1,18 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "~/app/_components/common/button";
-import SubscribeModal from "~/app/_components/customer/profile/subscribe-modal";
+import useCheckout from "~/hooks/useCheckout";
 
 export default function SubscribeButton() {
-  const [isOpened, setIsOpened] = useState<boolean>(false);
+  const router = useRouter();
+  const { createCheckout, isCreatingCheckout } = useCheckout();
 
   return (
-    <>
-      {isOpened && (
-        <SubscribeModal isOpen={isOpened} onClose={() => setIsOpened(false)} />
-      )}
-      <Button onClick={() => setIsOpened(true)}>Subscribe for 1 month</Button>
-    </>
+    <Button
+      disabled={isCreatingCheckout}
+      onClick={() => {
+        createCheckout()
+          .then(({ url }) => router.push(url))
+          .catch(console.error);
+      }}
+    >
+      Subscribe for 1 month
+    </Button>
   );
 }
