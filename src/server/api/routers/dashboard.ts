@@ -16,7 +16,7 @@ export const dashboardRouter = createTRPCRouter({
     const isAdmin = user.role === Role.ADMIN;
 
     const ownerId = isAdmin ? undefined : user.id;
-    const adminClause = `"public"."DiscordAccount"."ownerId" = '${user.id}' AND`;
+    const adminClause = `("public"."DiscordAccount"."ownerId" = '${user.id}') AND`;
 
     // TODO: Simplify when prisma supports multiple counts in one query
     const [verified, unverified, nitro, flaggedQuery] =

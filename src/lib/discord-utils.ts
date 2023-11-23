@@ -186,7 +186,7 @@ export const generateFlaggedAccountsQuery = () => {
     return `(flags & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} = ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
   });
 
-  return flags.join(" OR ");
+  return `(${flags.join(" OR ")})`;
 };
 
 /**
