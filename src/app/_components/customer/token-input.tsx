@@ -9,7 +9,11 @@ import useChecker from "~/hooks/useChecker";
 import useImporter from "~/hooks/useImporter";
 import { getTokenMatchesForString } from "~/lib/discord-utils";
 
-export default function TokenInput() {
+interface ITokenInputProps {
+  remaining?: number | null;
+}
+
+export default function TokenInput({ remaining = null }: ITokenInputProps) {
   const {
     replaceTokens,
     importFromFile,
@@ -32,7 +36,7 @@ export default function TokenInput() {
               type="file"
               accept="text/*"
               onClick={(e) => (e.currentTarget.value = "")}
-              onChange={importFromFile}
+              onChange={(e) => importFromFile(e, remaining)}
               ref={fileUpload}
               className="hidden"
               multiple={true}
@@ -46,13 +50,18 @@ export default function TokenInput() {
           </div>
 
           <textarea
-            className="mt-4 w-full resize-none rounded-md border border-blurple bg-blueish-grey-700/50 p-2 font-mono font-light leading-tight text-neutral-200 caret-blurple outline-none backdrop-blur transition duration-300 scrollbar-thin focus:border-blurple-dark"
+            className="mt-4 w-full resize-none rounded-md border border-neutral-100/10 bg-blueish-grey-700 p-2 font-mono font-light leading-tight text-neutral-200 caret-blurple outline-none backdrop-blur transition duration-300 scrollbar-thin focus:border-blurple-dark"
             spellCheck={false}
             placeholder="Paste your tokens here, one per line."
             rows={15}
             value={tokens.join("\n")}
             onChange={(e) =>
-              replaceTokens(getTokenMatchesForString(e.target.value))
+              replaceTokens(
+                getTokenMatchesForString(e.target.value).slice(
+                  0,
+                  remaining ?? undefined,
+                ),
+              )
             }
           />
 

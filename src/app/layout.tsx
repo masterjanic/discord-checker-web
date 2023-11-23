@@ -12,7 +12,7 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const title = "Discord Token Checker";
+const title = "DTC-Web | Open Source Discord Token Checker";
 const description =
   "A fast, web-based Discord token checker. Find verified, unverified and nitro accounts easily.";
 

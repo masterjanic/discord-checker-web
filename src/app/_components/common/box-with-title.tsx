@@ -12,9 +12,11 @@ export default function TitledBox({
   ...props
 }: IBoxWithTitle) {
   return (
-    <Box className={clsx(className, "!p-0")} {...props}>
-      <h3 className="p-4 font-medium">{title}</h3>
-      <div className="border-t border-neutral-100/10 p-4">{children}</div>
+    <Box className={clsx(className, "flex flex-col !p-0")} {...props}>
+      <h3 className="shrink-0 p-4 font-medium">{title}</h3>
+      <div className="h-full flex-1 overflow-auto border-t border-neutral-100/10 p-4">
+        {children}
+      </div>
     </Box>
   );
 }

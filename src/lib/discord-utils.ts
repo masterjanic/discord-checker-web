@@ -23,7 +23,7 @@ export const localeToCountry = (locale: string | null) => {
  * @param str
  */
 export const toTitleCase = (str: string): string => {
-  return str.replaceAll("_", " ").replace(/\w\S*/g, function (txt) {
+  return str.replaceAll(/[_-]/g, " ").replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
   });
 };
@@ -252,4 +252,12 @@ export const getAccountRating = (
   rating += Math.round(ageRating);
 
   return Math.max(0, Math.min(100, rating));
+};
+
+/**
+ * Function to format a phone number.
+ * @param phoneNumber
+ */
+export const formatPhoneNumber = (phoneNumber: string) => {
+  return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, "$1 $2 $3 $4");
 };

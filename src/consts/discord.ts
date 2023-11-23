@@ -1,4 +1,9 @@
 /**
+ * The limit of free accounts that can be added to an account.
+ */
+export const FREE_ACCOUNTS_LIMIT = 10;
+
+/**
  * The url of the Discord API gateway to be used for requests.
  */
 export const DISCORD_GATEWAY_URL = "https://discord.com/api/v10";

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Container from "~/app/_components/common/container";
 import Link from "next/link";
 import { SiGithub } from "react-icons/si";
@@ -15,8 +16,14 @@ export default async function Navbar() {
           <div className="flex flex-1 items-center justify-between px-6 sm:items-stretch lg:px-0">
             <div className="flex items-center">
               <div className="flex flex-shrink-0 items-center">
-                <Link className="block h-6 w-auto" href="/">
-                  <span className="text-lg font-extrabold">128x25</span>
+                <Link className="block h-7 w-auto" href="/">
+                  <Image
+                    src="/images/logo.png"
+                    className="h-7 w-auto rounded-full border border-neutral-100/10"
+                    alt="DTC-Web logo"
+                    width={28}
+                    height={28}
+                  />
                 </Link>
               </div>
               <nav

@@ -18,10 +18,13 @@ export const env = createEnv({
     ),
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
+    STRIPE_SK: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_STRIPE_RETURN_URL: z.string().url(),
+    NEXT_PUBLIC_STRIPE_PK: z.string(),
   },
 
   runtimeEnv: {
@@ -32,6 +35,10 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
+    NEXT_PUBLIC_STRIPE_RETURN_URL: process.env.NEXT_PUBLIC_STRIPE_RETURN_URL,
+    NEXT_PUBLIC_STRIPE_PK: process.env.NEXT_PUBLIC_STRIPE_PK,
+    STRIPE_SK: process.env.STRIPE_SK,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

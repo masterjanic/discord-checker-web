@@ -21,6 +21,7 @@ export default {
         blurple: "#5865F2",
         "blurple-dark": "#454FBF",
         "blurple-legacy": "#7289DA",
+        primary: "#5d89f7",
       },
       fontFamily: {
         sans: ["var(--font-poppins)", ...fontFamily.sans],

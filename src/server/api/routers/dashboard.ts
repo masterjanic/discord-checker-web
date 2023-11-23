@@ -4,7 +4,11 @@ import {
   generateFlaggedAccountsQuery,
   localeToCountry,
 } from "~/lib/discord-utils";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  activeSubscriptionProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "~/server/api/trpc";
 
 export const dashboardRouter = createTRPCRouter({
   getStats: protectedProcedure.query(async ({ ctx }) => {
@@ -42,7 +46,7 @@ export const dashboardRouter = createTRPCRouter({
       flagged,
     };
   }),
-  getCountryDistribution: protectedProcedure.query(async ({ ctx }) => {
+  getCountryDistribution: activeSubscriptionProcedure.query(async ({ ctx }) => {
     const localeDistribution = await ctx.db.discordAccount.groupBy({
       where: { ownerId: getOwnerId(ctx.session.user) },
       by: ["locale"],

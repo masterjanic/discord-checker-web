@@ -28,7 +28,6 @@ To deploy your build please refer to the Next.js [deployment documentation](http
 - [ ] Customer Dashboard
   - [ ] Download all accounts
 - [ ] Owned Discord Account Management
-  -  [ ] View basic Account details
   -  [ ] View Account Billing details
   -  [ ] View Account Guilds
   -  [ ] Add password to Account -> Password Login

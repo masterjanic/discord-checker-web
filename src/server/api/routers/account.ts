@@ -1,8 +1,8 @@
 import { type DiscordAccount } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
-import { getOwnerId } from "~/lib/auth";
+import { FREE_ACCOUNTS_LIMIT, TOKEN_REGEX_LEGACY } from "~/consts/discord";
+import { getOwnerId, isUserSubscribed } from "~/lib/auth";
 import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
 import {
   getAccountRating,
@@ -10,6 +10,7 @@ import {
   isValidSnowflake,
 } from "~/lib/discord-utils";
 import {
+  activeSubscriptionProcedure,
   adminProcedure,
   createTRPCRouter,
   protectedProcedure,
@@ -115,6 +116,20 @@ export const accountRouter = createTRPCRouter({
       const { session, db } = ctx;
       const { user, tokens, origin } = input;
 
+      if (!isUserSubscribed(session.user)) {
+        const totalAccounts = await db.discordAccount.count({
+          where: {
+            ownerId: session.user.id,
+          },
+        });
+        if (totalAccounts >= FREE_ACCOUNTS_LIMIT) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: `You must be subscribed to save more than ${FREE_ACCOUNTS_LIMIT} accounts.`,
+          });
+        }
+      }
+
       await db.discordAccount.upsert({
         where: {
           id: user.id,
@@ -217,7 +232,7 @@ export const accountRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  getGuilds: protectedProcedure
+  getGuilds: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({
@@ -248,7 +263,7 @@ export const accountRouter = createTRPCRouter({
       });
       return response?.data ?? [];
     }),
-  getBilling: protectedProcedure
+  getBilling: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
       const account = await ctx.db.discordAccount.findUnique({

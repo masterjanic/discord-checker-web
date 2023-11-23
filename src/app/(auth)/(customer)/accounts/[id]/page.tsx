@@ -8,10 +8,13 @@ import AccountHeader from "~/app/_components/customer/accounts/account-header";
 import AccountNotes from "~/app/_components/customer/accounts/account-notes";
 import AccountServerOverview from "~/app/_components/customer/accounts/account-server-overview";
 import AccountTokens from "~/app/_components/customer/accounts/account-tokens";
+import SubscriptionRequiredCard from "~/app/_components/customer/subscription-required-card";
 import SkeletonAccountActionsRow from "~/app/_components/skeletons/skeleton-account-actions-row";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import SkeletonServerOverview from "~/app/_components/skeletons/skeleton-server-overview";
+import { isUserSubscribed } from "~/lib/auth";
 import { isValidSnowflake } from "~/lib/discord-utils";
+import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
   title: "View Account - Discord Token Checker",
@@ -21,11 +24,13 @@ export const metadata = {
   },
 };
 
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
   if (!isValidSnowflake(id)) {
     redirect("/accounts");
   }
+
+  const session = await getServerAuthSession();
 
   return (
     <>
@@ -57,9 +62,16 @@ export default function Page({ params }: { params: { id: string } }) {
           title="Server Overview"
           className="col-span-full overflow-hidden md:col-span-6"
         >
-          <Suspense fallback={<SkeletonServerOverview />}>
-            <AccountServerOverview userId={id} />
-          </Suspense>
+          {isUserSubscribed(session?.user) ? (
+            <Suspense fallback={<SkeletonServerOverview />}>
+              <AccountServerOverview userId={id} />
+            </Suspense>
+          ) : (
+            <SubscriptionRequiredCard
+              feature="the server overview"
+              skeleton={<SkeletonServerOverview />}
+            />
+          )}
         </TitledBox>
 
         <TitledBox
@@ -75,9 +87,13 @@ export default function Page({ params }: { params: { id: string } }) {
           title="Payment Methods"
           className="col-span-full overflow-hidden md:col-span-6"
         >
-          <Suspense>
-            <AccountBilling userId={id} />
-          </Suspense>
+          {isUserSubscribed(session?.user) ? (
+            <Suspense>
+              <AccountBilling userId={id} />
+            </Suspense>
+          ) : (
+            <SubscriptionRequiredCard feature="the payment methods" />
+          )}
         </TitledBox>
 
         <TitledBox

@@ -2,10 +2,12 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import { type NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { isUserSubscribed } from "~/lib/auth";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { Role } from "@prisma/client";
+import { stripe } from "~/server/stripe/client";
 
 /**
  * 1. CONTEXT
@@ -36,6 +38,7 @@ export const createInnerTRPCContext = async (opts: CreateContextOptions) => {
     session,
     headers: opts.headers,
     db,
+    stripe,
   };
 };
 
@@ -122,7 +125,13 @@ const enforceUserIsAdmin = enforceUserIsAuthed.unstable_pipe(
 
 const enforceActiveSubscription = enforceUserIsAuthed.unstable_pipe(
   ({ ctx, next }) => {
-    // TODO: Check if user has an active subscription
+    const user = ctx.session.user;
+    if (!isUserSubscribed(user)) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You must be subscribed to perform this action.",
+      });
+    }
 
     return next({ ctx });
   },
@@ -131,7 +140,7 @@ const enforceActiveSubscription = enforceUserIsAuthed.unstable_pipe(
 /**
  * Protected (authenticated) procedure
  *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * If you want a query or mutation to ONLY be accessible to logged-in users, use this. It verifies
  * the session is valid and guarantees `ctx.session.user` is not null.
  *
  * @see https://trpc.io/docs/procedures

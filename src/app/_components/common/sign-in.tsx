@@ -8,7 +8,7 @@ interface ISignInButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   authed?: boolean;
 }
 
-const style =
+const btnStyle =
   "relative hidden cursor-pointer items-center justify-center space-x-2 rounded-md border border-blurple-legacy bg-blurple px-2.5 py-1 text-center text-xs text-neutral-100 shadow-sm outline-none outline-0 transition-all duration-300 ease-out hover:bg-blurple-dark lg:block";
 
 export default function SignInButton({
@@ -20,7 +20,7 @@ export default function SignInButton({
   if (!authed) {
     return (
       <button
-        className={clsx(style, className)}
+        className={clsx(btnStyle, className)}
         onClick={() => signIn("discord", { callbackUrl: "/dashboard" })}
         {...props}
       >
@@ -30,7 +30,7 @@ export default function SignInButton({
   }
 
   return (
-    <Link href="/dashboard" className={clsx(style, className)}>
+    <Link href="/dashboard" className={clsx(btnStyle, className)}>
       {children}
     </Link>
   );

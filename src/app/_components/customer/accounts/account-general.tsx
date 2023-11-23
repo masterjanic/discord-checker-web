@@ -1,7 +1,10 @@
 "use client";
 
 import { FiAlertTriangle, FiCheckCircle, FiXCircle } from "react-icons/fi";
-import { snowflakeToMilliseconds } from "~/lib/discord-utils";
+import {
+  formatPhoneNumber,
+  snowflakeToMilliseconds,
+} from "~/lib/discord-utils";
 import { api } from "~/trpc/react";
 
 interface IAccountGeneralProps {
@@ -34,7 +37,7 @@ export default function AccountGeneral({ userId }: IAccountGeneralProps) {
     },
     {
       name: "Phone",
-      value: account.phone ?? "-",
+      value: account.phone ? formatPhoneNumber(account.phone) : "-",
     },
     {
       name: "MFA",

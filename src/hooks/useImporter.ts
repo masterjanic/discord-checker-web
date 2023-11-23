@@ -23,7 +23,7 @@ export default function useImporter() {
     setSettings((prev) => ({ ...prev, [key]: value }));
 
     if (key === "removeDuplicates" && value === true) {
-      setTokens(removeTokenDuplicates(tokens));
+      setTokens((prev) => removeTokenDuplicates(prev));
       return;
     }
 
@@ -33,14 +33,16 @@ export default function useImporter() {
   };
 
   const addTokens = (newTokens: string[]) => {
-    const preFiltered = [...new Set([...tokens, ...newTokens])];
+    const preFiltered = [...new Set(newTokens)];
 
     if (!settings.removeDuplicates) {
-      setTokens(preFiltered);
+      setTokens((prev) => [...new Set([...prev, ...preFiltered])]);
       return;
     }
 
-    setTokens(removeTokenDuplicates(preFiltered));
+    setTokens((prev) =>
+      removeTokenDuplicates([...new Set([...prev, ...preFiltered])]),
+    );
   };
 
   const removeToken = (token: string) => {
@@ -58,7 +60,10 @@ export default function useImporter() {
     setTokens(removeTokenDuplicates(preFiltered));
   };
 
-  const importFromFile = (event: ChangeEvent<HTMLInputElement>) => {
+  const importFromFile = (
+    event: ChangeEvent<HTMLInputElement>,
+    limit: number | null,
+  ) => {
     if (!event.target.files || event.target.files.length === 0) {
       return;
     }
@@ -66,13 +71,20 @@ export default function useImporter() {
     for (const file of event.target.files) {
       const reader = new FileReader();
 
+      if (limit && tokens.length >= limit) {
+        return;
+      }
+
       reader.onload = (event) => {
         if (!event.target?.result) {
           return;
         }
 
         const result = event.target.result as string;
-        const matches = getTokenMatchesForString(result);
+        const matches = getTokenMatchesForString(result).slice(
+          0,
+          limit ? limit - tokens.length : undefined,
+        );
         addTokens(matches);
       };
       reader.readAsText(file);

@@ -15,11 +15,13 @@ declare module "next-auth" {
     user: {
       id: string;
       role: Role;
+      subscribedTill?: Date;
     } & DefaultSession["user"];
   }
 
   interface User {
     role: Role;
+    subscribedTill?: Date;
   }
 }
 
@@ -38,6 +40,7 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id,
         role: user.role,
+        subscribedTill: user.subscribedTill,
       },
     }),
   },
