@@ -137,7 +137,6 @@ const DISABLED_FLAGS = [
 ] as const;
 
 const CRITICAL_FLAGS = [
-  ...DISABLED_FLAGS,
   "SPAMMER",
   "QUARANTINED",
   "HIGH_GLOBAL_RATE_LIMIT",
