@@ -129,7 +129,7 @@ export default async function Page() {
                     <div>
                       <div className="flex items-end">
                         <p className="mt-2 bg-gradient-to-b from-neutral-100 to-neutral-500 bg-clip-text pb-1 text-5xl text-transparent">
-                          $5
+                          $4.99
                         </p>
                         <p className="mb-1.5 ml-1 text-[13px] leading-4 text-neutral-400">
                           / month
