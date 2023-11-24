@@ -32,7 +32,6 @@ export default function AccountNotes({ userId }: IAccountServerOverviewProps) {
     },
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdateAccount = useCallback(
     debounce((notes: string) => {
       void updateAccount({

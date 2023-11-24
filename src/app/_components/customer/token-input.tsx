@@ -22,7 +22,7 @@ export default function TokenInput({ remaining = null }: ITokenInputProps) {
     setSetting,
     removeToken,
   } = useImporter();
-  const { checkTokens, isChecking, setIsChecking, cancel, accounts } =
+  const { checkTokens, isChecking, setIsChecking } =
     useChecker();
 
   const fileUpload = useRef<HTMLInputElement>(null);
