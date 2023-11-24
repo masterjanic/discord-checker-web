@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { env } from "~/env.mjs";
@@ -15,18 +14,20 @@ const handler = async (req: NextRequest) => {
   try {
     const body = await req.text();
 
-    const headerSignature = headers().get("x-sellix-unescaped-signature")!;
+    const headerSignature = req.headers.get("X-Sellix-Signature")!;
     const signature = crypto
       .createHmac("sha512", webhookSecret)
       .update(body)
       .digest("hex");
 
-    if (
-      !crypto.timingSafeEqual(
-        Buffer.from(signature),
-        Buffer.from(headerSignature, "utf-8"),
-      )
-    ) {
+    const signatureBuffer = Buffer.from(signature, "hex");
+    const headerSignatureBuffer = Buffer.from(headerSignature, "hex");
+
+    if (headerSignatureBuffer.length !== signatureBuffer.length) {
+      throw new Error("Signatures length mismatch");
+    }
+
+    if (!crypto.timingSafeEqual(signatureBuffer, headerSignatureBuffer)) {
       throw new Error("Webhook signature verification failed");
     }
 

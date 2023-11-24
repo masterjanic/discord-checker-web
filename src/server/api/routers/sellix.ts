@@ -12,7 +12,7 @@ export const sellixRouter = createTRPCRouter({
       white_label: false,
       return_url: "https://discord-checker-janic.dev/dashboard",
       currency: "USD",
-      gateways: ["BITCOIN"],
+      gateways: ["BITCOIN", "ETHEREUM", "LITECOIN", "BITCOIN_CASH"],
       email: session.user.email!,
     });
 
