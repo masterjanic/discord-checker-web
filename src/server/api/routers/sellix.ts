@@ -7,7 +7,7 @@ export const sellixRouter = createTRPCRouter({
 
     const { data: payment } = await createPayment({
       title: "DTC-WEB | 1 month subscription",
-      value: 5,
+      value: 4.99,
       quantity: 1,
       white_label: false,
       return_url: "https://discord-checker-janic.dev/dashboard",
