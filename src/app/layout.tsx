@@ -40,6 +40,11 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  metadataBase: new URL("https://discord-checker.janic.dev"),
 };
 
 export default function RootLayout({
