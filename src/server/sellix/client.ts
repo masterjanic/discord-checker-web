@@ -1,5 +1,5 @@
 import axios from "axios";
-import { env } from "~/env.mjs";
+import { env } from "~/env";
 
 const SELLIX_ENDPOINT = "https://dev.sellix.io/v1";
 

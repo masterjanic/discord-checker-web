@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { env } from "~/env.mjs";
+import { env } from "~/env";
 import { db } from "~/server/db";
 import {
   handlePaymentSucceeded,

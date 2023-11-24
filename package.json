@@ -4,6 +4,8 @@
   "author": "masterjanic",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/masterjanic/discord-checker-web/issues"
   },
@@ -45,6 +47,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.12.0",
+    "server-only": "^0.0.1",
     "sharp": "^0.32.6",
     "superjson": "^1.13.3",
     "tailwind-scrollbar": "^3.0.5",
