@@ -78,12 +78,11 @@ export default function useChecker() {
           return;
         }
 
-        const userResponse = await fetchUser("@me", { token });
-        if (!userResponse) {
+        const user = await fetchUser("@me", { token });
+        if (!user) {
           return;
         }
 
-        const { data: user } = userResponse;
         await createAccount({
           user,
           tokens: [token],

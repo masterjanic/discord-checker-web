@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import { DISCORD_GATEWAY_URL } from "~/consts/discord";
 import { type APIGuild, type APIUser } from "discord-api-types/v10";
 
@@ -15,7 +15,7 @@ interface IRequestConfig extends AxiosRequestConfig {
 async function apiRequest<ReturnType>(
   config: IRequestConfig,
   retryCount = 0,
-): Promise<AxiosResponse<ReturnType> | null> {
+): Promise<ReturnType | null> {
   const { delay, token, ...rest } = config;
   if (delay && delay > 0) {
     await new Promise((resolve) => setTimeout(resolve, delay));
@@ -26,11 +26,13 @@ async function apiRequest<ReturnType>(
   }
 
   try {
-    return await axios.request<ReturnType>({
+    const { data } = await axios.request<ReturnType>({
       ...rest,
       url: DISCORD_GATEWAY_URL + rest.url,
       headers: token ? { Authorization: token } : {},
     });
+
+    return data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
       if (

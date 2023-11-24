@@ -20,6 +20,7 @@ services:
     depends_on:
       - postgres
       - pgbouncer
+      - redis
     ports:
       - "3000:3000"
     volumes:
@@ -39,6 +40,21 @@ services:
       start_period: 5s
       interval: 30s
       retries: 3
+  redis:
+    image: bitnami/redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=redis
+    volumes:
+      - redis-data:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
   pgbouncer:
     image: bitnami/pgbouncer:latest
     restart: unless-stopped
@@ -83,5 +99,6 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 volumes:
+  redis-data:
   pgadmin-data:
   postgres-data:

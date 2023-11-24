@@ -15,6 +15,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { getCached, setCached } from "~/server/redis/utils";
 
 const zodUserShape = z.object({
   id: z.string().refine(isValidSnowflake),
@@ -241,6 +242,7 @@ export const accountRouter = createTRPCRouter({
           ownerId: getOwnerId(ctx.session.user),
         },
         select: {
+          id: true,
           tokens: {
             orderBy: {
               lastCheckedAt: "desc",
@@ -253,15 +255,23 @@ export const accountRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
+      const key = `discord:guilds:${account.id}`;
+      const cached = await getCached<ReturnType<typeof fetchGuilds>>(key);
+      if (cached) {
+        return cached ?? [];
+      }
+
       const [token] = account.tokens;
       if (!token) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const response = await fetchGuilds({
+      const guilds = await fetchGuilds({
         token: token.value,
       });
-      return response?.data ?? [];
+      await setCached(key, guilds, 300);
+
+      return guilds ?? [];
     }),
   getBilling: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
@@ -289,10 +299,10 @@ export const accountRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const response = await fetchBilling({
+      const billing = await fetchBilling({
         token: token.value,
       });
 
-      return response?.data ?? [];
+      return billing ?? [];
     }),
 });
