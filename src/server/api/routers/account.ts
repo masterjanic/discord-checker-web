@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { FREE_ACCOUNTS_LIMIT, TOKEN_REGEX_LEGACY } from "~/consts/discord";
 import { getOwnerId, isUserSubscribed } from "~/lib/auth";
+import { getLatestTokenByAccountId } from "~/lib/db/accounts";
 import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
 import {
   getAccountRating,
@@ -87,22 +88,10 @@ export const accountRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.string().refine(isValidSnowflake))
     .mutation(async ({ ctx, input }) => {
-      const account = await ctx.db.discordAccount.findUnique({
-        where: {
-          id: input,
-          ownerId: getOwnerId(ctx.session.user),
-        },
-        select: {
-          id: true,
-        },
-      });
-      if (!account) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
       return ctx.db.discordAccount.delete({
         where: {
           id: input,
+          ownerId: getOwnerId(ctx.session.user),
         },
       });
     }),
@@ -237,29 +226,17 @@ export const accountRouter = createTRPCRouter({
   getGuilds: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
-      const account = await ctx.db.discordAccount.findUnique({
-        where: {
-          id: input,
-          ownerId: getOwnerId(ctx.session.user),
-        },
-        select: {
-          id: true,
-          tokens: {
-            orderBy: {
-              lastCheckedAt: "desc",
-            },
-            take: 1,
-          },
-        },
-      });
-      if (!account) {
+      const token = await getLatestTokenByAccountId(
+        input,
+        getOwnerId(ctx.session.user),
+      );
+      if (!token) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const [token] = account.tokens;
       const guilds = await fetchCached(
-        `discord:guilds:${account.id}`,
-        () => fetchGuilds({ token: token!.value }),
+        `discord:guilds:${input}`,
+        () => fetchGuilds({ token: token.value }),
         300,
       );
       return guilds ?? [];
@@ -267,29 +244,17 @@ export const accountRouter = createTRPCRouter({
   getBilling: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {
-      const account = await ctx.db.discordAccount.findUnique({
-        where: {
-          id: input,
-          ownerId: getOwnerId(ctx.session.user),
-        },
-        select: {
-          id: true,
-          tokens: {
-            orderBy: {
-              lastCheckedAt: "desc",
-            },
-            take: 1,
-          },
-        },
-      });
-      if (!account) {
+      const token = await getLatestTokenByAccountId(
+        input,
+        getOwnerId(ctx.session.user),
+      );
+      if (!token) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const [token] = account.tokens;
       const billing = await fetchCached(
-        `discord:billing:${account.id}`,
-        () => fetchBilling({ token: token!.value }),
+        `discord:billing:${input}`,
+        () => fetchBilling({ token: token.value }),
         300,
       );
       return billing ?? [];
