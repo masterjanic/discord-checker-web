@@ -15,7 +15,7 @@ services:
       - db-network
   web:
     platform: "linux/amd64"
-    image: dtc-web:latest
+    image: masterjanic/dtc-web:latest
     build:
       context: .
       dockerfile: Dockerfile

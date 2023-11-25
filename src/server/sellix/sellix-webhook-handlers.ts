@@ -4,6 +4,9 @@ export interface ISellixWebhookEvent {
   event: string;
   data: {
     customer_email: string;
+    custom_fields: {
+      userId: string;
+    };
   };
 }
 
@@ -13,7 +16,7 @@ export const handlePaymentSucceeded = async (event: ISellixWebhookEvent) => {
 
   await db.user.update({
     where: {
-      email: event.data.customer_email,
+      id: event.data.custom_fields.userId,
     },
     data: {
       subscribedTill: oneMonthFromNow,

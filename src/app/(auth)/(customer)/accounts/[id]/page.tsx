@@ -18,7 +18,7 @@ import { isValidSnowflake } from "~/lib/discord-utils";
 import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
-  title: "View Account - Discord Token Checker",
+  title: "Account Overview | DTC-Web",
   robots: {
     index: false,
     follow: true,
@@ -89,7 +89,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           className="col-span-full overflow-hidden md:col-span-6"
         >
           {isUserSubscribed(session?.user) ? (
-            <Suspense>
+            <Suspense fallback={<SkeletonDefault className="!h-[160px]" />}>
               <AccountBilling userId={id} />
             </Suspense>
           ) : (

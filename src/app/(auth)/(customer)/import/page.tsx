@@ -10,7 +10,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 export const metadata = {
-  title: "Token Import - Discord Token Checker",
+  title: "Token Import | DTC-Web",
   robots: {
     index: false,
     follow: true,

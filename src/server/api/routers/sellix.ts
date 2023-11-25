@@ -6,14 +6,16 @@ export const sellixRouter = createTRPCRouter({
     const { session } = ctx;
 
     const { data: payment } = await createPayment({
-      title: "DTC-WEB | 1 month subscription",
+      title: "1 month subscription | DTC-Web",
       value: 4.99,
       quantity: 1,
       white_label: false,
       return_url: "https://discord-checker-janic.dev/dashboard",
       currency: "USD",
-      gateways: ["BITCOIN", "ETHEREUM", "LITECOIN", "BITCOIN_CASH"],
       email: session.user.email!,
+      custom_fields: {
+        userId: session.user.id,
+      },
     });
 
     return {

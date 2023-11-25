@@ -11,7 +11,7 @@ import { isUserSubscribed } from "~/lib/auth";
 import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
-  title: "Dashboard - Discord Token Checker",
+  title: "Dashboard | DTC-Web",
   robots: {
     index: false,
     follow: true,

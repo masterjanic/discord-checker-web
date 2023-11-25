@@ -31,8 +31,8 @@ export const authOptions: NextAuthOptions = {
     error: "/",
   },
   callbacks: {
-    signIn({ account }) {
-      return !!account && account.provider === "discord";
+    signIn({ account, profile }) {
+      return !!account && account.provider === "discord" && !!profile?.email;
     },
     session: ({ session, user }) => ({
       ...session,

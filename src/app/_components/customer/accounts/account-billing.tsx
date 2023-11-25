@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { BsCreditCard, BsPaypal } from "react-icons/bs";
+import { BsCreditCard, BsPaypal, BsQuestion } from "react-icons/bs";
 
 import { api } from "~/trpc/react";
 
@@ -15,8 +15,8 @@ export default function AccountBilling({ userId }: IAccountBillingProps) {
   return (
     <>
       {billing.length === 0 && (
-        <div className="p-4 text-center text-neutral-200">
-          <p className="mb-2">This account has no payment methods saved.</p>
+        <div className="grid place-items-center h-full p-4 text-neutral-200">
+          <p>This account has no payment methods saved.</p>
         </div>
       )}
 
@@ -35,7 +35,18 @@ export default function AccountBilling({ userId }: IAccountBillingProps) {
                 {/**
                  * TODO: Add missing payment methods
                  */}
-                {[<BsCreditCard />, <BsPaypal />][type]}
+                {
+                  [
+                    <BsCreditCard />,
+                    <BsPaypal />,
+                    <BsQuestion />,
+                    <BsQuestion />,
+                    <BsQuestion />,
+                    <BsQuestion />,
+                    <BsQuestion />,
+                    <BsQuestion />,
+                  ][type]
+                }
               </div>
               <div>
                 <div className="flex items-center space-x-1.5 mb-1">

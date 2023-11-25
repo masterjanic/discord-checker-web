@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { FaCircle, FaCrown } from "react-icons/fa";
 import { FiHash, FiSearch, FiUser } from "react-icons/fi";
+
 import Button from "~/app/_components/common/button";
 import GuildIcon from "~/app/_components/common/discord/guild-icon";
 import { api } from "~/trpc/react";
@@ -28,8 +29,8 @@ export default function AccountServerOverview({
   return (
     <>
       {guilds.length === 0 && (
-        <div className="p-4 text-center text-neutral-200">
-          <p className="mb-2">This account has no servers.</p>
+        <div className="grid place-items-center h-full p-4 text-neutral-200">
+          <p>This account has no servers.</p>
         </div>
       )}
 
