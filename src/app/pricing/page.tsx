@@ -1,4 +1,5 @@
 import { FiCheck, FiX } from "react-icons/fi";
+
 import Box from "~/app/_components/common/box";
 import Container from "~/app/_components/common/container";
 import Navbar from "~/app/_components/common/navbar";

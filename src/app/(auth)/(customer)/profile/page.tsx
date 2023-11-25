@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { FiCheck } from "react-icons/fi";
+
 import TitledBox from "~/app/_components/common/box-with-title";
 import SubscribeButton from "~/app/_components/customer/profile/subscribe-button";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";

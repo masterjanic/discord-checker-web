@@ -1,7 +1,7 @@
-import { getServerAuthSession } from "~/server/auth";
 import Container from "~/app/_components/common/container";
-import SignInButton from "~/app/_components/common/sign-in";
 import Navbar from "~/app/_components/common/navbar";
+import SignInButton from "~/app/_components/common/sign-in";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function Page() {
   const session = await getServerAuthSession();

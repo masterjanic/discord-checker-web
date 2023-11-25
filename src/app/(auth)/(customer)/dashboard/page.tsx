@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import Box from "~/app/_components/common/box";
 import AccountCountryDistribution from "~/app/_components/customer/account-country-distribution";
 import AccountStats from "~/app/_components/customer/account-stats";

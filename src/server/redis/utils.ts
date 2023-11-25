@@ -4,7 +4,7 @@ import { redis } from "~/server/redis/client";
  * Returns a cached value from Redis in JSON format.
  * @param key
  */
-export const getCached = async <T>(key: string) => {
+const getCached = async <T>(key: string) => {
   if (redis.status !== "ready") {
     return null;
   }
@@ -24,7 +24,7 @@ export const getCached = async <T>(key: string) => {
  * @param value
  * @param ttl
  */
-export const setCached = async <T>(
+const setCached = async <T>(
   key: string,
   value: T,
   ttl?: number,
@@ -34,4 +34,26 @@ export const setCached = async <T>(
   }
 
   return redis.set(key, JSON.stringify(value), "EX", ttl ?? 60);
+};
+
+/**
+ * Fetches a value from Redis if it exists, otherwise fetches it from the given method and caches it.
+ * @param key
+ * @param fetch
+ * @param ttl
+ */
+export const fetchCached = async <T>(
+  key: string,
+  fetch: () => Promise<T>,
+  ttl?: number,
+) => {
+  const cached = await getCached<T>(key);
+  if (cached) {
+    return cached;
+  }
+
+  const value = await fetch();
+  await setCached(key, value, ttl);
+
+  return value;
 };

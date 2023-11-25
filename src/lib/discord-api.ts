@@ -1,6 +1,7 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { DISCORD_GATEWAY_URL } from "~/consts/discord";
 import { type APIGuild, type APIUser } from "discord-api-types/v10";
+
+import { DISCORD_GATEWAY_URL } from "~/consts/discord";
 
 interface IRequestConfig extends AxiosRequestConfig {
   delay?: number;

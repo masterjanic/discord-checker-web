@@ -1,11 +1,11 @@
+import { Role } from "@prisma/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { isUserSubscribed } from "~/lib/auth";
 
+import { isUserSubscribed } from "~/lib/auth";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { Role } from "@prisma/client";
 
 /**
  * 1. CONTEXT

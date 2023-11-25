@@ -1,6 +1,7 @@
 import { type DiscordAccount } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
 import { FREE_ACCOUNTS_LIMIT, TOKEN_REGEX_LEGACY } from "~/consts/discord";
 import { getOwnerId, isUserSubscribed } from "~/lib/auth";
 import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
@@ -15,7 +16,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { getCached, setCached } from "~/server/redis/utils";
+import { fetchCached } from "~/server/redis/utils";
 
 const zodUserShape = z.object({
   id: z.string().refine(isValidSnowflake),
@@ -255,22 +256,12 @@ export const accountRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const key = `discord:guilds:${account.id}`;
-      const cached = await getCached<ReturnType<typeof fetchGuilds>>(key);
-      if (cached) {
-        return cached ?? [];
-      }
-
       const [token] = account.tokens;
-      if (!token) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
-      const guilds = await fetchGuilds({
-        token: token.value,
-      });
-      await setCached(key, guilds, 300);
-
+      const guilds = await fetchCached(
+        `discord:guilds:${account.id}`,
+        () => fetchGuilds({ token: token!.value }),
+        300,
+      );
       return guilds ?? [];
     }),
   getBilling: activeSubscriptionProcedure
@@ -282,6 +273,7 @@ export const accountRouter = createTRPCRouter({
           ownerId: getOwnerId(ctx.session.user),
         },
         select: {
+          id: true,
           tokens: {
             orderBy: {
               lastCheckedAt: "desc",
@@ -295,14 +287,11 @@ export const accountRouter = createTRPCRouter({
       }
 
       const [token] = account.tokens;
-      if (!token) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
-      const billing = await fetchBilling({
-        token: token.value,
-      });
-
+      const billing = await fetchCached(
+        `discord:billing:${account.id}`,
+        () => fetchBilling({ token: token!.value }),
+        300,
+      );
       return billing ?? [];
     }),
 });

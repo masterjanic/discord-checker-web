@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { TbSlashes } from "react-icons/tb";
+
 import BackgroundGrid from "~/app/_components/common/background-grid";
 import SignOutSection from "~/app/_components/common/sign-out";
 import NavRouterSegment from "~/app/_components/customer/nav-router-segment";
 import { getServerAuthSession } from "~/server/auth";
-import { redirect } from "next/navigation";
 
 const SIDEBAR_SECTIONS = [
   {

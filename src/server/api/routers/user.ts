@@ -1,6 +1,7 @@
-import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   getAll: adminProcedure.query(({ ctx }) => {

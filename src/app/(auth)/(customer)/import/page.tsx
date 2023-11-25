@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import Box from "~/app/_components/common/box";
 import SubscriptionRequiredCard from "~/app/_components/customer/subscription-required-card";
 import TokenInput from "~/app/_components/customer/token-input";

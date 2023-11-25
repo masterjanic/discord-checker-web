@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import AccountOverview from "~/app/_components/customer/account-overview";
 import SkeletonAccountOverview from "~/app/_components/skeletons/skeleton-account-overview";
 
