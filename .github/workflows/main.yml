@@ -4,6 +4,10 @@ on:
     branches:
       - "master"
       - "!dependabot/**"
+    tags:
+      - "*"
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
 
 concurrency:
