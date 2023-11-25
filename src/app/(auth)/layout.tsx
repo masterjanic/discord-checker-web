@@ -23,6 +23,19 @@ const SIDEBAR_SECTIONS = [
         title: "Accounts",
         href: "/accounts",
       },
+      {
+        title: "Collections",
+        href: "/collections",
+      },
+    ],
+  },
+  {
+    title: "Admin",
+    items: [
+      {
+        title: "Users",
+        href: "/admin/users",
+      },
     ],
   },
   {

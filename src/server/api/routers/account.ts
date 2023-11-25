@@ -95,6 +95,13 @@ export const accountRouter = createTRPCRouter({
         },
       });
     }),
+  deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
+    return ctx.db.discordAccount.deleteMany({
+      where: {
+        ownerId: getOwnerId(ctx.session.user),
+      },
+    });
+  }),
   create: protectedProcedure
     .input(
       z.object({

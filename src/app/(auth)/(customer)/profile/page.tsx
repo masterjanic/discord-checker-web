@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { FiCheck } from "react-icons/fi";
 
 import TitledBox from "~/app/_components/common/box-with-title";
+import ProfileDangerArea from "~/app/_components/customer/profile/danger-area";
 import SubscribeButton from "~/app/_components/customer/profile/subscribe-button";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import { isAdministrator, isUserSubscribed } from "~/lib/auth";
@@ -101,6 +102,15 @@ export default async function Page() {
               </div>
             </div>
           )}
+        </TitledBox>
+
+        <TitledBox
+          title="Danger Area"
+          className="col-span-full overflow-hidden md:col-span-6"
+        >
+          <Suspense fallback={<SkeletonDefault className="min-h-[400px]" />}>
+            <ProfileDangerArea />
+          </Suspense>
         </TitledBox>
       </div>
     </>

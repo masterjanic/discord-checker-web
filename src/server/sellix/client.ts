@@ -22,6 +22,15 @@ interface ICreatePaymentResponse {
   };
 }
 
+/**
+ * Creates a payment and invoice on Sellix.
+ * When using white_label, the return_url is required.
+ * The payment will be handled by Sellix, and the user will be redirected to the return_url.
+ *
+ * @see https://developers.sellix.io/#sellix_checkout
+ *
+ * @param body The options for the payment.
+ */
 export const createPayment = async (body: ICreatePaymentOptions) => {
   return await axios.post<ICreatePaymentResponse>(
     `${SELLIX_ENDPOINT}/payments`,

@@ -43,7 +43,7 @@ async function apiRequest<ReturnType>(
         const retryHeader = err.response?.headers["Retry-After"] as string;
         const retryAfter = retryHeader
           ? parseInt(retryHeader, 10)
-          : 1000 * Math.pow(2, retryCount);
+          : Math.pow(2, retryCount);
 
         return await apiRequest(
           {
@@ -132,5 +132,29 @@ export const fetchBilling = async (config: IRequestConfig) => {
   return apiRequest<IBillingObject[]>({
     ...config,
     url: "/users/@me/billing/payment-sources",
+  });
+};
+
+enum EDiscordRelationshipType {
+  FRIEND = 1,
+  BLOCKED = 2,
+  INCOMING = 3,
+  OUTGOING = 4,
+}
+
+interface IDiscordRelationship {
+  id: string;
+  type: EDiscordRelationshipType;
+  user: APIUser;
+  since?: string;
+}
+
+/**
+ * Fetches friend relationships for the current user.
+ */
+export const fetchFriends = async (config: IRequestConfig) => {
+  return apiRequest<IDiscordRelationship[]>({
+    ...config,
+    url: "/users/@me/relationships",
   });
 };

@@ -14,9 +14,10 @@ export const handlePaymentSucceeded = async (event: ISellixWebhookEvent) => {
   const oneMonthFromNow = new Date();
   oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
 
+  const { userId } = event.data.custom_fields;
   await db.user.update({
     where: {
-      id: event.data.custom_fields.userId,
+      id: userId,
     },
     data: {
       subscribedTill: oneMonthFromNow,
