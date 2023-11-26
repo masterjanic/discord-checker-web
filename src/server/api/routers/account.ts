@@ -134,7 +134,6 @@ export const accountRouter = createTRPCRouter({
       await db.discordAccount.upsert({
         where: {
           id: user.id,
-          ownerId: session.user.id,
         },
         create: {
           ...input.user,

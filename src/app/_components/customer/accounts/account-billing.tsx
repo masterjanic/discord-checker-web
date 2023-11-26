@@ -45,7 +45,7 @@ export default function AccountBilling({ userId }: IAccountBillingProps) {
                     <BsQuestion />,
                     <BsQuestion />,
                     <BsQuestion />,
-                  ][type]
+                  ][type - 1]
                 }
               </div>
               <div>
