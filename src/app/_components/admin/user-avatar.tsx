@@ -1,6 +1,6 @@
-import * as Avatar from "@radix-ui/react-avatar";
 import { type User } from "next-auth";
 import Image from "next/image";
+import { useState, type SyntheticEvent } from "react";
 
 interface IUserAvatarProps {
   user: Pick<User, "image" | "name">;
@@ -8,29 +8,22 @@ interface IUserAvatarProps {
 }
 
 export default function UserAvatar({ user, size = 64 }: IUserAvatarProps) {
+  const [error, setError] = useState<SyntheticEvent | null>(null);
+
   return (
-    <Avatar.Root>
-      {user.image && (
-        <Image
-          src={`${user.image}?size=${size}`}
-          className="h-full w-full flex-shrink-0 rounded-full"
-          alt={user.name ?? "User Avatar"}
-          width={size}
-          height={size}
-        />
-      )}
-      {!user.image && (
-        <Avatar.Fallback className="grid h-full w-full flex-shrink-0 place-items-center rounded-full bg-blueish-grey-700 font-light">
-          {user.name
-            ?.split(" ")
-            .slice(0, 2)
-            .map((word) => {
-              const upper = word[0]?.toUpperCase() ?? "";
-              return upper.match(/[a-z0-9]/i) ? upper : "";
-            })
-            .join("") ?? "??"}
-        </Avatar.Fallback>
-      )}
-    </Avatar.Root>
+    <Image
+      onError={setError}
+      src={
+        !user.image || error
+          ? "/images/default_user.png"
+          : `${user.image}?size=${size}`
+      }
+      alt={user.name ?? "User Avatar"}
+      width={size}
+      height={size}
+      className="select-none rounded-full border border-blueish-grey-600/80 bg-blueish-grey-600"
+      draggable={false}
+      loading="lazy"
+    />
   );
 }
