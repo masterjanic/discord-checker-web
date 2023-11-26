@@ -2,22 +2,23 @@
 
 import { Listbox } from "@headlessui/react";
 import clsx from "clsx";
+import debounce from "lodash/debounce";
 import Link from "next/link";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import {
   FiArrowLeft,
   FiArrowRight,
   FiCheck,
   FiChevronDown,
-  FiSearch,
 } from "react-icons/fi";
+
 import Box from "~/app/_components/common/box";
 import Button from "~/app/_components/common/button";
+import SearchBar from "~/app/_components/common/search-bar";
 import AccountCard from "~/app/_components/customer/account-card";
 import SkeletonAccountCard from "~/app/_components/skeletons/skeleton-account-card";
 import useAccountFilters from "~/hooks/useAccountFilters";
 import usePaginatedAccounts from "~/hooks/usePaginatedAccounts";
-import debounce from "lodash/debounce";
 import { toTitleCase } from "~/lib/discord-utils";
 
 export default function AccountOverview() {
@@ -42,22 +43,15 @@ export default function AccountOverview() {
     <>
       {accounts && (
         <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-2 lg:grid-cols-3">
-          <div className="relative col-span-full md:col-span-2 lg:col-span-1">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-4">
-              <FiSearch className="h-4 w-4 text-neutral-300" />
-            </div>
-            <input
-              type="text"
-              inputMode="search"
-              spellCheck={false}
-              onChange={debounce((e: ChangeEvent<HTMLInputElement>) => {
-                resetPage();
-                setFilter("search", e.target.value);
-              }, 500)}
-              placeholder="Search by username or ID..."
-              className="w-full rounded-md border border-neutral-100/10 bg-blueish-grey-800 px-5 py-3 pl-10 text-sm text-neutral-100 caret-blurple-dark transition-colors duration-300 focus:border-blurple-dark focus:outline-none disabled:opacity-50"
-            />
-          </div>
+          <SearchBar
+            className="col-span-full md:col-span-2 lg:col-span-1"
+            placeholder="Search by username or ID..."
+            onChange={debounce((e: ChangeEvent<HTMLInputElement>) => {
+              resetPage();
+              setFilter("search", e.target.value);
+            }, 500)}
+          />
+
           <div className="col-span-full flex items-center space-x-2 md:col-span-1">
             <div className="w-full max-w-[120px]">
               <Listbox

@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TbSlashes } from "react-icons/tb";
@@ -28,6 +29,7 @@ const SIDEBAR_SECTIONS = [
         href: "/collections",
       },
     ],
+    role: Role.CUSTOMER,
   },
   {
     title: "Admin",
@@ -37,6 +39,7 @@ const SIDEBAR_SECTIONS = [
         href: "/admin/users",
       },
     ],
+    role: Role.ADMIN,
   },
   {
     title: "My Account",
@@ -46,6 +49,7 @@ const SIDEBAR_SECTIONS = [
         href: "/profile",
       },
     ],
+    role: Role.CUSTOMER,
   },
 ];
 
@@ -77,7 +81,11 @@ export default async function AuthLayout({
                   aria-orientation="vertical"
                 >
                   <ul>
-                    {SIDEBAR_SECTIONS.map(({ title, items }) => (
+                    {SIDEBAR_SECTIONS.filter(
+                      ({ role }) =>
+                        role === session.user.role ||
+                        session.user.role === Role.ADMIN,
+                    ).map(({ title, items }) => (
                       <div
                         className="border-b border-neutral-100/10 px-6 py-5"
                         key={`sidebar-section-${title.toLowerCase()}`}

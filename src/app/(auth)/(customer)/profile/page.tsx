@@ -44,7 +44,7 @@ export default async function Page() {
           )}
 
           {isAdministrator(user) && (
-            <div>
+            <div className="h-full grid place-items-center">
               <p className="text-base text-neutral-200">
                 Admin users do not need to subscribe. :)
               </p>

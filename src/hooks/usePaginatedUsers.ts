@@ -1,27 +1,25 @@
 import usePagination from "~/hooks/usePagination";
 import { api } from "~/trpc/react";
 
-type TPaginatedCollectionsProps = Parameters<
-  typeof api.collection.getWithCursor.useSuspenseInfiniteQuery
+type TPaginatedUsersProps = Parameters<
+  typeof api.user.getWithCursor.useSuspenseInfiniteQuery
 >[0];
 
-export default function usePaginatedCollections(
-  props: TPaginatedCollectionsProps,
-) {
+export default function usePaginatedUsers(props: TPaginatedUsersProps) {
   const {
     pageIndex: page,
     nextPage,
     resetPage,
     previousPage,
   } = usePagination(1);
-  const [collections, { fetchNextPage, isFetching }] =
-    api.collection.getWithCursor.useSuspenseInfiniteQuery(props, {
+  const [users, { fetchNextPage, isFetching }] =
+    api.user.getWithCursor.useSuspenseInfiniteQuery(props, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       keepPreviousData: true,
     });
 
   return {
-    collections,
+    users,
     page,
     fetchNextPage,
     nextPage,

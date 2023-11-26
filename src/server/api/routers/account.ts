@@ -95,13 +95,16 @@ export const accountRouter = createTRPCRouter({
         },
       });
     }),
-  deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
-    return ctx.db.discordAccount.deleteMany({
-      where: {
-        ownerId: getOwnerId(ctx.session.user),
-      },
-    });
-  }),
+  deleteAll: protectedProcedure
+    .input(z.object({ adminOverride: z.boolean().optional() }).optional())
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx.session;
+      return ctx.db.discordAccount.deleteMany({
+        where: {
+          ownerId: input && input.adminOverride ? getOwnerId(user) : user.id,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({

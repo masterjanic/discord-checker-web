@@ -1,4 +1,5 @@
 import { accountRouter } from "~/server/api/routers/account";
+import { adminRouter } from "~/server/api/routers/admin";
 import { collectionRouter } from "~/server/api/routers/collection";
 import { dashboardRouter } from "~/server/api/routers/dashboard";
 import { sellixRouter } from "~/server/api/routers/sellix";
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   dashboard: dashboardRouter,
   sellix: sellixRouter,
   collection: collectionRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;
