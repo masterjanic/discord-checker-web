@@ -1,36 +1,37 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import clsx from "clsx";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
+
+import Button, { btnStyle } from "~/app/_components/common/button";
 
 interface ISignInButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   authed?: boolean;
+  redirect?: string;
 }
-
-const btnStyle =
-  "relative hidden cursor-pointer items-center justify-center space-x-2 rounded-md border border-blurple-legacy bg-blurple px-2.5 py-1 text-center text-xs text-neutral-100 shadow-sm outline-none outline-0 transition-all duration-300 ease-out hover:bg-blurple-dark lg:block";
 
 export default function SignInButton({
   authed,
   className,
   children,
+  redirect,
   ...props
 }: ISignInButtonProps) {
   if (!authed) {
     return (
-      <button
-        className={clsx(btnStyle, className)}
+      <Button
         onClick={() => signIn("discord", { callbackUrl: "/dashboard" })}
+        className={className}
         {...props}
       >
         {children}
-      </button>
+      </Button>
     );
   }
 
   return (
-    <Link href="/dashboard" className={clsx(btnStyle, className)}>
+    <Link href={redirect ?? "/dashboard"} className={clsx(btnStyle, className)}>
       {children}
     </Link>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import Link from "next/link";
 import { FaCircle, FaCrown } from "react-icons/fa";
 import { FiHash, FiSearch, FiUser } from "react-icons/fi";
 
@@ -79,10 +80,12 @@ export default function AccountServerOverview({
       ))}
 
       {guilds.length > previewGuilds.length && (
-        <Button className="mt-4">
-          <FiSearch className="h-4 w-4" />
-          <span>Show all {guilds.length} servers</span>
-        </Button>
+        <Link href={`/accounts/${userId}/guilds`}>
+          <Button className="mt-4">
+            <FiSearch className="h-4 w-4" />
+            <span>Show all {guilds.length} servers</span>
+          </Button>
+        </Link>
       )}
     </>
   );

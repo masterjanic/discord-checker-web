@@ -6,7 +6,8 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const btnVariants = {
   primary: "bg-blurple hover:bg-blurple-dark",
-  secondary: "bg-blueish-grey-700 hover:bg-blueish-grey-800",
+  secondary:
+    "!bg-blueish-grey-700 hover:!bg-blueish-grey-800 !border-neutral-100/10",
 } as const;
 
 export const btnStyle =

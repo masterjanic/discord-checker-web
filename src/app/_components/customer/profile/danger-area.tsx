@@ -97,8 +97,7 @@ export default function ProfileDangerArea() {
           </Button>
           <p className="text-neutral-200 text-xs font-light">
             This action will immediately delete your account and all associated
-            data. Every stored account of you will be deleted from our database.{" "}
-            <br />
+            data. Every stored account of you will be deleted from our database.
             If you have an active subscription, you will lose access to it.
           </p>
         </div>
