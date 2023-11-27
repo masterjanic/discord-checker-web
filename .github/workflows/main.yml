@@ -43,3 +43,5 @@ jobs:
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             DATABASE_URL_NON_POOLING=${{ secrets.DATABASE_URL_NON_POOLING }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
