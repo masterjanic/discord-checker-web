@@ -38,6 +38,8 @@ model DiscordAccount {
   /// Custom notes about the account
   notes             String?                    @db.VarChar(1024)
   tokens            DiscordToken[]
+  /// A list of all changes that have been made to the account
+  history           DiscordAccountHistory[]
   createdAt         DateTime                   @default(now())
   updatedAt         DateTime                   @updatedAt
   owner             User?                      @relation(fields: [ownerId], references: [id])
@@ -47,11 +49,12 @@ model DiscordAccount {
 
 /// Track changes in DiscordAccount model
 model DiscordAccountHistory {
-  id        String   @id @default(cuid())
-  accountId String
-  data      Json     @db.JsonB
-  changedAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String         @id @default(cuid())
+  data             Json           @db.JsonB
+  discordAccount   DiscordAccount @relation(fields: [discordAccountId], references: [id], onDelete: Cascade)
+  discordAccountId String
+  changedAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 /// Group DiscordAccounts into collections

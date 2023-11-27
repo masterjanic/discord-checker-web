@@ -1,7 +1,9 @@
 "use client";
 
 import clsx from "clsx";
-import { BsCreditCard, BsPaypal, BsQuestion } from "react-icons/bs";
+import { BsQuestion } from "react-icons/bs";
+import { FaCcPaypal, FaCreditCard, FaIdeal } from "react-icons/fa";
+import { SiKlarna } from "react-icons/si";
 
 import { api } from "~/trpc/react";
 
@@ -37,14 +39,23 @@ export default function AccountBilling({ userId }: IAccountBillingProps) {
                  */}
                 {
                   [
-                    <BsCreditCard />,
-                    <BsPaypal />,
-                    <BsQuestion />,
-                    <BsQuestion />,
-                    <BsQuestion />,
-                    <BsQuestion />,
-                    <BsQuestion />,
-                    <BsQuestion />,
+                    <FaCreditCard />, // 1 - card with brand
+                    <FaCcPaypal />, // 2 - paypal
+                    <BsQuestion />, // 3 - giropay
+                    <SiKlarna />, // 4 - sofort klarna
+                    <BsQuestion />, // 5 - Przelewy24
+                    <SiKlarna />, // 6 - Klarna
+                    <BsQuestion />, // 7 - paysafecard
+                    <BsQuestion />, // 8 - GCash
+                    <BsQuestion />, // 9 - CrabPay
+                    <BsQuestion />, // 10 - Momo Wallet
+                    <BsQuestion />, // 11 - Venmo
+                    <BsQuestion />, // 12 - GoPay
+                    <BsQuestion />, // 13 - KaKao Pay
+                    <BsQuestion />, // 14 - Bancontact
+                    <BsQuestion />, // 15 - EPS
+                    <FaIdeal />, // 16 - iDeal
+                    <BsQuestion />, // 17 - Cash App Pay
                   ][type - 1]
                 }
               </div>

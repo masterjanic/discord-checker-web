@@ -1,15 +1,17 @@
-import { type DiscordAccount } from "@prisma/client";
+import { type DiscordAccount, type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { FREE_ACCOUNTS_LIMIT, TOKEN_REGEX_LEGACY } from "~/consts/discord";
 import { getOwnerId, isUserSubscribed } from "~/lib/auth";
 import { getLatestTokenByAccountId } from "~/lib/db/accounts";
-import { fetchBilling, fetchGuilds } from "~/lib/discord-api";
+import { fetchBilling, fetchGuilds, fetchUser } from "~/lib/discord-api";
 import {
   getAccountRating,
+  hasChanged,
   isFlagged,
   isValidSnowflake,
+  type TCompareableUser,
 } from "~/lib/discord-utils";
 import {
   activeSubscriptionProcedure,
@@ -18,6 +20,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { fetchCached } from "~/server/redis/utils";
+import { api } from "~/trpc/server";
 
 const zodUserShape = z.object({
   id: z.string().refine(isValidSnowflake),
@@ -71,10 +74,11 @@ export const accountRouter = createTRPCRouter({
         id: z.string().refine(isValidSnowflake),
         password: z.string().optional(),
         notes: z.string().max(1024).optional(),
+        tokens: z.array(z.string().regex(TOKEN_REGEX_LEGACY)).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...rest } = input;
+      const { id, tokens, ...rest } = input;
       return ctx.db.discordAccount.update({
         where: {
           id,
@@ -82,6 +86,13 @@ export const accountRouter = createTRPCRouter({
         },
         data: {
           ...rest,
+          tokens: {
+            set: tokens
+              ? tokens.map((token) => ({
+                  value: token,
+                }))
+              : undefined,
+          },
         },
       });
     }),
@@ -131,42 +142,78 @@ export const accountRouter = createTRPCRouter({
         }
       }
 
-      await db.discordAccount.upsert({
-        where: {
-          id: user.id,
-        },
-        create: {
-          ...input.user,
-          rating: getAccountRating(input.user as unknown as DiscordAccount),
-          ownerId: session.user.id,
-          tokens: {
-            createMany: {
-              data: tokens.map((token) => ({
-                value: token,
-                origin,
-              })),
+      await db.$transaction(async (tx) => {
+        const currentAccount = await tx.discordAccount.findUnique({
+          where: {
+            id: user.id,
+          },
+          select: {
+            email: true,
+            phone: true,
+            username: true,
+            discriminator: true,
+            avatar: true,
+            premium_type: true,
+            accent_color: true,
+            bio: true,
+            banner: true,
+            banner_color: true,
+            global_name: true,
+            avatar_decoration: true,
+            mfa_enabled: true,
+            verified: true,
+            flags: true,
+            public_flags: true,
+          },
+        });
+
+        await db.discordAccount.upsert({
+          where: {
+            id: user.id,
+          },
+          create: {
+            ...input.user,
+            rating: getAccountRating(input.user as unknown as DiscordAccount),
+            ownerId: session.user.id,
+            tokens: {
+              createMany: {
+                data: tokens.map((token) => ({
+                  value: token,
+                  origin,
+                })),
+              },
             },
           },
-        },
-        update: {
-          ...input.user,
-          rating: getAccountRating(input.user as unknown as DiscordAccount),
-          tokens: {
-            upsert: tokens.map((token) => ({
-              where: {
-                value: token,
-              },
-              create: {
-                value: token,
-                origin,
-                lastCheckedAt: new Date(),
-              },
-              update: {
-                lastCheckedAt: new Date(),
-              },
-            })),
+          update: {
+            ...input.user,
+            rating: getAccountRating(input.user as unknown as DiscordAccount),
+            tokens: {
+              upsert: tokens.map((token) => ({
+                where: {
+                  value: token,
+                },
+                create: {
+                  value: token,
+                  origin,
+                  lastCheckedAt: new Date(),
+                },
+                update: {
+                  lastCheckedAt: new Date(),
+                },
+              })),
+            },
+            history: {
+              create: hasChanged(
+                currentAccount as unknown as TCompareableUser,
+                input.user as unknown as TCompareableUser,
+              )
+                ? {
+                    data: currentAccount as Prisma.JsonObject,
+                  }
+                : undefined,
+            },
           },
-        },
+        });
       });
     }),
   getWithCursor: protectedProcedure
@@ -267,5 +314,54 @@ export const accountRouter = createTRPCRouter({
         300,
       );
       return billing ?? [];
+    }),
+  recheck: protectedProcedure
+    .input(z.string().refine(isValidSnowflake))
+    .mutation(async ({ ctx, input: id }) => {
+      const { db, session } = ctx;
+      const account = await db.discordAccount.findUnique({
+        where: {
+          id,
+          ownerId: getOwnerId(session.user),
+        },
+        select: {
+          tokens: {
+            orderBy: {
+              lastCheckedAt: "asc",
+            },
+          },
+        },
+      });
+
+      if (!account) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      let validTokens = account.tokens.length;
+      for (const token of account.tokens) {
+        const user = await fetchUser("@me", { token: token.value });
+
+        if (!user) {
+          validTokens--;
+          if (validTokens === 0) {
+            await api.account.delete.mutate(id);
+            continue;
+          }
+
+          await api.account.update.mutate({
+            id,
+            tokens: account.tokens
+              .filter((t) => t.value !== token.value)
+              .map((t) => t.value),
+          });
+          continue;
+        }
+
+        await api.account.create.mutate({
+          user,
+          tokens: [token.value],
+          origin: token.origin ?? undefined,
+        });
+      }
     }),
 });

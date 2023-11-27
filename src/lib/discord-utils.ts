@@ -1,4 +1,6 @@
 import { type DiscordAccount } from "@prisma/client";
+import { type APIUser } from "discord-api-types/v10";
+
 import {
   DISCORD_BADGE_FLAGS,
   DISCORD_EPOCH,
@@ -260,4 +262,47 @@ export const getAccountRating = (
  */
 export const formatPhoneNumber = (phoneNumber: string) => {
   return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, "$1 $2 $3 $4");
+};
+
+export type TCompareableUser = APIUser & {
+  phone: string | null;
+  bio: string | null;
+  banner_color: string | null;
+};
+
+/**
+ * Function to check if a user has changed.
+ * @param oldUser
+ * @param newUser
+ */
+export const hasChanged = (
+  oldUser: TCompareableUser,
+  newUser: TCompareableUser,
+) => {
+  const toCheck = [
+    "email",
+    "phone",
+    "username",
+    "discriminator",
+    "avatar",
+    "premium_type",
+    "accent_color",
+    "bio",
+    "banner",
+    "banner_color",
+    "global_name",
+    "avatar_decoration",
+    "mfa_enabled",
+    "verified",
+    "flags",
+    "public_flags",
+  ] as const;
+
+  for (const key of toCheck) {
+    if (oldUser[key] != newUser[key]) {
+      return true;
+    }
+  }
+
+  return false;
 };
