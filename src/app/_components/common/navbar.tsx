@@ -1,16 +1,17 @@
 import Image from "next/image";
-import Container from "~/app/_components/common/container";
 import Link from "next/link";
 import { SiGithub } from "react-icons/si";
-import { getServerAuthSession } from "~/server/auth";
+
+import Container from "~/app/_components/common/container";
 import SignInButton from "~/app/_components/common/sign-in";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function Navbar() {
   const session = await getServerAuthSession();
 
   return (
     <div className="sticky top-0 z-40">
-      <div className="absolute inset-0 h-full w-full bg-blueish-grey-900" />
+      <div className="absolute inset-0 h-full w-full bg-blueish-grey-900/90" />
       <nav className="relative z-40 border-b border-neutral-100/10 backdrop-blur-sm transition-opacity">
         <Container className="flex h-16 justify-between">
           <div className="flex flex-1 items-center justify-between px-6 sm:items-stretch lg:px-0">

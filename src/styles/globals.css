@@ -53,6 +53,6 @@
   }
 
   .glow {
-    box-shadow: 0 0 40px rgb(84, 118, 242, 0.4);
+    box-shadow: 0 0 20px rgb(84, 118, 242, 0.4);
   }
 }
