@@ -276,9 +276,13 @@ export type TCompareableUser = APIUser & {
  * @param newUser
  */
 export const hasChanged = (
-  oldUser: TCompareableUser,
+  oldUser: TCompareableUser | null,
   newUser: TCompareableUser,
 ) => {
+  if (!oldUser) {
+    return false;
+  }
+
   const toCheck = [
     "email",
     "phone",

@@ -1,5 +1,6 @@
 import "~/styles/globals.css";
 
+import { type Metadata, type Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { cookies } from "next/headers";
 
@@ -16,7 +17,7 @@ const title = "DTC-Web | Open Source Discord Token Checker";
 const description =
   "A fast, web-based Discord token checker. Find verified, unverified and nitro accounts easily.";
 
-export const metadata = {
+export const metadata: Metadata = {
   title,
   description,
   icons: [{ rel: "icon", url: "/favicon.ico" }],
@@ -45,6 +46,10 @@ export const metadata = {
     follow: true,
   },
   metadataBase: new URL("https://discord-checker.janic.dev"),
+};
+
+export const viewport: Viewport = {
+  themeColor: "#5865F2",
 };
 
 export default function RootLayout({

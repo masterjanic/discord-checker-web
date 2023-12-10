@@ -10,6 +10,8 @@ import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
   title: "Pricing | DTC-Web",
+  description:
+    "Start checking your Discord tokens for free, view analytics and manage them easily. Upgrade to get access to more features.",
   robots: {
     index: true,
     follow: true,
@@ -21,7 +23,7 @@ export default async function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar session={session} />
 
       <main className="min-h-screen">
         <div className="py-16 lg:py-20">

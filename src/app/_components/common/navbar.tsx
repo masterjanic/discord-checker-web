@@ -1,14 +1,12 @@
+import { type Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { SiGithub } from "react-icons/si";
 
 import Container from "~/app/_components/common/container";
 import SignInButton from "~/app/_components/common/sign-in";
-import { getServerAuthSession } from "~/server/auth";
 
-export default async function Navbar() {
-  const session = await getServerAuthSession();
-
+export default function Navbar({ session }: { session: Session | null }) {
   return (
     <div className="sticky top-0 z-40">
       <div className="absolute inset-0 h-full w-full bg-blueish-grey-900/90" />

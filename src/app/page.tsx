@@ -11,7 +11,7 @@ export default async function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar session={session} />
 
       <main className="min-h-screen">
         <Container>
