@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { FiSearch } from "react-icons/fi";
 
-type TSearchBarProps = React.HTMLAttributes<HTMLInputElement>;
+type TSearchBarProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export default function SearchBar({ className, ...props }: TSearchBarProps) {
   return (
