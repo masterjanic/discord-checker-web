@@ -364,4 +364,27 @@ export const accountRouter = createTRPCRouter({
         });
       }
     }),
+  getHistory: activeSubscriptionProcedure
+    .input(z.string().refine(isValidSnowflake))
+    .query(({ ctx, input: id }) => {
+      const { db, session } = ctx;
+      return db.discordAccountHistory.findMany({
+        where: {
+          discordAccount: {
+            id,
+            ownerId: getOwnerId(session.user),
+          },
+        },
+        orderBy: {
+          changedAt: "desc",
+        },
+        select: {
+          id: true,
+          data: true,
+          changedAt: true,
+          discordAccount: true,
+        },
+        take: 5,
+      });
+    }),
 });

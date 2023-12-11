@@ -270,6 +270,25 @@ export type TCompareableUser = APIUser & {
   banner_color: string | null;
 };
 
+const DIFFERENCE_FIELDS = [
+  "email",
+  "phone",
+  "username",
+  "discriminator",
+  "avatar",
+  "premium_type",
+  "accent_color",
+  "bio",
+  "banner",
+  "banner_color",
+  "global_name",
+  "avatar_decoration",
+  "mfa_enabled",
+  "verified",
+  "flags",
+  "public_flags",
+] as const;
+
 /**
  * Function to check if a user has changed.
  * @param oldUser
@@ -283,30 +302,35 @@ export const hasChanged = (
     return false;
   }
 
-  const toCheck = [
-    "email",
-    "phone",
-    "username",
-    "discriminator",
-    "avatar",
-    "premium_type",
-    "accent_color",
-    "bio",
-    "banner",
-    "banner_color",
-    "global_name",
-    "avatar_decoration",
-    "mfa_enabled",
-    "verified",
-    "flags",
-    "public_flags",
-  ] as const;
-
-  for (const key of toCheck) {
+  for (const key of DIFFERENCE_FIELDS) {
     if (oldUser[key] != newUser[key]) {
       return true;
     }
   }
 
   return false;
+};
+
+/**
+ * Function to get the differences between two users.
+ * @param oldUser
+ * @param newUser
+ */
+export const getDifferences = (
+  oldUser: TCompareableUser | null,
+  newUser: TCompareableUser,
+) => {
+  const differences: (keyof TCompareableUser)[] = [];
+
+  if (!oldUser) {
+    return differences;
+  }
+
+  for (const key of DIFFERENCE_FIELDS) {
+    if (oldUser[key] != newUser[key]) {
+      differences.push(key);
+    }
+  }
+
+  return differences;
 };

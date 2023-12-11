@@ -13,6 +13,7 @@ import SubscriptionRequiredCard from "~/app/_components/customer/subscription-re
 import SkeletonAccountActionsRow from "~/app/_components/skeletons/skeleton-account-actions-row";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import SkeletonServerOverview from "~/app/_components/skeletons/skeleton-server-overview";
+import AccountHistory from "~/app/(auth)/(customer)/accounts/[id]/account-history";
 import { isUserSubscribed } from "~/lib/auth";
 import { isValidSnowflake } from "~/lib/discord-utils";
 import { getServerAuthSession } from "~/server/auth";
@@ -94,6 +95,24 @@ export default async function Page({ params }: { params: { id: string } }) {
             </Suspense>
           ) : (
             <SubscriptionRequiredCard feature="the payment methods" />
+          )}
+        </TitledBox>
+
+        <TitledBox
+          title="Account History"
+          extra={
+            <span className="px-2 rounded bg-blurple border-blurple-legacy border font-medium">
+              Beta
+            </span>
+          }
+          className="col-span-full overflow-hidden md:col-span-6"
+        >
+          {isUserSubscribed(session?.user) ? (
+            <Suspense fallback={<SkeletonDefault className="!h-[160px]" />}>
+              <AccountHistory userId={id} />
+            </Suspense>
+          ) : (
+            <SubscriptionRequiredCard feature="the account history" />
           )}
         </TitledBox>
 
