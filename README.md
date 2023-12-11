@@ -36,7 +36,3 @@ To deploy your build please refer to the Next.js [deployment documentation](http
   -  [ ] View Account Billing details
   -  [ ] View Account Guilds
   -  [ ] Add password to Account -> Password Login
-
-### Ideas
-- [ ] Discord Account History 
-  - Basically an account changelog with all changes made to the account over time.

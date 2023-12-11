@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { getOwnerId } from "~/lib/auth";
 import { isValidSnowflake } from "~/lib/discord-utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -27,7 +26,7 @@ export const collectionRouter = createTRPCRouter({
 
       const items = await ctx.db.discordAccountCollection.findMany({
         where: {
-          ownerId: getOwnerId(ctx.session.user),
+          ownerId: ctx.session.user.id,
         },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,

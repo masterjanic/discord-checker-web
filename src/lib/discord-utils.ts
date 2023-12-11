@@ -1,5 +1,6 @@
+import { EmbedBuilder } from "@discordjs/builders";
 import { type DiscordAccount } from "@prisma/client";
-import { type APIUser } from "discord-api-types/v10";
+import { type APIEmbed, type APIUser } from "discord-api-types/v10";
 
 import {
   DISCORD_BADGE_FLAGS,
@@ -333,4 +334,19 @@ export const getDifferences = (
   }
 
   return differences;
+};
+
+/**
+ * Returns a pre-styled embed builder.
+ */
+export const styledEmbed = (data?: APIEmbed) => {
+  return new EmbedBuilder({
+    color: 0x5865f2,
+    footer: {
+      icon_url: "https://discord-checker.janic.dev/images/logo.png",
+      text: "DTC-Web by masterjanic",
+    },
+    timestamp: new Date().toISOString(),
+    ...data,
+  });
 };

@@ -6,6 +6,7 @@ import Button from "~/app/_components/common/button";
 import Container from "~/app/_components/common/container";
 import Navbar from "~/app/_components/common/navbar";
 import SignInButton from "~/app/_components/common/sign-in";
+import { FREE_ACCOUNTS_LIMIT } from "~/consts/discord";
 import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
@@ -80,7 +81,7 @@ export default async function Page() {
                   <li className="flex items-center py-2 first:mt-0">
                     <FiCheck className="h-4 w-4 text-blurple" />
                     <span className="mb-0 ml-3 text-neutral-100">
-                      Up to 10 Discord accounts
+                      Up to {FREE_ACCOUNTS_LIMIT} managed Discord accounts
                     </span>
                   </li>
                   <li className="flex items-center py-2 first:mt-0">
@@ -163,7 +164,7 @@ export default async function Page() {
                     <li className="flex items-center py-2 first:mt-0">
                       <FiCheck className="h-4 w-4 text-blurple" />
                       <span className="mb-0 ml-3 text-neutral-100">
-                        Unlimited Discord accounts
+                        Unlimited managed Discord accounts
                       </span>
                     </li>
                     <li className="flex items-center py-2 first:mt-0">
