@@ -6,6 +6,7 @@ import {
 export interface ICommandOptions {
   req: Request;
   interaction: APIInteraction;
+  ping: number;
 }
 
 export type TCommandResponse =

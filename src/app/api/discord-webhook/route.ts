@@ -3,8 +3,11 @@ import nacl from "tweetnacl";
 
 import { type ICommand } from "~/app/api/discord-webhook/interfaces/interaction";
 import { env } from "~/env";
+import { snowflakeToMilliseconds } from "~/lib/discord-utils";
 
 const handler = async (req: Request) => {
+  const receivedAt = Date.now();
+
   const isDevelopment = env.NODE_ENV === "development";
 
   const PUBLIC_KEY = env.DISCORD_PUBLIC_KEY;
@@ -37,11 +40,12 @@ const handler = async (req: Request) => {
   }
 
   if (interaction.type === InteractionType.ApplicationCommand) {
+    const ping = receivedAt - snowflakeToMilliseconds(interaction.id);
     try {
       const command = (await import(
         `~/app/api/discord-webhook/commands/${interaction.data.name}`
       )) as ICommand;
-      const result = await command.execute({ req, interaction });
+      const result = await command.execute({ req, interaction, ping });
       return Response.json(result, { status: 200 });
     } catch (err) {
       return new Response("Internal Server Error", { status: 500 });
