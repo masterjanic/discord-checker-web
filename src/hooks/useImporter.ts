@@ -1,4 +1,5 @@
-import { type ChangeEvent, useState } from "react";
+import { useState, type ChangeEvent } from "react";
+
 import { TOKEN_REGEX } from "~/consts/discord";
 import {
   getTokenMatchesForString,
@@ -81,10 +82,10 @@ export default function useImporter() {
         }
 
         const result = event.target.result as string;
-        const matches = getTokenMatchesForString(result).slice(
-          0,
-          limit ? limit - tokens.length : undefined,
-        );
+        const matches = getTokenMatchesForString(
+          result,
+          settings.includeLegacy,
+        ).slice(0, limit ? limit - tokens.length : undefined);
         addTokens(matches);
       };
       reader.readAsText(file);
