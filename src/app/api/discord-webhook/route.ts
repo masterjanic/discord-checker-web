@@ -5,24 +5,29 @@ import { type ICommand } from "~/app/api/discord-webhook/interfaces/interaction"
 import { env } from "~/env";
 
 const handler = async (req: Request) => {
+  const isDevelopment = env.NODE_ENV === "development";
+
   const PUBLIC_KEY = env.DISCORD_PUBLIC_KEY;
 
   const signature = req.headers.get("X-Signature-Ed25519");
   const timestamp = req.headers.get("X-Signature-Timestamp");
 
-  if (!signature || !timestamp) {
+  if ((!signature || !timestamp) && !isDevelopment) {
     return new Response("Unauthorized", { status: 401 });
   }
 
   const body = await req.text();
-  const isVerified = nacl.sign.detached.verify(
-    Buffer.from(timestamp + body),
-    Buffer.from(signature, "hex"),
-    Buffer.from(PUBLIC_KEY, "hex"),
-  );
 
-  if (!isVerified) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!isDevelopment) {
+    const isVerified = nacl.sign.detached.verify(
+      Buffer.from(timestamp + body),
+      Buffer.from(signature!, "hex"),
+      Buffer.from(PUBLIC_KEY, "hex"),
+    );
+
+    if (!isVerified) {
+      return new Response("Unauthorized", { status: 401 });
+    }
   }
 
   const interaction = JSON.parse(body) as APIInteraction;

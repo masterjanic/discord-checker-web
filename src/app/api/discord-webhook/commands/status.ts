@@ -1,7 +1,6 @@
 import { InteractionResponseType } from "discord-api-types/v10";
 
 import {
-  type ICommand,
   type ICommandOptions,
   type TCommandResponse,
 } from "~/app/api/discord-webhook/interfaces/interaction";
@@ -29,4 +28,4 @@ const execute = ({ interaction }: ICommandOptions): TCommandResponse => {
   };
 };
 
-export default { execute } as ICommand;
+export { execute };
