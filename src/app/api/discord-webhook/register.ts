@@ -11,6 +11,10 @@ const commands = [
     name: "status",
     description: "Shows the status of DTC-Web and its services.",
   },
+  {
+    name: "invite",
+    description: "Shows the invite link for DTC-Web.",
+  },
 ] as APIApplicationCommand[];
 
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN);
