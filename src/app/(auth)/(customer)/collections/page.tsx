@@ -1,3 +1,8 @@
+import { Suspense } from "react";
+
+import CollectionOverview from "~/app/(auth)/(customer)/collections/collection-overview";
+import SkeletonCollectionOverview from "~/app/(auth)/(customer)/collections/skel-collection-overview";
+
 export const metadata = {
   title: "Manage Collections | DTC-Web",
   robots: {
@@ -18,7 +23,9 @@ export default function Page() {
         </span>
       </div>
 
-      <div># WIP</div>
+      <Suspense fallback={<SkeletonCollectionOverview />}>
+        <CollectionOverview />
+      </Suspense>
     </>
   );
 }

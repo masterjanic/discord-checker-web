@@ -31,18 +31,17 @@ export const collectionRouter = createTRPCRouter({
         },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: [
+          { accounts: { _count: "desc" } },
+          { updatedAt: "desc" },
+          { createdAt: "desc" },
+        ],
         select: {
           id: true,
           name: true,
           accounts: {
-            orderBy: {
-              id: "asc",
-              rating: "desc",
-            },
-            take: 6,
+            orderBy: [{ id: "asc" }, { rating: "desc" }],
+            take: 8,
             select: {
               id: true,
               username: true,
