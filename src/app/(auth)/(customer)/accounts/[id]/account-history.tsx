@@ -40,14 +40,18 @@ export default function AccountHistory({ userId }: { userId: string }) {
                   key={`account-history-${entry.id}-${key}`}
                 >
                   <span>{key}:</span>
-                  <span className="font-light truncate">{before[key]}</span>
+                  <span className="font-light truncate">
+                    {before[key] ?? "null"}
+                  </span>
                   <FiArrowRight className="text-neutral-200" />
-                  <span className="font-light truncate">{after[key]}</span>
+                  <span className="font-light truncate">
+                    {after[key] ?? "null"}
+                  </span>
                 </div>
               ))}
 
               <div className="mt-2 text-xs font-light text-neutral-200">
-                <p>{new Date(entry.changedAt).toLocaleString("en-US")}</p>
+                <p>{entry.changedAt.toLocaleString("en-US")}</p>
               </div>
             </div>
           </div>
