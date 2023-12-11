@@ -1,7 +1,7 @@
 /**
- * The limit of free accounts that can be added to an account.
+ * The limit of free accounts that can be viewed in account overview.
  */
-export const FREE_ACCOUNTS_LIMIT = 10;
+export const FREE_ACCOUNTS_LIMIT = 50;
 
 /**
  * The url of the Discord API gateway to be used for requests.

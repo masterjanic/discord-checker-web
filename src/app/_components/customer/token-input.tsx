@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { FiFilePlus, FiRefreshCcw } from "react-icons/fi";
+
 import AlertMessage from "~/app/_components/common/alert-message";
 import Button from "~/app/_components/common/button";
 import CheckerSettings from "~/app/_components/customer/checker-settings";
@@ -9,11 +10,7 @@ import useChecker from "~/hooks/useChecker";
 import useImporter from "~/hooks/useImporter";
 import { getTokenMatchesForString } from "~/lib/discord-utils";
 
-interface ITokenInputProps {
-  remaining?: number | null;
-}
-
-export default function TokenInput({ remaining = null }: ITokenInputProps) {
+export default function TokenInput() {
   const {
     replaceTokens,
     importFromFile,
@@ -22,8 +19,7 @@ export default function TokenInput({ remaining = null }: ITokenInputProps) {
     setSetting,
     removeToken,
   } = useImporter();
-  const { checkTokens, isChecking, setIsChecking } =
-    useChecker();
+  const { checkTokens, isChecking, setIsChecking } = useChecker();
 
   const fileUpload = useRef<HTMLInputElement>(null);
 
@@ -36,7 +32,7 @@ export default function TokenInput({ remaining = null }: ITokenInputProps) {
               type="file"
               accept="text/*"
               onClick={(e) => (e.currentTarget.value = "")}
-              onChange={(e) => importFromFile(e, remaining)}
+              onChange={importFromFile}
               ref={fileUpload}
               className="hidden"
               multiple={true}
@@ -56,12 +52,7 @@ export default function TokenInput({ remaining = null }: ITokenInputProps) {
             rows={15}
             value={tokens.join("\n")}
             onChange={(e) =>
-              replaceTokens(
-                getTokenMatchesForString(e.target.value).slice(
-                  0,
-                  remaining ?? undefined,
-                ),
-              )
+              replaceTokens(getTokenMatchesForString(e.target.value))
             }
           />
 

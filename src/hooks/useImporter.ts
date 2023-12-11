@@ -61,20 +61,13 @@ export default function useImporter() {
     setTokens(removeTokenDuplicates(preFiltered));
   };
 
-  const importFromFile = (
-    event: ChangeEvent<HTMLInputElement>,
-    limit: number | null,
-  ) => {
+  const importFromFile = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) {
       return;
     }
 
     for (const file of event.target.files) {
       const reader = new FileReader();
-
-      if (limit && tokens.length >= limit) {
-        return;
-      }
 
       reader.onload = (event) => {
         if (!event.target?.result) {
@@ -85,7 +78,7 @@ export default function useImporter() {
         const matches = getTokenMatchesForString(
           result,
           settings.includeLegacy,
-        ).slice(0, limit ? limit - tokens.length : undefined);
+        );
         addTokens(matches);
       };
       reader.readAsText(file);

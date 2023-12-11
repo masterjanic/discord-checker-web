@@ -2,8 +2,8 @@ import { type DiscordAccount, type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { FREE_ACCOUNTS_LIMIT, TOKEN_REGEX_LEGACY } from "~/consts/discord";
-import { getOwnerId, isUserSubscribed } from "~/lib/auth";
+import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
+import { getOwnerId } from "~/lib/auth";
 import { getLatestTokenByAccountId } from "~/lib/db/accounts";
 import { fetchBilling, fetchGuilds, fetchUser } from "~/lib/discord-api";
 import {
@@ -127,20 +127,6 @@ export const accountRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { session, db } = ctx;
       const { user, tokens, origin } = input;
-
-      if (!isUserSubscribed(session.user)) {
-        const totalAccounts = await db.discordAccount.count({
-          where: {
-            ownerId: session.user.id,
-          },
-        });
-        if (totalAccounts >= FREE_ACCOUNTS_LIMIT) {
-          throw new TRPCError({
-            code: "FORBIDDEN",
-            message: `You must be subscribed to save more than ${FREE_ACCOUNTS_LIMIT} accounts.`,
-          });
-        }
-      }
 
       await db.$transaction(async (tx) => {
         const currentAccount = await tx.discordAccount.findUnique({
