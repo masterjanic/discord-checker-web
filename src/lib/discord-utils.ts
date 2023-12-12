@@ -1,8 +1,16 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, type TimestampStylesString } from "@discordjs/builders";
+import { type ImageSize } from "@discordjs/rest";
 import { type DiscordAccount } from "@prisma/client";
-import { type APIEmbed, type APIUser } from "discord-api-types/v10";
+import {
+  ApplicationCommandOptionType,
+  ImageFormat,
+  type APIApplicationCommandInteractionDataOption,
+  type APIEmbed,
+  type APIUser,
+} from "discord-api-types/v10";
 
 import {
+  CDN_URL,
   DISCORD_BADGE_FLAGS,
   DISCORD_EPOCH,
   DISCORD_LOCALES_MAP,
@@ -349,4 +357,67 @@ export const styledEmbed = (data?: APIEmbed) => {
     timestamp: new Date().toISOString(),
     ...data,
   });
+};
+
+/**
+ * Function to get a dynamic timestamp.
+ * @param ms The timestamp in milliseconds.
+ * @param format The format of the timestamp.
+ *
+ * @see https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+ */
+export const dynamicTimestamp = (
+  ms = Date.now(),
+  format: TimestampStylesString = "D",
+) => `<t:${Math.floor(ms / 1000)}:${format}>`;
+
+/**
+ * Function to get the Discord avatar URL for a user.
+ * @param user The user to get the avatar URL for.
+ * @param size The size of the avatar.
+ * @param format The format of the avatar.
+ */
+export const discordAvatarURL = (
+  user: Pick<APIUser, "discriminator" | "id" | "avatar">,
+  {
+    size = 64,
+    format = ImageFormat.PNG,
+  }: { size?: ImageSize; format?: ImageFormat },
+) => {
+  const seed = isMigratedUser(user.discriminator)
+    ? Number(BigInt(user.id) >> BigInt(22)) % 6
+    : Number(user.discriminator) % 5;
+  const isAnimated = user.avatar?.startsWith("a_") ?? false;
+  const fallbackUrl = `${CDN_URL}/embed/avatars/${seed}.png`;
+  const avatarUri = `${CDN_URL}/avatars/${user.id}`;
+
+  return !user.avatar
+    ? fallbackUrl
+    : `${avatarUri}/${user.avatar}.${
+        isAnimated ? ImageFormat.GIF : format
+      }?size=${size}`;
+};
+
+/**
+ * Function to get an interaction option by name.
+ * @param name The name of the option.
+ * @param options The options to search in.
+ */
+export const getOptionByName = <T>(
+  name: string,
+  options: APIApplicationCommandInteractionDataOption[] | undefined,
+) => {
+  const option = options?.find((o) => o.name === name);
+  if (!option) {
+    return null;
+  }
+
+  if (
+    option.type !== ApplicationCommandOptionType.Subcommand &&
+    option.type !== ApplicationCommandOptionType.SubcommandGroup
+  ) {
+    return option.value as T;
+  }
+
+  return option;
 };
