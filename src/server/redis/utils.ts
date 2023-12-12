@@ -22,7 +22,7 @@ const getCached = async <T>(key: string) => {
  * Sets a value in Redis in JSON format.
  * @param key
  * @param value
- * @param ttl
+ * @param ttl Time to live in seconds.
  */
 const setCached = async <T>(
   key: string,
@@ -40,11 +40,11 @@ const setCached = async <T>(
  * Fetches a value from Redis if it exists, otherwise fetches it from the given method and caches it.
  * @param key
  * @param fetch
- * @param ttl
+ * @param ttl Time to live in seconds.
  */
 export const fetchCached = async <T>(
   key: string,
-  fetch: () => Promise<T>,
+  fetch: () => Promise<T> | T,
   ttl?: number,
 ) => {
   const cached = await getCached<T>(key);

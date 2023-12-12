@@ -8,15 +8,17 @@ import {
   type ISellixWebhookEvent,
 } from "~/server/sellix/sellix-webhook-handlers";
 
-const webhookSecret = env.SELLIX_WEBHOOK_SECRET;
+export const dynamic = "force-dynamic";
 
 const handler = async (req: NextRequest) => {
+  const WEBHOOK_SECRET = env.SELLIX_WEBHOOK_SECRET;
+
   try {
     const body = await req.text();
 
     const headerSignature = req.headers.get("X-Sellix-Signature")!;
     const signature = crypto
-      .createHmac("sha512", webhookSecret)
+      .createHmac("sha512", WEBHOOK_SECRET)
       .update(body)
       .digest("hex");
 

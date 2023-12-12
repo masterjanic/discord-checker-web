@@ -87,6 +87,21 @@ model SellixEvent {
   data  Json
 }
 
+/// Stores the API keys for users to use our API
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value      String    @unique
+  /// Defines the allowed origins for this API key
+  allowedIps String[]  @db.VarChar(64)
+  /// Defines the allowed request per minute for this API key
+  rateLimit  Int       @default(10)
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -130,6 +145,7 @@ model User {
   sessions                  Session[]
   discordAccounts           DiscordAccount[]
   discordAccountCollections DiscordAccountCollection[]
+  apiKeys                   ApiKey[]
   subscribedTill            DateTime?
   createdAt                 DateTime                   @default(now())
 }

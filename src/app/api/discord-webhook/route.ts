@@ -9,6 +9,8 @@ import { type ICommandHandler } from "~/app/api/discord-webhook/interfaces/inter
 import { env } from "~/env";
 import { snowflakeToMilliseconds } from "~/lib/discord-utils";
 
+export const dynamic = "force-dynamic";
+
 const handler = async (req: Request) => {
   const receivedAt = Date.now();
 

@@ -76,6 +76,22 @@ const commands = [
       },
     ],
   },
+  {
+    name: "profile",
+    description: "Shows information about your DTC-Web profile.",
+  },
+  {
+    name: "login-script",
+    description: "Shows a script to log in with a Discord token.",
+    options: [
+      {
+        name: "token",
+        description: "The Discord token to use.",
+        type: ApplicationCommandOptionType.String,
+        required: false,
+      },
+    ],
+  },
 ] as APIApplicationCommand[];
 
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN);
