@@ -21,6 +21,7 @@ const commands = [
   },
   {
     name: "accounts",
+    description: "Actions related to your Discord accounts.",
     options: [
       {
         name: "import",
