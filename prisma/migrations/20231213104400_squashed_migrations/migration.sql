@@ -5,7 +5,6 @@ CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'ADMIN');
 CREATE TABLE "DiscordAccount" (
     "id" TEXT NOT NULL,
     "username" VARCHAR(32) NOT NULL,
-    "password" VARCHAR(256),
     "discriminator" VARCHAR(4) NOT NULL,
     "global_name" VARCHAR(32),
     "avatar" TEXT,
@@ -25,6 +24,9 @@ CREATE TABLE "DiscordAccount" (
     "nsfw_allowed" BOOLEAN,
     "bio" VARCHAR(190),
     "banner_color" TEXT,
+    "password" VARCHAR(256),
+    "rating" INTEGER,
+    "notes" VARCHAR(1024),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "ownerId" TEXT,
@@ -35,12 +37,23 @@ CREATE TABLE "DiscordAccount" (
 -- CreateTable
 CREATE TABLE "DiscordAccountHistory" (
     "id" TEXT NOT NULL,
-    "accountId" TEXT NOT NULL,
     "data" JSONB NOT NULL,
+    "discordAccountId" TEXT NOT NULL,
     "changedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "DiscordAccountHistory_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DiscordAccountCollection" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(32) NOT NULL,
+    "ownerId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DiscordAccountCollection_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -54,6 +67,30 @@ CREATE TABLE "DiscordToken" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "DiscordToken_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SellixEvent" (
+    "id" TEXT NOT NULL,
+    "event" TEXT NOT NULL,
+    "data" JSONB NOT NULL,
+
+    CONSTRAINT "SellixEvent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ApiKey" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(32) NOT NULL,
+    "userId" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "allowedIps" VARCHAR(64)[],
+    "rateLimit" INTEGER NOT NULL DEFAULT 10,
+    "expiresAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ApiKey_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -92,6 +129,8 @@ CREATE TABLE "User" (
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "role" "Role" NOT NULL DEFAULT 'CUSTOMER',
+    "subscribedTill" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -103,11 +142,20 @@ CREATE TABLE "VerificationToken" (
     "expires" TIMESTAMP(3) NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_DiscordAccountToDiscordAccountCollection" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "DiscordAccount_id_key" ON "DiscordAccount"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DiscordToken_value_key" ON "DiscordToken"("value");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ApiKey_value_key" ON "ApiKey"("value");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
@@ -124,14 +172,35 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_DiscordAccountToDiscordAccountCollection_AB_unique" ON "_DiscordAccountToDiscordAccountCollection"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_DiscordAccountToDiscordAccountCollection_B_index" ON "_DiscordAccountToDiscordAccountCollection"("B");
+
 -- AddForeignKey
 ALTER TABLE "DiscordAccount" ADD CONSTRAINT "DiscordAccount_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "DiscordAccountHistory" ADD CONSTRAINT "DiscordAccountHistory_discordAccountId_fkey" FOREIGN KEY ("discordAccountId") REFERENCES "DiscordAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DiscordAccountCollection" ADD CONSTRAINT "DiscordAccountCollection_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "DiscordToken" ADD CONSTRAINT "DiscordToken_discordAccountId_fkey" FOREIGN KEY ("discordAccountId") REFERENCES "DiscordAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ApiKey" ADD CONSTRAINT "ApiKey_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_DiscordAccountToDiscordAccountCollection" ADD CONSTRAINT "_DiscordAccountToDiscordAccountCollection_A_fkey" FOREIGN KEY ("A") REFERENCES "DiscordAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_DiscordAccountToDiscordAccountCollection" ADD CONSTRAINT "_DiscordAccountToDiscordAccountCollection_B_fkey" FOREIGN KEY ("B") REFERENCES "DiscordAccountCollection"("id") ON DELETE CASCADE ON UPDATE CASCADE;
