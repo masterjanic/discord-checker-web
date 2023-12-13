@@ -22,7 +22,7 @@ model DiscordAccount {
   banner            String?
   bot               Boolean?
   flags             BigInt?
-  locale            String?                    @db.VarChar(5)
+  locale            String?                    @default("en-US") @db.VarChar(5)
   mfa_enabled       Boolean?
   premium_type      Int?
   public_flags      BigInt?
