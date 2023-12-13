@@ -64,6 +64,7 @@ export const DISCORD_LOCALES_MAP = [
   ["tr", "TUR"],
   ["uk", "UKR"],
   ["vi", "VNM"],
+  ["he", "ISR"],
 ] as const;
 
 /**

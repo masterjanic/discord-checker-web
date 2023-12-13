@@ -49,7 +49,7 @@ export const dashboardRouter = createTRPCRouter({
   }),
   getCountryDistribution: activeSubscriptionProcedure.query(async ({ ctx }) => {
     const localeDistribution = await ctx.db.discordAccount.groupBy({
-      where: { ownerId: getOwnerId(ctx.session.user) },
+      where: { ownerId: getOwnerId(ctx.session.user), locale: { not: null } },
       by: ["locale"],
       _count: {
         locale: true,
