@@ -90,12 +90,13 @@ model SellixEvent {
 /// Stores the API keys for users to use our API
 model ApiKey {
   id         String    @id @default(cuid())
+  name       String    @db.VarChar(32)
   userId     String
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   value      String    @unique
   /// Defines the allowed origins for this API key
   allowedIps String[]  @db.VarChar(64)
-  /// Defines the allowed request per minute for this API key
+  /// Defines the allowed requests per minute for this API key
   rateLimit  Int       @default(10)
   expiresAt  DateTime?
   createdAt  DateTime  @default(now())

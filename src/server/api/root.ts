@@ -3,7 +3,7 @@ import { adminRouter } from "~/server/api/routers/admin";
 import { collectionRouter } from "~/server/api/routers/collection";
 import { dashboardRouter } from "~/server/api/routers/dashboard";
 import { sellixRouter } from "~/server/api/routers/sellix";
-import { userRouter } from "~/server/api/routers/user";
+import { userRouter } from "~/server/api/routers/user/user";
 import { createTRPCRouter } from "~/server/api/trpc";
 
 export const appRouter = createTRPCRouter({

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { FiCheck } from "react-icons/fi";
 
@@ -5,6 +6,7 @@ import TitledBox from "~/app/_components/common/box-with-title";
 import ProfileDangerArea from "~/app/_components/customer/profile/danger-area";
 import SubscribeButton from "~/app/_components/customer/profile/subscribe-button";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
+import DeveloperSettings from "~/app/(auth)/(customer)/profile/_components/developer-settings";
 import { isAdministrator, isUserSubscribed } from "~/lib/auth";
 import { getServerAuthSession } from "~/server/auth";
 
@@ -111,6 +113,35 @@ export default async function Page() {
           <Suspense fallback={<SkeletonDefault className="min-h-[400px]" />}>
             <ProfileDangerArea />
           </Suspense>
+        </TitledBox>
+
+        <TitledBox
+          title="Developer Settings"
+          className="col-span-full overflow-hidden md:col-span-6"
+          extra={
+            <span className="px-2 rounded bg-blurple border-blurple-legacy border font-medium">
+              Beta
+            </span>
+          }
+        >
+          <div className="flex flex-col">
+            <p className="text-neutral-200 text-base mb-2">
+              Create up to 5 API keys to use the DTC-Web API for external
+              services and tools. You can read more about the API{" "}
+              <Link
+                href="/developers"
+                target="_blank"
+                className="text-blurple hover:text-blurple-legacy transition duration-300"
+              >
+                here
+              </Link>
+              .
+            </p>
+
+            <Suspense fallback={<SkeletonDefault className="min-h-[400px]" />}>
+              <DeveloperSettings />
+            </Suspense>
+          </div>
         </TitledBox>
       </div>
     </>

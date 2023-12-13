@@ -2,6 +2,7 @@ import { Role } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { userDeveloperRouter } from "~/server/api/routers/user/developer";
 import {
   adminProcedure,
   createTRPCRouter,
@@ -163,4 +164,5 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  developer: userDeveloperRouter,
 });
