@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
+import AccountGuildList from "~/app/(auth)/(customer)/accounts/[id]/guilds/_components/account-guild-list";
 import { isValidSnowflake } from "~/lib/discord-utils";
-import { getServerAuthSession } from "~/server/auth";
 
 export const metadata = {
   title: "Server Overview | DTC-Web",
@@ -11,13 +12,17 @@ export const metadata = {
   },
 };
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
   if (!isValidSnowflake(id)) {
     redirect("/accounts");
   }
 
-  const session = await getServerAuthSession();
-
-  return <></>;
+  return (
+    <>
+      <Suspense>
+        <AccountGuildList userId={id} />
+      </Suspense>
+    </>
+  );
 }

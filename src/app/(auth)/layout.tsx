@@ -1,11 +1,13 @@
 import { Role } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { FiChrome } from "react-icons/fi";
 import { TbSlashes } from "react-icons/tb";
 
 import BackgroundGrid from "~/app/_components/common/background-grid";
 import SignOutSection from "~/app/_components/common/sign-out";
 import NavRouterSegment from "~/app/_components/customer/nav-router-segment";
+import { CHROME_EXTENSION_URL } from "~/consts/internal";
 import { getServerAuthSession } from "~/server/auth";
 
 const SIDEBAR_SECTIONS = [
@@ -125,9 +127,20 @@ export default async function AuthLayout({
             </div>
             <div className="flex flex-1 flex-col">
               <div className="flex h-12 max-h-12 items-center justify-between border-b border-neutral-100/10 px-5 py-2">
-                <div className="-ml-2 flex items-center text-sm">
-                  <TbSlashes className="text-neutral-400" />
-                  <NavRouterSegment />
+                <div className="flex items-center justify-between w-full">
+                  <div className="-ml-2 flex items-center text-sm">
+                    <TbSlashes className="text-neutral-400" />
+                    <NavRouterSegment />
+                  </div>
+                  <Link
+                    href={CHROME_EXTENSION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-neutral-200 hover:text-neutral-300 transition duration-300 hidden md:inline-flex"
+                  >
+                    <span className="sr-only">Chrome Extension</span>
+                    <FiChrome className="w-5 h-5" />
+                  </Link>
                 </div>
               </div>
               <div className="relative flex-1 flex-grow overflow-auto scrollbar-thin">

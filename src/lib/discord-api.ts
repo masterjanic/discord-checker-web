@@ -1,5 +1,9 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { type APIGuild, type APIUser } from "discord-api-types/v10";
+import {
+  type APIGuild,
+  type APIUser,
+  type RESTGetAPIGuildChannelsResult,
+} from "discord-api-types/v10";
 
 import { DISCORD_GATEWAY_URL } from "~/consts/discord";
 
@@ -98,6 +102,33 @@ export const fetchGuilds = async (
   return apiRequest<APIGuild[]>({
     ...config,
     url: `/users/@me/guilds?with_counts=${withCounts}`,
+  });
+};
+
+/**
+ * Fetches a guild from the Discord API.
+ * @param id
+ * @param config
+ */
+export const fetchGuild = async (id: string, config: IRequestConfig) => {
+  return apiRequest<APIGuild>({
+    ...config,
+    url: `/guilds/${id}`,
+  });
+};
+
+/**
+ * Fetches the channels for a guild from the Discord API.
+ * @param id
+ * @param config
+ */
+export const fetchGuildChannels = async (
+  id: string,
+  config: IRequestConfig,
+) => {
+  return apiRequest<RESTGetAPIGuildChannelsResult>({
+    ...config,
+    url: `/guilds/${id}/channels`,
   });
 };
 

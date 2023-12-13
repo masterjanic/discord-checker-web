@@ -13,6 +13,7 @@ import {
   isValidSnowflake,
   type TCompareableUser,
 } from "~/lib/discord-utils";
+import { accountGuildRouter } from "~/server/api/routers/account/guild";
 import {
   activeSubscriptionProcedure,
   adminProcedure,
@@ -265,24 +266,7 @@ export const accountRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  getGuilds: activeSubscriptionProcedure
-    .input(z.string().refine(isValidSnowflake))
-    .query(async ({ ctx, input }) => {
-      const token = await getLatestTokenByAccountId(
-        input,
-        getOwnerId(ctx.session.user),
-      );
-      if (!token) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
-      const guilds = await fetchCached(
-        `discord:guilds:${input}`,
-        () => fetchGuilds({ token: token.value }),
-        300,
-      );
-      return guilds ?? [];
-    }),
+  guild: accountGuildRouter,
   getBilling: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))
     .query(async ({ ctx, input }) => {

@@ -125,7 +125,7 @@ export default async function Page() {
           }
         >
           <div className="flex flex-col">
-            <p className="text-neutral-200 text-base mb-2">
+            <p className="text-neutral-200 text-base mb-4">
               Create up to 5 API keys to use the DTC-Web API for external
               services and tools. You can read more about the API{" "}
               <Link

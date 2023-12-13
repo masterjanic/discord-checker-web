@@ -1,4 +1,4 @@
-import { accountRouter } from "~/server/api/routers/account";
+import { accountRouter } from "~/server/api/routers/account/account";
 import { adminRouter } from "~/server/api/routers/admin";
 import { collectionRouter } from "~/server/api/routers/collection";
 import { dashboardRouter } from "~/server/api/routers/dashboard";
