@@ -2,14 +2,16 @@ import { Suspense } from "react";
 
 import CollectionOverview from "~/app/(auth)/(customer)/collections/collection-overview";
 import SkeletonCollectionOverview from "~/app/(auth)/(customer)/collections/skel-collection-overview";
+import { generateMetadata } from "~/lib/metadata";
 
-export const metadata = {
-  title: "Manage Collections | DTC-Web",
+export const metadata = generateMetadata({
+  title: "Manage Collections",
+  url: "/collections",
   robots: {
     index: false,
     follow: true,
   },
-};
+});
 
 export default function Page() {
   return (

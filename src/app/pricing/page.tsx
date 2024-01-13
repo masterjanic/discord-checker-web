@@ -7,17 +7,15 @@ import Container from "~/app/_components/common/container";
 import Navbar from "~/app/_components/common/navbar";
 import SignInButton from "~/app/_components/common/sign-in";
 import { FREE_ACCOUNTS_LIMIT } from "~/consts/discord";
+import { generateMetadata } from "~/lib/metadata";
 import { getServerAuthSession } from "~/server/auth";
 
-export const metadata = {
-  title: "Pricing | DTC-Web",
+export const metadata = generateMetadata({
+  title: "View Pricing",
   description:
     "Start checking your Discord tokens for free, view analytics and manage them easily. Upgrade to get access to more features.",
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  url: "/pricing",
+});
 
 export default async function Page() {
   const session = await getServerAuthSession();

@@ -18,9 +18,7 @@ export const getOwnerId = ({ role, id }: Pick<User, "id" | "role">) => {
 export const isUserSubscribed = (user: User | undefined): boolean => {
   return (
     isAdministrator(user) ||
-    (!!user &&
-      !!user.subscribedTill &&
-      new Date() < new Date(user.subscribedTill))
+    (!!user?.subscribedTill && new Date() < new Date(user.subscribedTill))
   );
 };
 
@@ -29,5 +27,5 @@ export const isUserSubscribed = (user: User | undefined): boolean => {
  * @param user
  */
 export const isAdministrator = (user: User | undefined): boolean => {
-  return !!user && user.role === Role.ADMIN;
+  return user?.role === Role.ADMIN;
 };

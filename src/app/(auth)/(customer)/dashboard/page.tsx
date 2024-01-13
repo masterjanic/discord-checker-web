@@ -8,15 +8,17 @@ import SubscriptionRequiredCard from "~/app/_components/customer/subscription-re
 import SkeletonAccountStats from "~/app/_components/skeletons/skeleton-account-stats";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import { isUserSubscribed } from "~/lib/auth";
+import { generateMetadata } from "~/lib/metadata";
 import { getServerAuthSession } from "~/server/auth";
 
-export const metadata = {
-  title: "Dashboard | DTC-Web",
+export const metadata = generateMetadata({
+  title: "Dashboard",
+  url: "/dashboard",
   robots: {
     index: false,
     follow: true,
   },
-};
+});
 
 export default async function Page() {
   const session = await getServerAuthSession();

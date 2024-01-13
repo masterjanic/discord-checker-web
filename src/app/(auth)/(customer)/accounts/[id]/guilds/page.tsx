@@ -3,14 +3,18 @@ import { Suspense } from "react";
 
 import AccountGuildList from "~/app/(auth)/(customer)/accounts/[id]/guilds/_components/account-guild-list";
 import { isValidSnowflake } from "~/lib/discord-utils";
+import { generateMetadata as _generateMetadata } from "~/lib/metadata";
 
-export const metadata = {
-  title: "Server Overview | DTC-Web",
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
+export function generateMetadata({ params }: { params: { id: string } }) {
+  return _generateMetadata({
+    title: "Server Overview",
+    url: `/accounts/${params.id}/guilds`,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  });
+}
 
 export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;

@@ -8,15 +8,17 @@ import SubscribeButton from "~/app/_components/customer/profile/subscribe-button
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import DeveloperSettings from "~/app/(auth)/(customer)/profile/_components/developer-settings";
 import { isAdministrator, isUserSubscribed } from "~/lib/auth";
+import { generateMetadata } from "~/lib/metadata";
 import { getServerAuthSession } from "~/server/auth";
 
-export const metadata = {
-  title: "Profile | DTC-Web",
+export const metadata = generateMetadata({
+  title: "Manage Profile",
+  url: "/profile",
   robots: {
     index: true,
     follow: true,
   },
-};
+});
 
 export default async function Page() {
   const session = await getServerAuthSession();

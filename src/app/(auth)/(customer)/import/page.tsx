@@ -2,14 +2,16 @@ import { Suspense } from "react";
 
 import TokenInput from "~/app/_components/customer/token-input";
 import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
+import { generateMetadata } from "~/lib/metadata";
 
-export const metadata = {
-  title: "Token Import | DTC-Web",
+export const metadata = generateMetadata({
+  title: "Token Import",
+  url: "/import",
   robots: {
     index: false,
     follow: true,
   },
-};
+});
 
 export default function Page() {
   return (

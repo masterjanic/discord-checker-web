@@ -5,14 +5,22 @@ import TitledBox from "~/app/_components/common/box-with-title";
 import GuildChannels from "~/app/(auth)/(customer)/accounts/[id]/guilds/[guildId]/_components/guild-channels";
 import GuildGeneralInformation from "~/app/(auth)/(customer)/accounts/[id]/guilds/[guildId]/_components/guild-general-information";
 import { isValidSnowflake } from "~/lib/discord-utils";
+import { generateMetadata as _generateMetadata } from "~/lib/metadata";
 
-export const metadata = {
-  title: "Server Details | DTC-Web",
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
+export function generateMetadata({
+  params,
+}: {
+  params: { id: string; guildId: string };
+}) {
+  return _generateMetadata({
+    title: "Server Details",
+    url: `/accounts/${params.id}/guilds/${params.guildId}`,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  });
+}
 
 export default function Page({
   params,

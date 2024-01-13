@@ -2,7 +2,6 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
-  reactStrictMode: true,
   swcMinify: true,
   poweredByHeader: false,
   output: "standalone",

@@ -40,12 +40,12 @@ model DiscordAccount {
   notes             String?                    @db.VarChar(1024)
   tokens            DiscordToken[]
   /// A list of all changes that have been made to the account
-  history           DiscordAccountHistory[]
-  createdAt         DateTime                   @default(now())
-  updatedAt         DateTime                   @updatedAt
   owner             User?                      @relation(fields: [ownerId], references: [id])
   ownerId           String?
   collections       DiscordAccountCollection[]
+  history           DiscordAccountHistory[]
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
 }
 
 /// Track changes in DiscordAccount model

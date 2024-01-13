@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import TitledBox from "~/app/_components/common/box-with-title";
@@ -15,16 +15,34 @@ import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 import SkeletonServerOverview from "~/app/_components/skeletons/skeleton-server-overview";
 import AccountHistory from "~/app/(auth)/(customer)/accounts/[id]/account-history";
 import { isUserSubscribed } from "~/lib/auth";
-import { isValidSnowflake } from "~/lib/discord-utils";
+import { isValidSnowflake, usernameOrTag } from "~/lib/discord-utils";
+import { generateMetadata as _generateMetadata } from "~/lib/metadata";
 import { getServerAuthSession } from "~/server/auth";
+import { db } from "~/server/db";
 
-export const metadata = {
-  title: "Account Overview | DTC-Web",
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const account = await db.discordAccount.findUnique({
+    where: {
+      id: params.id,
+    },
+    select: {
+      username: true,
+      discriminator: true,
+    },
+  });
+  if (!account) {
+    notFound();
+  }
+
+  return _generateMetadata({
+    title: usernameOrTag(account),
+    url: `/accounts/${id}`,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  });
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
