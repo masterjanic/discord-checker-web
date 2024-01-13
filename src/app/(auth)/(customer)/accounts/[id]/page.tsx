@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
   return _generateMetadata({
     title: usernameOrTag(account),
-    url: `/accounts/${id}`,
+    url: `/accounts/${params.id}`,
     robots: {
       index: false,
       follow: true,
