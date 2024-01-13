@@ -8,23 +8,23 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import Button from "~/app/_components/common/button";
 import InputField from "~/app/_components/common/input-field";
-import Modal, { type IModalProps } from "~/app/_components/common/modal";
+import Modal, { type TModalProps } from "~/app/_components/common/modal";
 import { api } from "~/trpc/react";
 
-interface IEditKeyModalProps extends IModalProps {
+type TEditKeyModalProps = TModalProps & {
   keyData: ApiKey;
-}
+};
 
 export default function EditKeyModal({
   keyData: key,
   ...props
-}: IEditKeyModalProps) {
+}: TEditKeyModalProps) {
   const utils = api.useUtils();
   const { mutateAsync: updateKey, isLoading: isUpdatingKey } =
     api.user.developer.updateKey.useMutation({
       onSettled: async () => {
         await utils.user.developer.getKeys.invalidate();
-        props.onClose();
+        props.onClose(false);
       },
     });
 

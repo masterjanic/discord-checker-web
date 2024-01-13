@@ -37,7 +37,7 @@ function ApiKeyEntry({ entry: key }: { entry: ApiKey }) {
       {isEditing && (
         <EditKeyModal
           keyData={key}
-          isOpen={isEditing}
+          open={isEditing}
           onClose={() => setIsEditing(false)}
         />
       )}
@@ -113,7 +113,7 @@ export default function DeveloperSettings() {
     <>
       {isCreateKeyModalOpen && (
         <CreateKeyModal
-          isOpen={isCreateKeyModalOpen}
+          open={isCreateKeyModalOpen}
           onClose={() => setIsCreateKeyModalOpen(false)}
         />
       )}

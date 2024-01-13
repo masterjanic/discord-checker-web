@@ -1,21 +1,20 @@
 import { Dialog } from "@headlessui/react";
+import { type ExtractProps } from "@nivo/core";
 import clsx from "clsx";
 import { type PropsWithChildren } from "react";
 import { FiX } from "react-icons/fi";
+
 import Box from "~/app/_components/common/box";
 
-export interface IModalProps extends React.HTMLAttributes<HTMLDivElement> {
-  isOpen: boolean;
-  onClose: () => void;
-}
+export type TModalProps = PropsWithChildren<ExtractProps<typeof Dialog>>;
 
 interface ModalSubComponents {
   Head: typeof Head;
   ActionRow: typeof ActionRow;
 }
 
-const Modal: React.FC<PropsWithChildren<IModalProps>> & ModalSubComponents = ({
-  isOpen,
+const Modal: React.FC<TModalProps> & ModalSubComponents = ({
+  open,
   onClose,
   children,
   className,
@@ -23,7 +22,7 @@ const Modal: React.FC<PropsWithChildren<IModalProps>> & ModalSubComponents = ({
 }) => {
   return (
     <Dialog
-      open={isOpen}
+      open={open}
       onClose={onClose}
       className="relative z-50 font-sans"
       {...props}
@@ -39,11 +38,11 @@ const Modal: React.FC<PropsWithChildren<IModalProps>> & ModalSubComponents = ({
             as={Box}
             className={clsx(
               "relative w-full max-w-lg bg-opacity-50 backdrop-blur",
-              className,
+              className as string,
             )}
           >
             <button
-              onClick={onClose}
+              onClick={void onClose}
               className="absolute right-[-1px] top-[-1px] flex h-[2.1rem] w-[2.1rem] items-center justify-center rounded-bl-xl rounded-tr-xl border border-blueish-grey-600/80 bg-blueish-grey-600 bg-opacity-[20%] p-2 text-neutral-200 transition-colors duration-150 hover:bg-opacity-[60%] hover:text-neutral-100"
             >
               <span className="sr-only">Close</span>

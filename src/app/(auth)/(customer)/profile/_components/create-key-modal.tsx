@@ -8,16 +8,16 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import Button from "~/app/_components/common/button";
 import InputField, { inputStyles } from "~/app/_components/common/input-field";
-import Modal, { type IModalProps } from "~/app/_components/common/modal";
+import Modal, { type TModalProps } from "~/app/_components/common/modal";
 import { api } from "~/trpc/react";
 
-export default function CreateKeyModal(props: IModalProps) {
+export default function CreateKeyModal(props: TModalProps) {
   const utils = api.useUtils();
   const { mutateAsync: createKey, isLoading: isCreatingKey } =
     api.user.developer.createKey.useMutation({
       onSettled: async () => {
         await utils.user.developer.getKeys.invalidate();
-        props.onClose();
+        props.onClose(false);
       },
     });
 
