@@ -13,6 +13,14 @@ export const userRouter = createTRPCRouter({
   getAll: adminProcedure.query(({ ctx }) => {
     return ctx.db.user.findMany();
   }),
+  me: protectedProcedure.query(({ ctx }) => {
+    const { session, db } = ctx;
+    return db.user.findUniqueOrThrow({
+      where: {
+        id: session.user.id,
+      },
+    });
+  }),
   get: adminProcedure
     .input(z.string().cuid())
     .query(async ({ ctx, input: id }) => {
@@ -101,15 +109,16 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        id: z.string().cuid(),
+        id: z.string().cuid().optional(),
         name: z.string().max(32).optional(),
         email: z.string().email().optional(),
         role: z.nativeEnum(Role).optional(),
+        publicAnonymous: z.boolean().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const { db, session } = ctx;
-      const { id, role, ...rest } = input;
+      const { id = session.user.id, role, ...rest } = input;
 
       if (role && session.user.role !== Role.ADMIN) {
         throw new TRPCError({

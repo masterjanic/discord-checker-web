@@ -1,28 +1,31 @@
-import Image from "next/image";
 import {
-  type APIUser,
   ImageFormat,
+  type APIUser,
   type UserAvatarFormat,
 } from "discord-api-types/v10";
-import { type SyntheticEvent, useState } from "react";
+import Image from "next/image";
+import { useState, type SyntheticEvent } from "react";
+
 import { CDN_URL } from "~/consts/discord";
 import { isMigratedUser } from "~/lib/discord-utils";
+import { cn } from "~/lib/utils";
 
-interface DiscordAvatarProps {
-  user: {
-    username: APIUser["username"];
-    id: APIUser["id"];
-    discriminator: APIUser["discriminator"];
-    avatar?: APIUser["avatar"];
-  };
+interface DiscordAvatarProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof Image>,
+    "width" | "height" | "src" | "alt"
+  > {
+  user: Pick<APIUser, "username" | "id" | "discriminator" | "avatar">;
   size?: number;
   format?: UserAvatarFormat;
 }
 
 export default function DiscordAvatar({
   user,
+  className,
   format = ImageFormat.WebP,
   size = 64,
+  ...props
 }: DiscordAvatarProps) {
   const [error, setError] = useState<SyntheticEvent | null>(null);
 
@@ -46,9 +49,13 @@ export default function DiscordAvatar({
       alt={`Avatar of ${user.username}`}
       width={size}
       height={size}
-      className="select-none rounded-full border border-blueish-grey-600/80 bg-blueish-grey-600"
+      className={cn(
+        "select-none rounded-full bg-background border pointer-events-none",
+        className,
+      )}
       draggable={false}
       loading="lazy"
+      {...props}
     />
   );
 }

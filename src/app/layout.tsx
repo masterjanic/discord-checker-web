@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 import { cookies } from "next/headers";
 
 import { DEFAULT_META } from "~/consts/meta";
+import { cn } from "~/lib/utils";
 import { TRPCReactProvider } from "~/trpc/react";
 
 const poppins = Poppins({
@@ -28,7 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${poppins.variable}`}>
+      {/**
+       * TODO: Maybe add theme switcher for light mode, otherwise leave .dark class as is.
+       */}
+      <body className={cn("font-sans antialiased dark", poppins.variable)}>
         <TRPCReactProvider cookies={cookies().toString()}>
           {children}
         </TRPCReactProvider>

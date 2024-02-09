@@ -2,13 +2,19 @@
 
 import clsx from "clsx";
 import { type IconType } from "react-icons";
-import { FiAlertTriangle, FiCheckCircle, FiStar, FiX } from "react-icons/fi";
+import {
+  PiCheckCircleDuotone,
+  PiStarDuotone,
+  PiWarningDuotone,
+  PiXCircleDuotone,
+} from "react-icons/pi";
+
 import { api } from "~/trpc/react";
 
 const entries = [
   {
     name: "Verified Accounts",
-    icon: FiCheckCircle as IconType,
+    icon: PiCheckCircleDuotone as IconType,
     key: "verified",
     textColor: "text-green-100",
     gradient: "from-green-700 via-green-800 to-green-900",
@@ -16,7 +22,7 @@ const entries = [
   },
   {
     name: "Unverified Accounts",
-    icon: FiAlertTriangle as IconType,
+    icon: PiWarningDuotone as IconType,
     key: "unverified",
     textColor: "text-yellow-100",
     gradient: "from-yellow-700 via-yellow-800 to-yellow-900",
@@ -24,7 +30,7 @@ const entries = [
   },
   {
     name: "Nitro Accounts",
-    icon: FiStar as IconType,
+    icon: PiStarDuotone as IconType,
     key: "nitro",
     textColor: "text-purple-100",
     gradient: "from-purple-700 via-purple-800 to-purple-900",
@@ -32,7 +38,7 @@ const entries = [
   },
   {
     name: "Flagged Accounts",
-    icon: FiX as IconType,
+    icon: PiXCircleDuotone as IconType,
     key: "flagged",
     textColor: "text-red-100",
     gradient: "from-red-700 via-red-800 to-red-900",
@@ -52,7 +58,7 @@ export default function AccountStats() {
           <div
             key={`stats-${key}`}
             className={clsx(
-              "flex flex-row rounded-md border bg-gradient-to-r p-6",
+              "flex flex-row rounded-lg border bg-gradient-to-r p-6",
               borderColor,
               gradient,
             )}
@@ -77,7 +83,7 @@ export default function AccountStats() {
                 gradient,
               )}
             >
-              <Icon className="flex text-2xl" />
+              <Icon className="flex text-3xl" />
             </div>
           </div>
         ),

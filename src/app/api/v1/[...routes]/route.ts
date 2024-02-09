@@ -27,7 +27,11 @@ const actions: Record<string, IApiAction> = {
             ownerId: userId,
           },
           include: {
-            tokens: true,
+            _count: {
+              select: {
+                tokens: true,
+              },
+            },
             history: true,
           },
         });

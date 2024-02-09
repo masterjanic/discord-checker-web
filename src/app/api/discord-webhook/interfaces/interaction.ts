@@ -10,8 +10,9 @@ export interface ICommandOptions {
 }
 
 export type TCommandResponse =
-  | Promise<APIInteractionResponse>
-  | APIInteractionResponse;
+  | Promise<APIInteractionResponse | Response>
+  | APIInteractionResponse
+  | Response;
 
 export interface ICommand {
   execute: (opts: ICommandOptions) => TCommandResponse;

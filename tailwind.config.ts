@@ -1,39 +1,84 @@
-import { type Config } from "tailwindcss";
-import { fontFamily, screens } from "tailwindcss/defaultTheme";
+import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
 
-export default {
-  content: ["./src/**/*.tsx"],
+const config = {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
+  prefix: "",
   theme: {
-    extend: {
-      colors: {
-        "blueish-grey-500": "#425B99",
-        "blueish-grey-600": "#202C4A",
-        "blueish-grey-700": "#111B36",
-        "blueish-grey-800": "#0B1324",
-        "blueish-grey-900": "#0A1020",
-        "neutral-100": "#FFFFFF",
-        "neutral-200": "#D4DDF2",
-        "neutral-300": "#C0CDEC",
-        "neutral-400": "#C6CFE6",
-        "neutral-900": "#000000",
-        dark: "#23272A",
-        "dark-legacy": "#4E5D94",
-        blurple: "#5865F2",
-        "blurple-dark": "#454FBF",
-        "blurple-legacy": "#7289DA",
-        primary: "#5d89f7",
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
       },
+    },
+    extend: {
       fontFamily: {
         sans: ["var(--font-poppins)", ...fontFamily.sans],
       },
-      screens: {
-        xs: "420px",
-        ...screens,
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
-      spacing: {
-        "navigation-height": "var(--navigation-height)",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
-  plugins: [require("tailwind-scrollbar"), require("@headlessui/tailwindcss")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar")],
 } satisfies Config;
+
+export default config;

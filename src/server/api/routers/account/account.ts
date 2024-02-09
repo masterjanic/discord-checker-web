@@ -5,7 +5,7 @@ import { z } from "zod";
 import { TOKEN_REGEX_LEGACY } from "~/consts/discord";
 import { getOwnerId } from "~/lib/auth";
 import { getLatestTokenByAccountId } from "~/lib/db/accounts";
-import { fetchBilling, fetchGuilds, fetchUser } from "~/lib/discord-api";
+import { fetchBilling, fetchUser } from "~/lib/discord-api";
 import {
   getAccountRating,
   hasChanged,
@@ -251,6 +251,12 @@ export const accountRouter = createTRPCRouter({
           flags: true,
           premium_type: true,
           rating: true,
+          tokens: {
+            orderBy: {
+              lastCheckedAt: "desc",
+            },
+            take: 1,
+          },
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;

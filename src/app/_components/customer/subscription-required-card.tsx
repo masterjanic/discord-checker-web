@@ -1,11 +1,11 @@
-import clsx from "clsx";
 import Link from "next/link";
 import { type HTMLAttributes, type ReactNode } from "react";
-import { btnStyle } from "~/app/_components/common/button";
-import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
 
-interface ISubscriptionRequiredCardProps
-  extends HTMLAttributes<HTMLDivElement> {
+import { buttonVariants } from "~/components/ui/button";
+import { Skeleton } from "~/components/ui/skeleton";
+import { cn } from "~/lib/utils";
+
+interface SubscriptionRequiredCardProps extends HTMLAttributes<HTMLDivElement> {
   skeleton?: ReactNode;
   feature?: string;
   message?: string | ReactNode;
@@ -13,14 +13,14 @@ interface ISubscriptionRequiredCardProps
 
 export default function SubscriptionRequiredCard({
   className,
-  skeleton = <SkeletonDefault />,
+  skeleton = <Skeleton className="w-full h-full" />,
   feature,
   message,
   ...props
-}: ISubscriptionRequiredCardProps) {
+}: SubscriptionRequiredCardProps) {
   return (
     <div
-      className={clsx(
+      className={cn(
         "relative grid h-full min-h-[190px] w-full place-items-center",
         className,
       )}
@@ -28,17 +28,20 @@ export default function SubscriptionRequiredCard({
     >
       <div className="absolute h-full w-full opacity-80">{skeleton}</div>
       <div className="relative text-center">
-        <h1 className="mb-2 text-xl font-medium">Subscription required</h1>
+        <h1 className="mb-2 text-xl font-semibold">Subscription required</h1>
         {feature && !message && (
-          <p className="text-sm text-neutral-200">
+          <p className="text-sm">
             This is an advanced feature. <br />
             You need to be subscribed to see {feature}.
           </p>
         )}
 
-        {message && <p className="text-sm text-neutral-200">{message}</p>}
+        {message && <p className="text-sm">{message}</p>}
 
-        <Link href="/profile" className={clsx("mt-8 inline-flex", btnStyle)}>
+        <Link
+          href="/profile"
+          className={cn(buttonVariants({ size: "sm" }), "mt-8 inline-flex")}
+        >
           Manage Subscription
         </Link>
       </div>

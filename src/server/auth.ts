@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type Role } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import {
   getServerSession,
   type DefaultSession,
@@ -43,6 +44,19 @@ export const authOptions: NextAuthOptions = {
         subscribedTill: user.subscribedTill,
       },
     }),
+  },
+  // TODO: Setup Discord webhook events for personal use (profile settings)
+  events: {
+    signIn({ user }) {
+      Sentry.setUser({
+        id: user.id,
+        email: user.email ?? undefined,
+        username: user.name ?? undefined,
+      });
+    },
+    signOut() {
+      Sentry.setUser(null);
+    },
   },
   adapter: PrismaAdapter(db),
   providers: [

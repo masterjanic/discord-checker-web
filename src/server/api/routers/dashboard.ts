@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import { z } from "zod";
 
 import { getOwnerId } from "~/lib/auth";
 import {
@@ -59,5 +60,74 @@ export const dashboardRouter = createTRPCRouter({
       id: localeToCountry(entry.locale),
       value: entry._count.locale,
     }));
+  }),
+  getNewAccounts: protectedProcedure
+    .input(
+      z.object({
+        verified: z.boolean().optional(),
+        nitro: z.boolean().optional(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { db, session } = ctx;
+      return db.discordAccount.findMany({
+        where: {
+          ownerId: getOwnerId(session.user),
+          verified: input.verified ?? undefined,
+          premium_type: input.nitro ? { gt: 0 } : undefined,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 4,
+        select: {
+          id: true,
+          username: true,
+          discriminator: true,
+          avatar: true,
+          flags: true,
+          premium_type: true,
+          createdAt: true,
+        },
+      });
+    }),
+  // TODO: Improve this query
+  getAccountsOverTime: activeSubscriptionProcedure.query(async ({ ctx }) => {
+    const { db, session } = ctx;
+
+    const DAYS = 14;
+
+    const currentDate = new Date();
+    const startDate = new Date(currentDate);
+    startDate.setDate(startDate.getDate() - DAYS - 1);
+
+    const countsPerDay = await db.discordAccount.groupBy({
+      by: ["createdAt"],
+      where: {
+        ownerId: getOwnerId(session.user),
+        createdAt: { gte: startDate, lte: currentDate },
+      },
+      _count: {
+        createdAt: true,
+      },
+    });
+
+    return new Array(DAYS)
+      .fill(0)
+      .map((_, index) => {
+        const date = new Date();
+        date.setDate(currentDate.getDate() - index);
+
+        const countRecord = countsPerDay.find((record) => {
+          const recordDate = new Date(record.createdAt);
+          return recordDate.toDateString() === date.toDateString();
+        });
+
+        return {
+          date: date.toLocaleDateString("en-US"),
+          count: countRecord ? countRecord._count.createdAt : 0,
+        };
+      })
+      .reverse();
   }),
 });

@@ -2,7 +2,7 @@ import { type Metadata } from "next";
 
 import { DEFAULT_META } from "~/consts/meta";
 
-interface IGenerateMetadata extends Metadata {
+interface GenerateMetadata extends Metadata {
   title?: string;
   description?: string;
   url: string;
@@ -16,7 +16,7 @@ export const generateMetadata = ({
   description,
   url,
   ...rest
-}: IGenerateMetadata): Metadata => {
+}: GenerateMetadata): Metadata => {
   return {
     ...DEFAULT_META,
     title,

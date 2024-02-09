@@ -56,6 +56,11 @@ const handler = async (req: Request) => {
         interaction: interaction as APIChatInputApplicationCommandInteraction,
         ping,
       });
+
+      if (result instanceof Response) {
+        return result;
+      }
+
       return Response.json(result, { status: 200 });
     } catch (err) {
       return new Response("Internal Server Error", { status: 500 });

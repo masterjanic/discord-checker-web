@@ -4,7 +4,7 @@ import { env } from "~/env";
 
 const SELLIX_ENDPOINT = "https://dev.sellix.io/v1";
 
-interface ICreatePaymentOptions {
+interface CreatePaymentOptions {
   title: string;
   gateways?: string[];
   value: number;
@@ -16,7 +16,7 @@ interface ICreatePaymentOptions {
   custom_fields?: Record<string, string>;
 }
 
-interface ICreatePaymentResponse {
+interface CreatePaymentResponse {
   data: {
     url: string;
   };
@@ -31,8 +31,8 @@ interface ICreatePaymentResponse {
  *
  * @param body The options for the payment.
  */
-export const createPayment = async (body: ICreatePaymentOptions) => {
-  return await axios.post<ICreatePaymentResponse>(
+export const createPayment = async (body: CreatePaymentOptions) => {
+  return await axios.post<CreatePaymentResponse>(
     `${SELLIX_ENDPOINT}/payments`,
     body,
     {

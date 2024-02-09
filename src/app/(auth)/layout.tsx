@@ -1,13 +1,17 @@
 import { Role } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FiChrome } from "react-icons/fi";
+import {
+  PiDiscordLogoDuotone,
+  PiGoogleChromeLogoDuotone,
+} from "react-icons/pi";
 import { TbSlashes } from "react-icons/tb";
 
-import BackgroundGrid from "~/app/_components/common/background-grid";
 import SignOutSection from "~/app/_components/common/sign-out";
 import NavRouterSegment from "~/app/_components/customer/nav-router-segment";
-import { CHROME_EXTENSION_URL } from "~/consts/internal";
+import BackgroundGrid from "~/components/common/background-grid";
+import { buttonVariants } from "~/components/ui/button";
+import { CHROME_EXTENSION_URL, SUPPORT_DISCORD_URL } from "~/consts/internal";
 import { getServerAuthSession } from "~/server/auth";
 
 const SIDEBAR_SECTIONS = [
@@ -132,20 +136,37 @@ export default async function AuthLayout({
                     <TbSlashes className="text-neutral-400" />
                     <NavRouterSegment />
                   </div>
-                  <Link
-                    href={CHROME_EXTENSION_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-200 hover:text-neutral-300 transition duration-300 hidden md:inline-flex"
-                  >
-                    <span className="sr-only">Chrome Extension</span>
-                    <FiChrome className="w-5 h-5" />
-                  </Link>
+                  <div className="flex items-center">
+                    <Link
+                      href={SUPPORT_DISCORD_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={buttonVariants({
+                        variant: "ghost",
+                        size: "icon",
+                      })}
+                    >
+                      <span className="sr-only">Join official Discord</span>
+                      <PiDiscordLogoDuotone className="w-5 h-5" />
+                    </Link>
+
+                    <Link
+                      href={CHROME_EXTENSION_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={buttonVariants({
+                        variant: "ghost",
+                        size: "icon",
+                      })}
+                    >
+                      <span className="sr-only">Install Chrome Extension</span>
+                      <PiGoogleChromeLogoDuotone className="w-5 h-5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
               <div className="relative flex-1 flex-grow overflow-auto scrollbar-thin">
                 <BackgroundGrid />
-
                 <div className="relative px-5 py-4">{children}</div>
               </div>
             </div>

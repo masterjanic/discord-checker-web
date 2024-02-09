@@ -1,6 +1,6 @@
 import { db } from "~/server/db";
 
-export interface ISellixWebhookEvent {
+export interface SellixWebhookEvent {
   event: string;
   data: {
     customer_email: string;
@@ -10,7 +10,7 @@ export interface ISellixWebhookEvent {
   };
 }
 
-export const handlePaymentSucceeded = async (event: ISellixWebhookEvent) => {
+export const handlePaymentSucceeded = async (event: SellixWebhookEvent) => {
   const oneMonthFromNow = new Date();
   oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
 

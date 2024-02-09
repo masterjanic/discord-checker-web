@@ -9,7 +9,7 @@ import UserCard from "~/app/_components/admin/user-card";
 import Box from "~/app/_components/common/box";
 import Button from "~/app/_components/common/button";
 import SearchBar from "~/app/_components/common/search-bar";
-import SkeletonAccountCard from "~/app/_components/skeletons/skeleton-account-card";
+import { Skeleton } from "~/components/ui/skeleton";
 import usePaginatedUsers from "~/hooks/usePaginatedUsers";
 
 export default function UserOverview() {
@@ -58,7 +58,10 @@ export default function UserOverview() {
 
         {!toShow || (isFetching && search)
           ? Array.from({ length: 30 }).map((_, i) => (
-              <SkeletonAccountCard key={`skel-loading-user-card-${i}`} />
+              <Skeleton
+                className="w-full h-[98px]"
+                key={`skel-loading-user-card-${i}`}
+              />
             ))
           : toShow?.map((user) => (
               <Link

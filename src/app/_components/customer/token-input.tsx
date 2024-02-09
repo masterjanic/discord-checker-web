@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { FiFilePlus, FiRefreshCcw } from "react-icons/fi";
 
-import AlertMessage from "~/app/_components/common/alert-message";
 import Button from "~/app/_components/common/button";
 import CheckerSettings from "~/app/_components/customer/checker-settings";
 import useChecker from "~/hooks/useChecker";
@@ -77,12 +76,6 @@ export default function TokenInput() {
 
       {isChecking && (
         <>
-          <AlertMessage
-            type="error"
-            message="Do not close this page while checking tokens or your progess will be lost."
-            className="mt-6"
-          />
-
           <p className="mt-4">
             Remaining Tokens: <b>{tokens.length}</b>
           </p>

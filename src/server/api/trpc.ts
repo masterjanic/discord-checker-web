@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -74,6 +75,12 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
+const sentryMiddleware = t.middleware(
+  Sentry.Handlers.trpcMiddleware({
+    attachRpcInput: true,
+  }),
+);
+
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
@@ -86,7 +93,10 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-const enforceUserIsAdmin = enforceUserIsAuthed.unstable_pipe(
+const sentryEnforceUserIsAuthed =
+  sentryMiddleware.unstable_pipe(enforceUserIsAuthed);
+
+const enforceUserIsAdmin = sentryEnforceUserIsAuthed.unstable_pipe(
   ({ ctx, next }) => {
     if (ctx.session.user.role !== Role.ADMIN) {
       throw new TRPCError({ code: "FORBIDDEN" });
@@ -96,7 +106,7 @@ const enforceUserIsAdmin = enforceUserIsAuthed.unstable_pipe(
   },
 );
 
-const enforceActiveSubscription = enforceUserIsAuthed.unstable_pipe(
+const enforceActiveSubscription = sentryEnforceUserIsAuthed.unstable_pipe(
   ({ ctx, next }) => {
     const user = ctx.session.user;
     if (!isUserSubscribed(user)) {
@@ -118,7 +128,7 @@ const enforceActiveSubscription = enforceUserIsAuthed.unstable_pipe(
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = t.procedure.use(sentryEnforceUserIsAuthed);
 export const adminProcedure = t.procedure.use(enforceUserIsAdmin);
 export const activeSubscriptionProcedure = t.procedure.use(
   enforceActiveSubscription,

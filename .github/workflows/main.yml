@@ -43,5 +43,7 @@ jobs:
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             DATABASE_URL_NON_POOLING=${{ secrets.DATABASE_URL_NON_POOLING }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -1,4 +1,3 @@
-import usePagination from "~/hooks/usePagination";
 import { api } from "~/trpc/react";
 
 type TPaginatedAccountProps = Parameters<
@@ -6,13 +5,7 @@ type TPaginatedAccountProps = Parameters<
 >[0];
 
 export default function usePaginatedAccounts(props: TPaginatedAccountProps) {
-  const {
-    pageIndex: page,
-    nextPage,
-    resetPage,
-    previousPage,
-  } = usePagination(1);
-  const [accounts, { fetchNextPage, isFetching }] =
+  const [accounts, { fetchNextPage, isFetching, hasNextPage }] =
     api.account.getWithCursor.useSuspenseInfiniteQuery(props, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       keepPreviousData: true,
@@ -20,11 +13,8 @@ export default function usePaginatedAccounts(props: TPaginatedAccountProps) {
 
   return {
     accounts,
-    page,
     fetchNextPage,
-    nextPage,
-    previousPage,
-    resetPage,
     isFetching,
+    hasNextPage,
   };
 }

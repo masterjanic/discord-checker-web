@@ -5,7 +5,7 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 import {
   handlePaymentSucceeded,
-  type ISellixWebhookEvent,
+  type SellixWebhookEvent,
 } from "~/server/sellix/sellix-webhook-handlers";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ const handler = async (req: NextRequest) => {
       throw new Error("Webhook signature verification failed");
     }
 
-    const eventData = JSON.parse(body) as ISellixWebhookEvent;
+    const eventData = JSON.parse(body) as SellixWebhookEvent;
 
     switch (eventData.event) {
       case "order:paid":

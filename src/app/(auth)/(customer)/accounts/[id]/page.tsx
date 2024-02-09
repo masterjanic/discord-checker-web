@@ -1,21 +1,26 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import TitledBox from "~/app/_components/common/box-with-title";
-import AccountActionsRow from "~/app/_components/customer/accounts/account-actions-row";
-import AccountBilling from "~/app/_components/customer/accounts/account-billing";
-import AccountGeneral from "~/app/_components/customer/accounts/account-general";
-import AccountHeader from "~/app/_components/customer/accounts/account-header";
-import AccountNotes from "~/app/_components/customer/accounts/account-notes";
-import AccountServerOverview from "~/app/_components/customer/accounts/account-server-overview";
-import AccountTokens from "~/app/_components/customer/accounts/account-tokens";
-import SubscriptionRequiredCard from "~/app/_components/customer/subscription-required-card";
-import SkeletonAccountActionsRow from "~/app/_components/skeletons/skeleton-account-actions-row";
-import SkeletonDefault from "~/app/_components/skeletons/skeleton-default";
-import SkeletonServerOverview from "~/app/_components/skeletons/skeleton-server-overview";
-import AccountHistory from "~/app/(auth)/(customer)/accounts/[id]/account-history";
-import { isUserSubscribed } from "~/lib/auth";
-import { isValidSnowflake, usernameOrTag } from "~/lib/discord-utils";
+import AccountHeader from "~/components/customer/accounts/account-header/account-header";
+import SkeletonAccountHeader from "~/components/customer/accounts/account-header/skeleton-account-header";
+import AccountHistoryCard from "~/components/customer/accounts/account-history/account-history-card";
+import AccountHistorySubscriptionPlaceholder from "~/components/customer/accounts/account-history/account-history-subscription-placeholder";
+import SkeletonAccountHistoryCard from "~/components/customer/accounts/account-history/skeleton-account-history-card";
+import AccountInformationCard from "~/components/customer/accounts/account-information/account-information-card";
+import SkeletonAccountInformationCard from "~/components/customer/accounts/account-information/skeleton-account-information-card";
+import AccountNotesCard from "~/components/customer/accounts/account-notes/account-notes-card";
+import SkeletonAccountNotesCard from "~/components/customer/accounts/account-notes/skeleton-account-notes-card";
+import AccountPaymentMethodsCard from "~/components/customer/accounts/account-payment-methods/account-payment-methods-card";
+import AccountPaymentMethodsSubscriptionPlaceholder from "~/components/customer/accounts/account-payment-methods/account-payment-methods-subscription-placeholder";
+import SkeletonAccountPaymentMethodsCard from "~/components/customer/accounts/account-payment-methods/skeleton-account-payment-methods-card";
+import AccountServersCard from "~/components/customer/accounts/account-servers/account-servers-card";
+import AccountServersSubscriptionPlaceholder from "~/components/customer/accounts/account-servers/account-servers-subscription-placeholder";
+import SkeletonAccountServersCard from "~/components/customer/accounts/account-servers/skeleton-account-servers-card";
+import AccountTokensCard from "~/components/customer/accounts/account-tokens/account-tokens-card";
+import SkeletonAccountTokensCard from "~/components/customer/accounts/account-tokens/skeleton-account-tokens-card";
+import RequiredSubscriptionWrapper from "~/components/customer/required-subscription-wrapper";
+import { Separator } from "~/components/ui/separator";
+import { usernameOrTag } from "~/lib/discord-utils";
 import { generateMetadata as _generateMetadata } from "~/lib/metadata";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
@@ -46,102 +51,66 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
-  if (!isValidSnowflake(id)) {
-    redirect("/accounts");
-  }
-
   const session = await getServerAuthSession();
 
   return (
     <>
-      <div className="mb-6">
-        <Suspense
-          fallback={<SkeletonDefault className="!h-[64px] !w-[500px]" />}
-        >
-          <AccountHeader userId={id} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<SkeletonAccountHeader />}>
+        <AccountHeader userId={id} />
+      </Suspense>
+      <Separator className="my-6" />
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-full overflow-hidden">
-          <Suspense fallback={<SkeletonAccountActionsRow />}>
-            <AccountActionsRow userId={id} />
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <Suspense fallback={<SkeletonAccountInformationCard />}>
+            <AccountInformationCard userId={id} />
           </Suspense>
         </div>
 
-        <TitledBox
-          title="General Information"
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          <Suspense fallback={<SkeletonDefault className="!h-[373px]" />}>
-            <AccountGeneral userId={id} />
-          </Suspense>
-        </TitledBox>
-
-        <TitledBox
-          title="Server Overview"
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          {isUserSubscribed(session?.user) ? (
-            <Suspense fallback={<SkeletonServerOverview />}>
-              <AccountServerOverview userId={id} />
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <RequiredSubscriptionWrapper
+            session={session}
+            placeholder={<AccountServersSubscriptionPlaceholder />}
+          >
+            <Suspense fallback={<SkeletonAccountServersCard />}>
+              <AccountServersCard userId={id} />
             </Suspense>
-          ) : (
-            <SubscriptionRequiredCard
-              feature="the server overview"
-              skeleton={<SkeletonServerOverview />}
-            />
-          )}
-        </TitledBox>
+          </RequiredSubscriptionWrapper>
+        </div>
 
-        <TitledBox
-          title="Account Tokens"
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          <Suspense fallback={<SkeletonDefault className="!h-[200px]" />}>
-            <AccountTokens userId={id} />
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <Suspense fallback={<SkeletonAccountTokensCard />}>
+            <AccountTokensCard userId={id} />
           </Suspense>
-        </TitledBox>
+        </div>
 
-        <TitledBox
-          title="Payment Methods"
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          {isUserSubscribed(session?.user) ? (
-            <Suspense fallback={<SkeletonDefault className="!h-[160px]" />}>
-              <AccountBilling userId={id} />
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <RequiredSubscriptionWrapper
+            session={session}
+            placeholder={<AccountPaymentMethodsSubscriptionPlaceholder />}
+          >
+            <Suspense fallback={<SkeletonAccountPaymentMethodsCard />}>
+              <AccountPaymentMethodsCard userId={id} />
             </Suspense>
-          ) : (
-            <SubscriptionRequiredCard feature="the payment methods" />
-          )}
-        </TitledBox>
+          </RequiredSubscriptionWrapper>
+        </div>
 
-        <TitledBox
-          title="Account History"
-          extra={
-            <span className="px-2 rounded bg-blurple border-blurple-legacy border font-medium">
-              Beta
-            </span>
-          }
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          {isUserSubscribed(session?.user) ? (
-            <Suspense fallback={<SkeletonDefault className="!h-[160px]" />}>
-              <AccountHistory userId={id} />
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <RequiredSubscriptionWrapper
+            session={session}
+            placeholder={<AccountHistorySubscriptionPlaceholder />}
+          >
+            <Suspense fallback={<SkeletonAccountHistoryCard />}>
+              <AccountHistoryCard userId={id} />
             </Suspense>
-          ) : (
-            <SubscriptionRequiredCard feature="the account history" />
-          )}
-        </TitledBox>
+          </RequiredSubscriptionWrapper>
+        </div>
 
-        <TitledBox
-          title="Notes"
-          className="col-span-full overflow-hidden md:col-span-6"
-        >
-          <Suspense fallback={<SkeletonDefault className="!h-[200px]" />}>
-            <AccountNotes userId={id} />
+        <div className="col-span-full overflow-hidden md:col-span-6">
+          <Suspense fallback={<SkeletonAccountNotesCard />}>
+            <AccountNotesCard userId={id} />
           </Suspense>
-        </TitledBox>
+        </div>
       </div>
     </>
   );

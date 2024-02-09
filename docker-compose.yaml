@@ -22,6 +22,8 @@ services:
       args:
         - DATABASE_URL=${DATABASE_URL}
         - DATABASE_URL_NON_POOLING=${DATABASE_URL_NON_POOLING}
+        - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+        - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
     restart: unless-stopped
     depends_on:
       - postgres
