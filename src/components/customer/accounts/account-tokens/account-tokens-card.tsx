@@ -1,6 +1,6 @@
 "use client";
 
-import { type DiscordToken } from ".prisma/client";
+import { type DiscordToken } from "@prisma/client";
 import { useState } from "react";
 import { PiEyeBold, PiEyeSlashBold, PiSignInBold } from "react-icons/pi";
 
