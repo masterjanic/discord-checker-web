@@ -13,6 +13,6 @@ export default function RequiredSubscriptionWrapper({
   children: React.ReactNode;
   placeholder: React.ReactNode;
 }) {
-  const isSubscribed = !isUserSubscribed(session?.user);
+  const isSubscribed = isUserSubscribed(session?.user);
   return <>{isSubscribed ? children : placeholder}</>;
 }
