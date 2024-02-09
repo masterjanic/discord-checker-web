@@ -3,7 +3,6 @@
 import SubscriptionRequiredCard from "~/app/_components/customer/subscription-required-card";
 import HelpTooltip from "~/components/common/help-tooltip";
 import TitledCard from "~/components/common/titled-card";
-import { Skeleton } from "~/components/ui/skeleton";
 
 export default function AccountCountryDistributionSubscriptionPlaceholder() {
   return (
@@ -16,10 +15,7 @@ export default function AccountCountryDistributionSubscriptionPlaceholder() {
       }
       className="h-full"
     >
-      <SubscriptionRequiredCard
-        feature="the country distribution"
-        skeleton={<Skeleton className="w-full h-[600px]" />}
-      />
+      <SubscriptionRequiredCard feature="the country distribution" />
     </TitledCard>
   );
 }

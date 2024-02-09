@@ -118,14 +118,18 @@ export const dashboardRouter = createTRPCRouter({
         const date = new Date();
         date.setDate(currentDate.getDate() - index);
 
-        const countRecord = countsPerDay.find((record) => {
-          const recordDate = new Date(record.createdAt);
-          return recordDate.toDateString() === date.toDateString();
-        });
+        const countRecord = countsPerDay
+          .filter((record) => {
+            const recordDate = new Date(record.createdAt);
+            return recordDate.toDateString() === date.toDateString();
+          })
+          .reduce((acc, record) => {
+            return acc + record._count.createdAt;
+          }, 0);
 
         return {
           date: date.toLocaleDateString("en-US"),
-          count: countRecord ? countRecord._count.createdAt : 0,
+          count: countRecord,
         };
       })
       .reverse();
