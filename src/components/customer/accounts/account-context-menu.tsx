@@ -55,8 +55,16 @@ export default function AccountContextMenu({
                 Fast Login
               </button>
             </ContextMenuItem>
-            <ContextMenuItem className="cursor-pointer">
-              Recheck
+            {
+              // TODO
+            }
+            <ContextMenuItem asChild>
+              <button
+                className="cursor-not-allowed w-full disabled:opacity-50"
+                disabled
+              >
+                Recheck
+              </button>
             </ContextMenuItem>
             <ContextMenuItem
               className="cursor-pointer"
@@ -69,12 +77,31 @@ export default function AccountContextMenu({
         <ContextMenuSub>
           <ContextMenuSubTrigger>Collections</ContextMenuSubTrigger>
           <ContextMenuSubContent>
-            <ContextMenuItem className="cursor-pointer">
-              Add to Collection
+            {
+              // TODO
+            }
+            <ContextMenuItem asChild>
+              <button
+                className="w-full cursor-not-allowed disabled:opacity-50"
+                disabled
+              >
+                Add to Collection
+              </button>
             </ContextMenuItem>
           </ContextMenuSubContent>
         </ContextMenuSub>
         <ContextMenuSeparator />
+        {
+          // TODO
+        }
+        <ContextMenuItem asChild>
+          <button
+            className="w-full cursor-not-allowed disabled:opacity-50"
+            disabled
+          >
+            Export
+          </button>
+        </ContextMenuItem>
         <ContextMenuItem
           className="cursor-pointer"
           onClick={() => void navigator.clipboard.writeText(account.id)}

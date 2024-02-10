@@ -37,8 +37,8 @@ export default function HomeHeroSection({
               <p className="my-3 pt-2 text-sm sm:mt-5 sm:text-base lg:mb-0 lg:text-lg">
                 Check thousands of Discord tokens within minutes.{" "}
                 <br className="hidden md:block" />
-                Manage your all your checked accounts with the details provided
-                by Discord and advanced analytics to differentiate between them.
+                Manage all your checked accounts with the details provided by
+                Discord and advanced analytics to differentiate between them.
               </p>
             </div>
           </div>

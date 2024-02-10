@@ -11,6 +11,7 @@ import { PiDiscordLogoDuotone, PiGithubLogoDuotone } from "react-icons/pi";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTrigger,
@@ -44,15 +45,17 @@ export default function MobileNav({ session }: { session: Session | null }) {
       </SheetTrigger>
       <SheetContent className="w-full">
         <SheetHeader>
-          <Link href="/">
-            <Image
-              className="pointer-events-none h-9 w-auto select-none"
-              src="/images/logo.png"
-              alt="DTC-Web: Logo; Evil Discord icon with a deadly smile"
-              width={36}
-              height={36}
-            />
-          </Link>
+          <SheetClose asChild>
+            <Link href="/">
+              <Image
+                className="pointer-events-none h-9 w-auto select-none"
+                src="/images/logo.png"
+                alt="DTC-Web: Logo; Evil Discord icon with a deadly smile"
+                width={36}
+                height={36}
+              />
+            </Link>
+          </SheetClose>
         </SheetHeader>
         <div className="py-6 px-1 flex flex-col divide-y">
           {NAV_LINKS.map((link) => {
@@ -63,12 +66,14 @@ export default function MobileNav({ session }: { session: Session | null }) {
                   <ul className="flex flex-col gap-2 mt-2.5">
                     {link.components!.map((component) => (
                       <li key={component.title}>
-                        <Link
-                          href={component.href}
-                          className="text-sm font-light pl-1.5 hover:text-primary transition duration-300"
-                        >
-                          {component.title}
-                        </Link>
+                        <SheetClose asChild>
+                          <Link
+                            href={component.href}
+                            className="text-sm font-light pl-1.5 hover:text-primary transition duration-300"
+                          >
+                            {component.title}
+                          </Link>
+                        </SheetClose>
                       </li>
                     ))}
                   </ul>
@@ -77,13 +82,14 @@ export default function MobileNav({ session }: { session: Session | null }) {
             }
 
             return (
-              <Link
-                key={`mobile-nav-link-${link.href}`}
-                className="py-4 hover:text-primary transition duration-300"
-                href={link.href}
-              >
-                {link.title}
-              </Link>
+              <SheetClose key={`mobile-nav-link-${link.href}`} asChild>
+                <Link
+                  className="py-4 hover:text-primary transition duration-300"
+                  href={link.href}
+                >
+                  {link.title}
+                </Link>
+              </SheetClose>
             );
           })}
           <div className="py-4 space-y-2">
@@ -99,15 +105,17 @@ export default function MobileNav({ session }: { session: Session | null }) {
 
             {session && (
               <>
-                <Link
-                  href="/dashboard"
-                  className={cn(
-                    buttonVariants({ variant: "default" }),
-                    "w-full",
-                  )}
-                >
-                  Dashboard
-                </Link>
+                <SheetClose asChild>
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      buttonVariants({ variant: "default" }),
+                      "w-full",
+                    )}
+                  >
+                    Dashboard
+                  </Link>
+                </SheetClose>
                 <Button
                   className="w-full"
                   variant="secondary"

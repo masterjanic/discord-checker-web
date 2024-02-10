@@ -95,6 +95,17 @@ export default function AccountHeader({ userId }: { userId: string }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {
+              // TODO
+            }
+            <DropdownMenuItem asChild>
+              <button
+                className="w-full cursor-not-allowed disabled:opacity-50"
+                disabled
+              >
+                Export
+              </button>
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => deleteAccount(userId)}

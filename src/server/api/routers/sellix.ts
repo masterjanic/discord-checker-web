@@ -10,7 +10,7 @@ export const sellixRouter = createTRPCRouter({
       value: 4.99,
       quantity: 1,
       white_label: false,
-      return_url: "https://discord-checker-janic.dev/dashboard",
+      return_url: "https://discord-checker.janic.dev/dashboard",
       currency: "USD",
       email: session.user.email!,
       custom_fields: {

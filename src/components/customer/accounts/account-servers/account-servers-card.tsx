@@ -114,19 +114,21 @@ export default function AccountServersCard({ userId }: { userId: string }) {
           </Card>
         ))}
       </div>
-      <Link
-        href={`/accounts/${userId}/guilds`}
-        className={cn(
-          buttonVariants({
-            variant: "default",
-            size: "sm",
-          }),
-          "mt-4",
-        )}
-      >
-        <PiMagnifyingGlassDuotone className="h-4 w-4 mr-2" />
-        <span>Show all {allGuilds.length} servers</span>
-      </Link>
+      {allGuilds?.length > 0 && (
+        <Link
+          href={`/accounts/${userId}/guilds`}
+          className={cn(
+            buttonVariants({
+              variant: "default",
+              size: "sm",
+            }),
+            "mt-4",
+          )}
+        >
+          <PiMagnifyingGlassDuotone className="h-4 w-4 mr-2" />
+          <span>Show all {allGuilds.length} servers</span>
+        </Link>
+      )}
     </TitledCard>
   );
 }

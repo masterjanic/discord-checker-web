@@ -25,7 +25,7 @@ export default async function Page() {
       <Navbar session={session} />
       <div className="relative min-h-[calc(100vh-73px)] grid place-items-center">
         <BackgroundGrid />
-        <Container className="relative grid place-items-center py-12">
+        <Container className="relative text-center grid place-items-center py-12">
           <span className="text-9xl font-bold text-primary mb-4 tracking-tight font-mono">
             404
           </span>

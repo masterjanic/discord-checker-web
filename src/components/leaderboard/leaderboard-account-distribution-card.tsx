@@ -27,7 +27,7 @@ export default function LeaderboardAccountDistributionCard() {
             data={data}
             dataKey="count"
             aspectRatio={4 / 3}
-            stroke="#fff"
+            fill="#fff"
             className="fill-primary"
           >
             <Tooltip
@@ -41,7 +41,8 @@ export default function LeaderboardAccountDistributionCard() {
                         {tooltipPayload.value} Accounts
                       </h5>
                       <p className="text-lg font-semibold">
-                        {tooltipPayload.name}
+                        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                        {tooltipPayload.payload.name}
                       </p>
                     </Card>
                   );
