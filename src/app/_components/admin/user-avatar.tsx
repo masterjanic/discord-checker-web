@@ -10,14 +10,11 @@ interface IUserAvatarProps {
 export default function UserAvatar({ user, size = 64 }: IUserAvatarProps) {
   const [error, setError] = useState<SyntheticEvent | null>(null);
 
+  // TODO: Re-add ?size= param?
   return (
     <Image
       onError={setError}
-      src={
-        !user.image || error
-          ? "/images/default_user.png"
-          : `${user.image}?size=${size}`
-      }
+      src={!user.image || error ? "/images/default_user.png" : user.image}
       alt={user.name ?? "User Avatar"}
       width={size}
       height={size}

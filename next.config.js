@@ -21,6 +21,10 @@ const config = {
         protocol: "https",
         hostname: "cdn.discordapp.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.gravatar.com",
+      },
     ],
   },
 };

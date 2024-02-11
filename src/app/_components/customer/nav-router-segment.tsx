@@ -20,12 +20,15 @@ export default function NavRouterSegment() {
             .slice(1, index + 2)
             .join("/")}`;
           return (
-            <>
+            <div
+              key={`nav-router-segment-${segment}-${index}`}
+              className="inline-flex items-center"
+            >
               <Link href={href}>{toTitleCase(segment)}</Link>
               {index !== pathName.split("/").length - 2 && (
                 <PiCaretRight className="text-muted-foreground" />
               )}
-            </>
+            </div>
           );
         })}
     </div>

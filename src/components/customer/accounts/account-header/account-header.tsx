@@ -41,15 +41,17 @@ export default function AccountHeader({ userId }: { userId: string }) {
     });
 
   return (
-    <div className="flex items-center justify-between gap-4 mt-2">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mt-2">
       <div className="flex items-center space-x-4">
         <DiscordAvatar user={account} />
         <div>
-          <div className="mb-1.5">
+          <div className="mb-1.5 max-w-[200px] md:max-w-[260px] xl:max-w-full">
             {isMigratedUser(account.discriminator) ? (
-              <h1 className="text-2xl font-medium">@{account.username}</h1>
+              <h1 className="text-2xl font-medium truncate">
+                @{account.username}
+              </h1>
             ) : (
-              <h1 className="text-2xl font-medium">
+              <h1 className="text-2xl font-medium truncate">
                 <span>{account.username}</span>
                 <small className="text-base text-neutral-300">
                   #{account.discriminator}

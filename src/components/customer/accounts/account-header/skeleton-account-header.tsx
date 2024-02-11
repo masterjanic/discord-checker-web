@@ -2,7 +2,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 export default function SkeletonAccountHeader() {
   return (
-    <div className="flex items-center justify-between mt-2">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between mt-2">
       <div className="flex items-center space-x-4">
         <Skeleton className="h-16 w-16 rounded-full" />
         <div className="flex flex-col">

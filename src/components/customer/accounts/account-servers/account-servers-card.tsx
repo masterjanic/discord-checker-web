@@ -114,7 +114,7 @@ export default function AccountServersCard({ userId }: { userId: string }) {
           </Card>
         ))}
       </div>
-      {allGuilds?.length > 0 && (
+      {allGuilds.length > guilds.length && (
         <Link
           href={`/accounts/${userId}/guilds`}
           className={cn(
