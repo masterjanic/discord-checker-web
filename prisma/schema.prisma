@@ -25,7 +25,7 @@ model DiscordAccount {
   flags             BigInt?
   locale            String?                    @default("en-US") @db.VarChar(5)
   mfa_enabled       Boolean?
-  premium_type      Int?
+  premium_type      Int?                       @db.SmallInt
   public_flags      BigInt?
   system            Boolean?
   phone             String?                    @db.VarChar(32)
@@ -36,7 +36,7 @@ model DiscordAccount {
   /// A password to be used for logging in to the account
   password          String?                    @db.VarChar(256)
   /// A number between 0 and 100 representing the account's trustworthiness
-  rating            Int?
+  rating            Int?                       @db.SmallInt
   /// Custom notes about the account
   notes             String?                    @db.VarChar(1024)
   tokens            DiscordToken[]
@@ -46,7 +46,8 @@ model DiscordAccount {
   /// A list of all changes that have been made to the account
   history           DiscordAccountHistory[]
   createdAt         DateTime                   @default(now())
-  updatedAt         DateTime                   @updatedAt
+
+  @@index([username])
 }
 
 /// Track changes in DiscordAccount model
@@ -56,7 +57,6 @@ model DiscordAccountHistory {
   discordAccount   DiscordAccount @relation(fields: [discordAccountId], references: [id], onDelete: Cascade)
   discordAccountId String
   changedAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
 }
 
 /// Group DiscordAccounts into collections
@@ -78,7 +78,6 @@ model DiscordToken {
   discordAccount   DiscordAccount @relation(fields: [discordAccountId], references: [id], onDelete: Cascade)
   lastCheckedAt    DateTime       @default(now())
   createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
 }
 
 /// Keeps track of all events that are sent by the Sellix API
@@ -94,14 +93,13 @@ model ApiKey {
   name       String    @db.VarChar(32)
   userId     String
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  value      String    @unique
+  value      String    @unique @db.VarChar(256)
   /// Defines the allowed origins for this API key
   allowedIps String[]  @db.VarChar(64)
   /// Defines the allowed requests per minute for this API key
-  rateLimit  Int       @default(10)
+  rateLimit  Int       @default(10) @db.SmallInt
   expiresAt  DateTime?
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
 }
 
 // Necessary for Next auth

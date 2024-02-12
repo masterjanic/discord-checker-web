@@ -124,11 +124,11 @@ export default function AccountOverview() {
               />
             ))
           : toShow?.map((account) => (
-              <AccountContextMenu account={account}>
-                <AccountCard
-                  key={`account-card-${account.id}`}
-                  account={account}
-                />
+              <AccountContextMenu
+                account={account}
+                key={`account-card-${account.id}`}
+              >
+                <AccountCard account={account} />
               </AccountContextMenu>
             ))}
       </div>
