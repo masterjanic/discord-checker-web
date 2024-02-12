@@ -2,6 +2,17 @@
 
 import { type DiscordAccount } from "@prisma/client";
 import Link from "next/link";
+import {
+  PiArrowClockwiseDuotone,
+  PiCopyDuotone,
+  PiExportDuotone,
+  PiEyeDuotone,
+  PiListDuotone,
+  PiPlusCircleDuotone,
+  PiSignInDuotone,
+  PiTrashDuotone,
+  PiUserDuotone,
+} from "react-icons/pi";
 
 import {
   ContextMenu,
@@ -36,15 +47,23 @@ export default function AccountContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger {...props}>{children}</ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuLabel>{usernameOrTag(account)}</ContextMenuLabel>
+      <ContextMenuContent className="w-52">
+        <ContextMenuLabel className="truncate">
+          {usernameOrTag(account)}
+        </ContextMenuLabel>
         <ContextMenuSeparator />
-        <ContextMenuItem className="cursor-pointer" asChild>
-          <Link href={`/accounts/${account.id}`}>View Profile</Link>
+        <ContextMenuItem asChild>
+          <Link href={`/accounts/${account.id}`} className="cursor-pointer">
+            <PiEyeDuotone className="w-4 h-4 mr-1.5" />
+            <span>View Profile</span>
+          </Link>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuSub>
-          <ContextMenuSubTrigger>Account Actions</ContextMenuSubTrigger>
+          <ContextMenuSubTrigger>
+            <PiUserDuotone className="h-4 w-4 mr-1.5" />
+            <span>Account Actions</span>
+          </ContextMenuSubTrigger>
           <ContextMenuSubContent>
             <ContextMenuItem asChild>
               <button
@@ -52,7 +71,8 @@ export default function AccountContextMenu({
                 name="fast-login"
                 data-fast-login={account.tokens[0]!.value}
               >
-                Fast Login
+                <PiSignInDuotone className="h-4 w-4 mr-1.5" />
+                <span>Fast Login</span>
               </button>
             </ContextMenuItem>
             {
@@ -63,19 +83,24 @@ export default function AccountContextMenu({
                 className="cursor-not-allowed w-full disabled:opacity-50"
                 disabled
               >
-                Recheck
+                <PiArrowClockwiseDuotone className="h-4 w-4 mr-1.5" />
+                <span>Recheck</span>
               </button>
             </ContextMenuItem>
             <ContextMenuItem
               className="cursor-pointer"
               onClick={() => deleteAccount(account.id)}
             >
-              Delete
+              <PiTrashDuotone className="h-4 w-4 mr-1.5" />
+              <span>Delete</span>
             </ContextMenuItem>
           </ContextMenuSubContent>
         </ContextMenuSub>
         <ContextMenuSub>
-          <ContextMenuSubTrigger>Collections</ContextMenuSubTrigger>
+          <ContextMenuSubTrigger>
+            <PiListDuotone className="w-4 h-4 mr-1.5" />
+            <span>Collections</span>
+          </ContextMenuSubTrigger>
           <ContextMenuSubContent>
             {
               // TODO
@@ -85,7 +110,8 @@ export default function AccountContextMenu({
                 className="w-full cursor-not-allowed disabled:opacity-50"
                 disabled
               >
-                Add to Collection
+                <PiPlusCircleDuotone className="h-4 w-4 mr-1.5" />
+                <span>Add to Collection</span>
               </button>
             </ContextMenuItem>
           </ContextMenuSubContent>
@@ -99,14 +125,16 @@ export default function AccountContextMenu({
             className="w-full cursor-not-allowed disabled:opacity-50"
             disabled
           >
-            Export
+            <PiExportDuotone className="h-4 w-4 mr-1.5" />
+            <span>Export</span>
           </button>
         </ContextMenuItem>
         <ContextMenuItem
           className="cursor-pointer"
           onClick={() => void navigator.clipboard.writeText(account.id)}
         >
-          Copy ID
+          <PiCopyDuotone className="h-4 w-4 mr-1.5" />
+          <span>Copy ID</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

@@ -224,14 +224,11 @@ export const accountRouter = createTRPCRouter({
       const items = await ctx.db.discordAccount.findMany({
         where: {
           OR: [
-            {
-              id: {
-                contains: search ?? undefined,
-              },
-            },
+            { id: search ?? undefined },
             {
               username: {
                 contains: search ?? undefined,
+                mode: "insensitive",
               },
             },
           ],
@@ -244,9 +241,7 @@ export const accountRouter = createTRPCRouter({
         },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          id: "asc",
-        },
+        orderBy: { id: "asc" },
         select: {
           id: true,
           username: true,
@@ -257,9 +252,7 @@ export const accountRouter = createTRPCRouter({
           rating: true,
           locale: true,
           tokens: {
-            orderBy: {
-              lastCheckedAt: "desc",
-            },
+            orderBy: { lastCheckedAt: "desc" },
             take: 1,
           },
         },

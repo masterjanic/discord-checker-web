@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import {
   PiArrowsClockwiseDuotone,
   PiDotsThreeBold,
+  PiExportDuotone,
   PiSignInDuotone,
+  PiTrashDuotone,
 } from "react-icons/pi";
 
 import BadgeList from "~/app/_components/common/discord/badge-list";
@@ -105,14 +107,16 @@ export default function AccountHeader({ userId }: { userId: string }) {
                 className="w-full cursor-not-allowed disabled:opacity-50"
                 disabled
               >
-                Export
+                <PiExportDuotone className="h-4 w-4 mr-1.5" />
+                <span>Export</span>
               </button>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => deleteAccount(userId)}
             >
-              Delete Account
+              <PiTrashDuotone className="h-4 w-4 mr-1.5" />
+              <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
