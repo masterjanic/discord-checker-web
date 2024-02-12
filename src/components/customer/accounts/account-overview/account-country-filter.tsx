@@ -55,39 +55,41 @@ export default function AccountCountryFilter() {
           />
           <CommandEmpty>No country found.</CommandEmpty>
           <CommandGroup className="overflow-y-scroll scrollbar-none max-h-64">
-            {DISCORD_LOCALES_MAP.map(([locale, code]) => {
-              const countryName = getCountryNameByCode(code);
-              return (
-                <CommandItem
-                  key={`locale-select-${locale}`}
-                  value={countryName}
-                  onSelect={() => {
-                    setFilter(
-                      "locale",
-                      filters.locale === locale ? "" : locale,
-                    );
-                    setIsOpen(false);
-                  }}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Image
-                      width={27}
-                      height={18}
-                      src={`/images/locales/${locale}.png`}
-                      alt={`Locale ${locale}`}
-                      className="pointer-events-none select-none rounded"
+            {Array.from(DISCORD_LOCALES_MAP)
+              .sort(([, codeA], [, codeB]) => codeA.localeCompare(codeB))
+              .map(([locale, code]) => {
+                const countryName = getCountryNameByCode(code);
+                return (
+                  <CommandItem
+                    key={`locale-select-${locale}`}
+                    value={countryName}
+                    onSelect={() => {
+                      setFilter(
+                        "locale",
+                        filters.locale === locale ? "" : locale,
+                      );
+                      setIsOpen(false);
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Image
+                        width={27}
+                        height={18}
+                        src={`/images/locales/${locale}.png`}
+                        alt={`Locale ${locale}`}
+                        className="pointer-events-none select-none rounded"
+                      />
+                      <span>{countryName}</span>
+                    </div>
+                    <CheckIcon
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        locale !== filters.locale && "opacity-0",
+                      )}
                     />
-                    <span>{countryName}</span>
-                  </div>
-                  <CheckIcon
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      locale !== filters.locale && "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              );
-            })}
+                  </CommandItem>
+                );
+              })}
           </CommandGroup>
         </Command>
       </PopoverContent>
