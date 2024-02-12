@@ -28,15 +28,18 @@ import {
 import { usernameOrTag } from "~/lib/discord-utils";
 import { api } from "~/trpc/react";
 
+interface AccountContextMenuProps
+  extends React.ComponentPropsWithoutRef<typeof ContextMenuTrigger> {
+  account: Pick<DiscordAccount, "id" | "username" | "discriminator"> & {
+    tokens: { value: string }[];
+  };
+}
+
 export default function AccountContextMenu({
   account,
   children,
   ...props
-}: {
-  account: Pick<DiscordAccount, "id" | "username" | "discriminator"> & {
-    tokens: { value: string }[];
-  };
-} & React.ComponentPropsWithoutRef<typeof ContextMenuTrigger>) {
+}: AccountContextMenuProps) {
   const utils = api.useUtils();
   const { mutateAsync: deleteAccount } = api.account.delete.useMutation({
     onSettled: async () => {
