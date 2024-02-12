@@ -9,6 +9,8 @@ interface AccountFiltersState {
     nitro: boolean;
     phone: boolean;
     unflagged: boolean;
+    rating: boolean;
+    locale: string;
   };
   nextPage: () => void;
   prevPage: () => void;
@@ -23,6 +25,8 @@ const defaultState = {
   nitro: false,
   phone: false,
   unflagged: false,
+  rating: false,
+  locale: "",
 };
 
 const useAccountsOverview = create<AccountFiltersState>()((set) => ({

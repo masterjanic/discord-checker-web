@@ -212,6 +212,8 @@ export const accountRouter = createTRPCRouter({
         phone: z.boolean().optional(),
         unflagged: z.boolean().optional(),
         limit: z.number().min(1).max(100).nullish(),
+        rating: z.boolean().optional(),
+        locale: z.string().optional(),
         cursor: z.string().nullish(),
       }),
     )
@@ -233,6 +235,8 @@ export const accountRouter = createTRPCRouter({
               },
             },
           ],
+          locale: !!input.locale ? input.locale : undefined,
+          rating: input.rating ? { gte: 80 } : undefined,
           phone: input.phone ? { not: null } : undefined,
           premium_type: input.nitro ? { gt: 0 } : undefined,
           verified: input.verified ? true : undefined,
@@ -251,6 +255,7 @@ export const accountRouter = createTRPCRouter({
           flags: true,
           premium_type: true,
           rating: true,
+          locale: true,
           tokens: {
             orderBy: {
               lastCheckedAt: "desc",

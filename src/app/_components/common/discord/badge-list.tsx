@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { DISCORD_BADGE_FLAGS } from "~/consts/discord";
+import { DISCORD_BADGE_FLAGS, getCountryNameByLocale } from "~/consts/discord";
 import { canLogin, hasFlag, isFlagged, toTitleCase } from "~/lib/discord-utils";
 import { cn } from "~/lib/utils";
 
@@ -16,6 +16,7 @@ interface BadgeListProps extends React.HTMLAttributes<HTMLDivElement> {
     id: APIUser["id"];
     flags?: APIUser["flags"] | bigint | null;
     premium_type?: APIUser["premium_type"] | null;
+    locale?: APIUser["locale"] | null;
   };
   size?: number;
 }
@@ -54,6 +55,29 @@ export default function BadgeList({
 
   return (
     <div className={cn("flex items-center space-x-1", className)} {...props}>
+      {user.locale && (
+        <div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipContent>
+                {getCountryNameByLocale(user.locale) ?? "Unknown Country"}
+              </TooltipContent>
+              <TooltipTrigger>
+                <Image
+                  src={`/images/locales/${user.locale}.png`}
+                  alt={`Locale ${user.locale}`}
+                  width={size}
+                  height={size}
+                  draggable={false}
+                  style={{ height: `${size}px` }}
+                  className="w-auto flex-shrink-0 select-none rounded"
+                />
+              </TooltipTrigger>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
+
       {!!user.flags &&
         Object.keys(DISCORD_BADGE_FLAGS)
           .filter((bit) => hasFlag(user.flags, bit))

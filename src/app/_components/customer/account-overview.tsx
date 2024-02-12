@@ -9,6 +9,7 @@ import SearchBar from "~/app/_components/common/search-bar";
 import AccountCard from "~/app/_components/customer/account-card";
 import HelpTooltip from "~/components/common/help-tooltip";
 import AccountContextMenu from "~/components/customer/accounts/account-context-menu";
+import AccountCountryFilter from "~/components/customer/accounts/account-overview/account-country-filter";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import {
@@ -53,17 +54,20 @@ export default function AccountOverview() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Filters</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {["verified", "nitro", "phone", "unflagged"].map((filter) => (
-                  <DropdownMenuCheckboxItem
-                    key={`filter-${filter}`}
-                    checked={!!filters[filter as keyof typeof filters]}
-                    onCheckedChange={(checked) => setFilter(filter, checked)}
-                  >
-                    {toTitleCase(filter)}
-                  </DropdownMenuCheckboxItem>
-                ))}
+                {["verified", "nitro", "phone", "unflagged", "rating"].map(
+                  (filter) => (
+                    <DropdownMenuCheckboxItem
+                      key={`filter-${filter}`}
+                      checked={!!filters[filter as keyof typeof filters]}
+                      onCheckedChange={(checked) => setFilter(filter, checked)}
+                    >
+                      {toTitleCase(filter)}
+                    </DropdownMenuCheckboxItem>
+                  ),
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
+            <AccountCountryFilter />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">Limit ({filters.limit})</Button>

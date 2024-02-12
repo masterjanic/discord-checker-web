@@ -36,7 +36,7 @@ export default function AccountCard({
           <DiscordAvatar user={account} />
         </Link>
         <div className="ml-4 text-left">
-          <div className="flex items-center space-x-2 text-sm">
+          <div className="flex items-center space-x-1.5 text-sm">
             <Link
               href={`/accounts/${account.id}`}
               className="truncate max-w-[160px] md:max-w-[180px] lg:max-w-full"

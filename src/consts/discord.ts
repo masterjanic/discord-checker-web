@@ -1,3 +1,5 @@
+import countries from "~/consts/world_countries.json";
+
 /**
  * The limit of free accounts that can be viewed in account overview.
  */
@@ -32,40 +34,60 @@ export const TOKEN_REGEX_LEGACY = /[A-Za-z\d]{24,28}\.[\w-]{6}\.[\w-]{27,38}/g;
  * Mapping between Discord locales and 3-letter country codes.
  */
 export const DISCORD_LOCALES_MAP = [
-  ["ar", "ARG"],
-  ["bg", "BGR"],
-  ["zh-CN", "CHN"],
-  ["zh-TW", "TWN"],
-  ["hr", "HUN"],
-  ["cs", "CZE"],
   ["da", "DNK"],
-  ["nl", "NLD"],
+  ["de", "DEU"],
   ["en-GB", "GBR"],
   ["en-US", "USA"],
-  ["fi", "FIN"],
+  ["es-ES", "ESP"],
+  ["es-419", "MEX"],
   ["fr", "FRA"],
-  ["de", "DEU"],
-  ["el", "GRC"],
-  ["hi", "IDN"],
-  ["hu", "HUN"],
-  ["id", "IDN"],
+  ["hr", "HRV"],
   ["it", "ITA"],
-  ["ja", "JPN"],
-  ["ko", "KOR"],
   ["lt", "LTU"],
+  ["hu", "HUN"],
+  ["nl", "NLD"],
   ["no", "NOR"],
   ["pl", "POL"],
   ["pt-BR", "BRA"],
   ["ro", "ROU"],
-  ["ru", "RUS"],
-  ["es-ES", "ESP"],
+  ["fi", "FIN"],
   ["sv-SE", "SWE"],
-  ["th", "THA"],
-  ["tr", "TUR"],
-  ["uk", "UKR"],
   ["vi", "VNM"],
+  ["tr", "TUR"],
+  ["cs", "CZE"],
+  ["el", "GRC"],
+  ["bg", "BGR"],
+  ["ru", "RUS"],
+  ["uk", "UKR"],
+  ["hi", "IDN"],
+  ["th", "THA"],
+  ["zh-CN", "CHN"],
+  ["ja", "JPN"],
+  ["zh-TW", "TWN"],
+  ["ko", "KOR"],
+  // Found locales but not documented
+  ["id", "IDN"],
+  ["ar", "ARG"],
   ["he", "ISR"],
 ] as const;
+
+/**
+ * Returns the full country name for a given country code.
+ * @param code The 3-letter country code.
+ */
+export const getCountryNameByCode = (code: string) => {
+  const country = countries.features.find((country) => country.id === code);
+  return country?.properties.name;
+};
+
+/**
+ * Returns the full country name for a given locale.
+ * @param locale The Discord locale.
+ */
+export const getCountryNameByLocale = (locale: string) => {
+  const code = DISCORD_LOCALES_MAP.find(([code]) => code === locale)?.[1];
+  return code ? getCountryNameByCode(code) : null;
+};
 
 /**
  * A mapping between Discord badge flags and their respective bit offsets.

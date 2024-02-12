@@ -88,6 +88,7 @@ export const dashboardRouter = createTRPCRouter({
           flags: true,
           premium_type: true,
           createdAt: true,
+          locale: true,
         },
       });
     }),
