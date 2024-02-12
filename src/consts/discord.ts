@@ -59,7 +59,7 @@ export const DISCORD_LOCALES_MAP = [
   ["bg", "BGR"],
   ["ru", "RUS"],
   ["uk", "UKR"],
-  ["hi", "IDN"],
+  ["hi", "IND"],
   ["th", "THA"],
   ["zh-CN", "CHN"],
   ["ja", "JPN"],
