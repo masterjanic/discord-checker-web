@@ -90,17 +90,14 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, profile }) {
       if (profile) {
         // Update existing user -> new profile picture, email or name
-        const discordProfile = profile as DiscordProfile;
         await db.user.updateMany({
           where: {
             id: user.id,
           },
           data: {
-            name: discordProfile.username,
-            email: discordProfile.email,
-            image:
-              discordProfile.image_url ??
-              generateGravatar(discordProfile.email),
+            name: profile.name,
+            email: profile.email,
+            image: profile.image ?? generateGravatar(profile.email),
           },
         });
       }
