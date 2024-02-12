@@ -33,7 +33,11 @@ declare module "next-auth" {
  * Generate a gravatar image URL from an email address.
  * @param email The email address to generate the gravatar for.
  */
-const generateGravatar = (email: string) => {
+const generateGravatar = (email: string | undefined) => {
+  if (!email) {
+    return undefined;
+  }
+
   email = email.trim().toLowerCase();
 
   const hash = crypto.createHash("sha256").update(email).digest("hex");
@@ -46,31 +50,14 @@ export const authOptions: NextAuthOptions = {
     error: "/",
   },
   callbacks: {
-    async signIn({ account, profile, user }) {
+    signIn({ account, profile }) {
       // Only allow sign in for Discord provider
       if (!account || account.provider !== "discord") {
         return false;
       }
 
       // Check if the user has an email address
-      if (!profile?.email) {
-        return false;
-      }
-
-      // Update existing user -> new profile picture, email or name
-      const discordProfile = profile as DiscordProfile;
-      await db.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          name: discordProfile.username,
-          email: discordProfile.email,
-          image: discordProfile.image_url ?? generateGravatar(profile.email),
-        },
-      });
-
-      return true;
+      return !!profile?.email;
     },
     session: ({ session, user }) => ({
       ...session,
@@ -100,7 +87,24 @@ export const authOptions: NextAuthOptions = {
         });
       }
     },
-    signIn({ user }) {
+    async signIn({ user, profile }) {
+      if (profile) {
+        // Update existing user -> new profile picture, email or name
+        const discordProfile = profile as DiscordProfile;
+        await db.user.updateMany({
+          where: {
+            id: user.id,
+          },
+          data: {
+            name: discordProfile.username,
+            email: discordProfile.email,
+            image:
+              discordProfile.image_url ??
+              generateGravatar(discordProfile.email),
+          },
+        });
+      }
+
       Sentry.setUser({
         id: user.id,
         email: user.email ?? undefined,
