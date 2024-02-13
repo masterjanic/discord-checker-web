@@ -26,6 +26,7 @@ import {
   ContextMenuTrigger,
 } from "~/components/ui/context-menu";
 import { usernameOrTag } from "~/lib/discord-utils";
+import { trpcToast } from "~/lib/trpc-toast";
 import { api } from "~/trpc/react";
 
 interface AccountContextMenuProps
@@ -41,6 +42,14 @@ export default function AccountContextMenu({
   ...props
 }: AccountContextMenuProps) {
   const utils = api.useUtils();
+
+  const { mutateAsync: recheck, isLoading: isRechecking } =
+    api.account.recheck.useMutation({
+      onSuccess: async () => {
+        await utils.account.getWithCursor.invalidate();
+      },
+    });
+
   const { mutateAsync: deleteAccount } = api.account.delete.useMutation({
     onSettled: async () => {
       await utils.account.getWithCursor.invalidate();
@@ -83,8 +92,21 @@ export default function AccountContextMenu({
             }
             <ContextMenuItem asChild>
               <button
-                className="cursor-not-allowed w-full disabled:opacity-50"
-                disabled
+                className="cursor-pointer w-full disabled:opacity-50"
+                disabled={isRechecking}
+                onClick={() => {
+                  trpcToast({
+                    promise: recheck(account.id),
+                    config: {
+                      loading: "Rechecking account...",
+                      success: "Account rechecked",
+                      error: "Failed to recheck account",
+                      successDescription: `The account ${usernameOrTag(account)} has been rechecked.`,
+                      errorDescription:
+                        "The account could not be rechecked. Please try again.",
+                    },
+                  });
+                }}
               >
                 <PiArrowClockwiseDuotone className="h-4 w-4 mr-1.5" />
                 <span>Recheck</span>
@@ -92,7 +114,19 @@ export default function AccountContextMenu({
             </ContextMenuItem>
             <ContextMenuItem
               className="cursor-pointer"
-              onClick={() => deleteAccount(account.id)}
+              onClick={() =>
+                trpcToast({
+                  promise: deleteAccount(account.id),
+                  config: {
+                    loading: "Deleting account...",
+                    success: "Account deleted",
+                    error: "Failed to delete account",
+                    successDescription: `The account ${usernameOrTag(account)} has been deleted.`,
+                    errorDescription:
+                      "The account could not be deleted. Please try again.",
+                  },
+                })
+              }
             >
               <PiTrashDuotone className="h-4 w-4 mr-1.5" />
               <span>Delete</span>

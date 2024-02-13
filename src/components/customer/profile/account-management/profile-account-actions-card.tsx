@@ -17,6 +17,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
+import { trpcToast } from "~/lib/trpc-toast";
 import { api } from "~/trpc/react";
 
 export default function ProfileAccountActionsCard() {
@@ -36,8 +37,10 @@ export default function ProfileAccountActionsCard() {
     mutateAsync: clearDiscordAccounts,
     isLoading: isClearingDiscordAccounts,
   } = api.account.deleteAll.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.push("/accounts");
+
+      await utils.account.getWithCursor.invalidate();
     },
   });
 
@@ -125,7 +128,22 @@ export default function ProfileAccountActionsCard() {
                 </AlertDialogDescription>
                 <AlertDialogFooter className="border-t pt-4">
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => clearDiscordAccounts()}>
+                  <AlertDialogAction
+                    onClick={() =>
+                      trpcToast({
+                        promise: clearDiscordAccounts(),
+                        config: {
+                          loading: "Clearing accounts...",
+                          success: "Accounts cleared",
+                          error: "Failed to clear accounts",
+                          successDescription:
+                            "Your accounts have been cleared.",
+                          errorDescription:
+                            "The accounts could not be cleared. Please try again.",
+                        },
+                      })
+                    }
+                  >
                     Continue
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -175,7 +193,19 @@ export default function ProfileAccountActionsCard() {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-600 hover:bg-red-700"
-                    onClick={() => deleteAccount()}
+                    onClick={() =>
+                      trpcToast({
+                        promise: deleteAccount(),
+                        config: {
+                          loading: "Deleting account...",
+                          success: "Account deleted",
+                          error: "Failed to delete account",
+                          successDescription: "Your account has been deleted.",
+                          errorDescription:
+                            "The account could not be deleted. Please try again.",
+                        },
+                      })
+                    }
                   >
                     Continue
                   </AlertDialogAction>

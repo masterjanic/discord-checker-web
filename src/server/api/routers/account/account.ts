@@ -64,7 +64,11 @@ export const accountRouter = createTRPCRouter({
       });
 
       if (!account) {
-        throw new TRPCError({ code: "NOT_FOUND" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message:
+            "The account could not be found, because it does not exist or has become invalid.",
+        });
       }
 
       return account;
@@ -308,7 +312,11 @@ export const accountRouter = createTRPCRouter({
       });
 
       if (!account) {
-        throw new TRPCError({ code: "NOT_FOUND" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message:
+            "The account could not be found, because it does not exist or has become invalid.",
+        });
       }
 
       let validTokens = account.tokens.length;
@@ -319,7 +327,9 @@ export const accountRouter = createTRPCRouter({
           validTokens--;
           if (validTokens === 0) {
             await api.account.delete.mutate(id);
-            continue;
+            return {
+              deleted: true,
+            };
           }
 
           await api.account.update.mutate({
@@ -337,6 +347,10 @@ export const accountRouter = createTRPCRouter({
           origin: token.origin ?? undefined,
         });
       }
+
+      return {
+        deleted: false,
+      };
     }),
   getHistory: activeSubscriptionProcedure
     .input(z.string().refine(isValidSnowflake))

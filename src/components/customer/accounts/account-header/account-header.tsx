@@ -20,7 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { canLogin, isMigratedUser } from "~/lib/discord-utils";
+import { canLogin, isMigratedUser, usernameOrTag } from "~/lib/discord-utils";
+import { trpcToast } from "~/lib/trpc-toast";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -31,13 +32,19 @@ export default function AccountHeader({ userId }: { userId: string }) {
 
   const { mutateAsync: deleteAccount, isLoading: isDeleting } =
     api.account.delete.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
         router.push("/accounts");
+
+        await utils.account.get.invalidate(userId);
       },
     });
   const { mutateAsync: recheck, isLoading: isRechecking } =
     api.account.recheck.useMutation({
-      onSuccess: async () => {
+      onSuccess: async (data) => {
+        if (data.deleted) {
+          router.push("/accounts");
+        }
+
         await utils.account.get.invalidate(userId);
       },
     });
@@ -69,7 +76,19 @@ export default function AccountHeader({ userId }: { userId: string }) {
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => recheck(userId)}
+          onClick={() =>
+            trpcToast({
+              promise: recheck(userId),
+              config: {
+                loading: "Rechecking account...",
+                success: "Account rechecked",
+                error: "Failed to recheck account",
+                successDescription: `The account ${usernameOrTag(account)} has been rechecked.`,
+                errorDescription:
+                  "The account could not be rechecked. Please try again.",
+              },
+            })
+          }
           disabled={isRechecking || isDeleting}
         >
           <PiArrowsClockwiseDuotone
@@ -113,7 +132,19 @@ export default function AccountHeader({ userId }: { userId: string }) {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => deleteAccount(userId)}
+              onClick={() =>
+                trpcToast({
+                  promise: deleteAccount(userId),
+                  config: {
+                    loading: "Deleting account...",
+                    success: "Account deleted",
+                    error: "Failed to delete account",
+                    successDescription: `The account ${usernameOrTag(account)} has been deleted.`,
+                    errorDescription:
+                      "The account could not be deleted. Please try again.",
+                  },
+                })
+              }
             >
               <PiTrashDuotone className="h-4 w-4 mr-1.5" />
               <span>Delete</span>

@@ -1,14 +1,13 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 
 import Container from "~/components/common/container";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { type AppRouter } from "~/server/api/root";
+import { isTRPCClientError } from "~/trpc/react";
 
 export const metadata = {
   title: "An error occurred",
@@ -18,12 +17,6 @@ export const metadata = {
     follow: false,
   },
 };
-
-export function isTRPCClientError(
-  cause: unknown,
-): cause is TRPCClientError<AppRouter> {
-  return cause instanceof TRPCClientError;
-}
 
 export default function Page({
   error,
@@ -43,12 +36,6 @@ export default function Page({
     // Log the error to Sentry
     Sentry.captureException(error);
   }, [error]);
-
-  if (isTRPCClientError(error)) {
-    if (error.data?.httpStatus === 404) {
-      notFound();
-    }
-  }
 
   // TODO: Better messages according to status code
   return (
