@@ -30,7 +30,7 @@ interface DroppedFile {
  * Convert a file size in bytes to a human-readable string
  * @param size The file size in bytes
  */
-export const fileSizeToString = (size: number) => {
+const fileSizeToString = (size: number) => {
   const sizes = ["B", "KB", "MB", "GB", "TB"];
   if (size === 0) {
     return "0 B";
@@ -58,7 +58,17 @@ export default function ImportFileZone() {
 
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
     accept: {
-      "text/*": [".csv", ".json", ".txt", ".xml"],
+      "text/*": [
+        ".csv",
+        ".json",
+        ".txt",
+        ".xml",
+        ".html",
+        ".htm",
+        ".js",
+        ".xsl",
+        ".xbl",
+      ],
     },
     maxFiles: 10,
     maxSize: 1e9, // 1 GB
@@ -93,9 +103,6 @@ export default function ImportFileZone() {
 
         reader.readAsText(file);
       }
-    },
-    onDropRejected: (fileRejections) => {
-      console.log(fileRejections);
     },
   });
 

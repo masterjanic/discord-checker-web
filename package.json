@@ -62,7 +62,6 @@
     "common-tags": "^1.8.2",
     "date-fns": "^3.3.1",
     "discord-api-types": "^0.37.69",
-    "formik": "^2.4.5",
     "ioredis": "^5.3.2",
     "lodash": "^4.17.21",
     "next": "^14.1.0",
@@ -85,7 +84,6 @@
     "tailwindcss-animate": "^1.0.7",
     "tweetnacl": "^1.0.3",
     "zod": "^3.22.4",
-    "zod-formik-adapter": "^1.2.0",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

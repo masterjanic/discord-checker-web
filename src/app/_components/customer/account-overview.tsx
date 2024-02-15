@@ -3,12 +3,17 @@
 import debounce from "lodash/debounce";
 import Link from "next/link";
 import { type ChangeEvent } from "react";
-import { PiArrowLeftDuotone, PiArrowRightDuotone } from "react-icons/pi";
+import {
+  PiArrowLeftDuotone,
+  PiArrowRightDuotone,
+  PiExportDuotone,
+} from "react-icons/pi";
 
 import SearchBar from "~/app/_components/common/search-bar";
 import AccountCard from "~/app/_components/customer/account-card";
 import HelpTooltip from "~/components/common/help-tooltip";
 import AccountContextMenu from "~/components/customer/accounts/account-context-menu";
+import AccountExportMultiDialog from "~/components/customer/accounts/account-export-multi-dialog";
 import AccountCountryFilter from "~/components/customer/accounts/account-overview/account-country-filter";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -86,6 +91,11 @@ export default function AccountOverview() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            <AccountExportMultiDialog>
+              <Button variant="outline" size="icon">
+                <PiExportDuotone className="h-5 w-5" />
+              </Button>
+            </AccountExportMultiDialog>
 
             <HelpTooltip align="center" side="bottom" sideOffset={15}>
               You can right-click on the account card for more options.

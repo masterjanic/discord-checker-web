@@ -13,6 +13,7 @@ import {
   isValidSnowflake,
   type TCompareableUser,
 } from "~/lib/discord-utils";
+import TokenExporter from "~/lib/token-exporter";
 import { accountGuildRouter } from "~/server/api/routers/account/guild";
 import {
   activeSubscriptionProcedure,
@@ -374,5 +375,51 @@ export const accountRouter = createTRPCRouter({
         },
         take: 5,
       });
+    }),
+  export: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().optional(),
+        fileType: z.enum(["txt", "csv", "json"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { db, session } = ctx;
+      const { id, fileType } = input;
+      const accounts = await db.discordAccount.findMany({
+        where: { id, ownerId: getOwnerId(session.user) },
+        include: {
+          tokens: {
+            select: {
+              value: true,
+              lastCheckedAt: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      const exporter = new TokenExporter(accounts);
+      switch (fileType) {
+        case "txt":
+          return {
+            ext: "txt",
+            data: exporter.toPlain(),
+          };
+        case "csv":
+          return {
+            ext: "csv",
+            data: exporter.toCSV(),
+          };
+        case "json":
+          return {
+            ext: "json",
+            data: exporter.toJSON(),
+          };
+        default:
+          break;
+      }
+
+      return null;
     }),
 });

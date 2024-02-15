@@ -21,18 +21,23 @@ class TokenExporter {
     const header = Object.keys(this.accounts[0]!)
       .filter((k) => k !== "tokens")
       .join(",");
-    this.accounts.map(({ tokens, ...account }) => {
+    const accounts = this.accounts.map(({ tokens, ...account }) => {
       const details = Object.values(account).join(",");
-      const joinedTokens = tokens.map((token) => token.value).join(",");
+      const joinedTokens = tokens.map((token) => token.value).join("\n");
 
       return [details, joinedTokens].join(",");
     });
 
-    return [header, ...this.accounts].join("\n");
+    return [header.concat(",tokens"), ...accounts].join("\n");
   }
 
   toJSON() {
-    return JSON.stringify(this.accounts, null, 2);
+    return JSON.stringify(
+      this.accounts,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      (key, value) => (typeof value === "bigint" ? `${value}` : value),
+      2,
+    );
   }
 
   toPlain() {

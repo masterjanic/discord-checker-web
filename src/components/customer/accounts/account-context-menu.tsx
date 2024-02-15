@@ -87,9 +87,6 @@ export default function AccountContextMenu({
                 <span>Fast Login</span>
               </button>
             </ContextMenuItem>
-            {
-              // TODO
-            }
             <ContextMenuItem asChild>
               <button
                 className="cursor-pointer w-full disabled:opacity-50"
