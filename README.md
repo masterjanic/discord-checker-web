@@ -25,7 +25,7 @@ This project is built with the [Next.js](https://nextjs.org/) framework and requ
 To deploy your build please refer to the Next.js [deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
 
 ## 📝 Contact
-- **Discord:** @masterjanic
+- **Discord:** @masterjanic.
 
 ## 🧑‍💻 TODO
 
