@@ -1,23 +1,25 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import Link from "next/link";
 
-import { Button } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 export default function SignInButton({
+  className,
   children,
   variant = "default",
   size = "sm",
   ...props
-}: React.ComponentPropsWithoutRef<typeof Button>) {
+}: React.HTMLAttributes<HTMLAnchorElement> &
+  Parameters<typeof buttonVariants>[0]) {
   return (
-    <Button
-      variant={variant}
-      size={size}
-      onClick={() => signIn("discord", { callbackUrl: "/dashboard" })}
+    <Link
+      href="/auth/login"
+      className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     >
       {children}
-    </Button>
+    </Link>
   );
 }

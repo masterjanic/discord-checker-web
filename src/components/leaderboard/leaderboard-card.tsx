@@ -69,7 +69,9 @@ export default function LeaderboardCard({
                 <div className="flex flex-col">
                   <div className="flex items-center space-x-1.5">
                     <div className="max-w-[130px] sm:max-w-full">
-                      {user.publicProfile && !user.publicAnonymous ? (
+                      {user.name &&
+                      user.publicProfile &&
+                      !user.publicAnonymous ? (
                         <Link href={`/u/${user.name}`}>
                           <h3
                             className={cn(
@@ -78,7 +80,7 @@ export default function LeaderboardCard({
                                 "font-extrabold bg-clip-text text-transparent bg-gradient-to-b from-yellow-300 to-yellow-500",
                             )}
                           >
-                            {user.name}
+                            {user.name ?? "Unnamed User"}
                           </h3>
                         </Link>
                       ) : (
@@ -89,7 +91,7 @@ export default function LeaderboardCard({
                               "font-extrabold bg-clip-text text-transparent bg-gradient-to-b from-yellow-300 to-yellow-500",
                           )}
                         >
-                          {user.name}
+                          {user.name ?? "Unnamed User"}
                         </h3>
                       )}
                     </div>

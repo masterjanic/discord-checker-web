@@ -81,7 +81,7 @@ export default async function AuthLayout({
                 <div className="mb-2">
                   <div className="flex h-12 max-h-12 items-center border-b border-neutral-100/10 px-6">
                     <h4 className="mb-0 truncate text-lg">
-                      {session.user.name}
+                      {session.user.name ?? "Unnamed User"}
                     </h4>
                   </div>
                 </div>

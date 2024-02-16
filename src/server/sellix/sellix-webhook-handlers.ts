@@ -16,11 +16,7 @@ export const handlePaymentSucceeded = async (event: SellixWebhookEvent) => {
 
   const { userId } = event.data.custom_fields;
   await db.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      subscribedTill: oneMonthFromNow,
-    },
+    where: { id: userId },
+    data: { subscribedTill: oneMonthFromNow },
   });
 };

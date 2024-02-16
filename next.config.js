@@ -17,14 +17,8 @@ const config = {
         port: "3000",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "cdn.discordapp.com",
-      },
-      {
-        protocol: "https",
-        hostname: "www.gravatar.com",
-      },
+      { protocol: "https", hostname: "cdn.discordapp.com" },
+      { protocol: "https", hostname: "www.gravatar.com" },
     ],
   },
 };

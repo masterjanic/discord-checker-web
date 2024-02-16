@@ -29,8 +29,6 @@ export const leaderboardRouter = createTRPCRouter({
       },
     });
     for (const user of users) {
-      user.name = `@${user.name}`;
-
       if (user.publicAnonymous) {
         user.name = "Anonymous User";
         user.image = null;
