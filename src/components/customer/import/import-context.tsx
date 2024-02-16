@@ -53,6 +53,16 @@ export default function ImportContext() {
           const user = await fetchUser("@me", { token });
           if (!user) {
             updateCount("invalid");
+            toast("Invalid Token", {
+              description: (
+                <div className="flex flex-col space-y-1">
+                  <p>
+                    The token for user {decodedId} was invalid and not added.
+                  </p>
+                </div>
+              ),
+              dismissible: true,
+            });
             return;
           }
 
