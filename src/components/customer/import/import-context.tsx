@@ -16,7 +16,14 @@ import { api } from "~/trpc/react";
 
 export default function ImportContext() {
   const router = useRouter();
-  const { mutateAsync: createAccount } = api.account.create.useMutation();
+
+  const utils = api.useUtils();
+  const { mutateAsync: createAccount } = api.account.create.useMutation({
+    onSuccess: async () => {
+      await utils.dashboard.invalidate();
+      await utils.account.invalidate();
+    },
+  });
   const { running, tokens } = useTokenImport();
 
   useEffect(() => {
