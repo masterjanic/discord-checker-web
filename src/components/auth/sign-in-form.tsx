@@ -5,7 +5,7 @@ import { signIn, type getProviders } from "next-auth/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { PiEnvelopeDuotone } from "react-icons/pi";
-import { SiDiscord, SiGithub, SiGoogle } from "react-icons/si";
+import { SiDiscord, SiGithub } from "react-icons/si";
 import { z } from "zod";
 
 import { Button } from "~/components/ui/button";
