@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn, type getProviders } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { PiEnvelopeDuotone } from "react-icons/pi";
@@ -21,11 +21,7 @@ import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils";
 
-export default function SignInForm({
-  providers,
-}: {
-  providers: Awaited<ReturnType<typeof getProviders>>;
-}) {
+export default function SignInForm() {
   const providerStyles = {
     discord: {
       icon: SiDiscord,
@@ -97,7 +93,6 @@ export default function SignInForm({
                   style,
                 )}
                 onClick={() => signIn(key)}
-                disabled={!providers || !(key in providers)}
               >
                 <span className="sr-only">
                   Sign in with {key.toUpperCase()}

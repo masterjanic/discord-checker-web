@@ -1,4 +1,3 @@
-import { getProviders } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -38,7 +37,6 @@ export default async function Page({
     redirect("/dashboard");
   }
 
-  const providers = await getProviders();
   const errorMessages = {
     OAuthAccountNotLinked: "This account is not linked to any OAuth provider.",
     EmailCreateAccount:
@@ -78,7 +76,7 @@ export default async function Page({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignInForm providers={providers} />
+            <SignInForm />
           </CardContent>
         </Card>
         <div className="text-center">
