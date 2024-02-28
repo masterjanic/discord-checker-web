@@ -72,7 +72,7 @@ export default function CreateApiKeyDialog({
   });
 
   const utils = api.useUtils();
-  const { mutateAsync: createKey, isLoading: isCreatingKey } =
+  const { mutateAsync: createKey, isPending: isCreatingKey } =
     api.user.developer.createKey.useMutation({
       onSettled: async () => {
         await utils.user.developer.getKeys.invalidate();

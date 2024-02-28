@@ -5,7 +5,7 @@ import { dashboardRouter } from "~/server/api/routers/dashboard";
 import { publicRouter } from "~/server/api/routers/public/public";
 import { sellixRouter } from "~/server/api/routers/sellix";
 import { userRouter } from "~/server/api/routers/user/user";
-import { createTRPCRouter } from "~/server/api/trpc";
+import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
@@ -18,3 +18,5 @@ export const appRouter = createTRPCRouter({
 });
 
 export type AppRouter = typeof appRouter;
+
+export const createCaller = createCallerFactory(appRouter);

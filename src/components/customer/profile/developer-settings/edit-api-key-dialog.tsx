@@ -51,7 +51,7 @@ export default function EditApiKeyDialog({
   });
 
   const utils = api.useUtils();
-  const { mutateAsync: updateKey, isLoading: isUpdatingKey } =
+  const { mutateAsync: updateKey, isPending: isUpdatingKey } =
     api.user.developer.updateKey.useMutation({
       onSettled: async () => {
         await utils.user.developer.getKeys.invalidate();

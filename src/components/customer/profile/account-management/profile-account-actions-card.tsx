@@ -26,7 +26,7 @@ export default function ProfileAccountActionsCard() {
 
   const [user] = api.user.me.useSuspenseQuery();
 
-  const { mutateAsync: deleteAccount, isLoading: isDeletingAccount } =
+  const { mutateAsync: deleteAccount, isPending: isDeletingAccount } =
     api.user.delete.useMutation({
       onSuccess: () => {
         router.push("/");
@@ -35,7 +35,7 @@ export default function ProfileAccountActionsCard() {
 
   const {
     mutateAsync: clearDiscordAccounts,
-    isLoading: isClearingDiscordAccounts,
+    isPending: isClearingDiscordAccounts,
   } = api.account.deleteAll.useMutation({
     onSuccess: async () => {
       router.push("/accounts");
@@ -50,7 +50,7 @@ export default function ProfileAccountActionsCard() {
 
       const prevData = utils.user.me.getData();
       utils.user.me.setData(undefined, (old) => {
-        return Object.assign(old!, input);
+        return Object.assign(old, input);
       });
       return {
         prevData,

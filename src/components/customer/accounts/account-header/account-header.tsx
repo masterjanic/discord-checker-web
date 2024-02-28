@@ -30,7 +30,7 @@ export default function AccountHeader({ userId }: { userId: string }) {
   const utils = api.useUtils();
   const [account] = api.account.get.useSuspenseQuery(userId);
 
-  const { mutateAsync: deleteAccount, isLoading: isDeleting } =
+  const { mutateAsync: deleteAccount, isPending: isDeleting } =
     api.account.delete.useMutation({
       onSuccess: async () => {
         router.push("/accounts");
@@ -38,7 +38,7 @@ export default function AccountHeader({ userId }: { userId: string }) {
         await utils.account.get.invalidate(userId);
       },
     });
-  const { mutateAsync: recheck, isLoading: isRechecking } =
+  const { mutateAsync: recheck, isPending: isRechecking } =
     api.account.recheck.useMutation({
       onSuccess: async (data) => {
         if (data.deleted) {

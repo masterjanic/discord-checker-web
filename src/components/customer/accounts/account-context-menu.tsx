@@ -43,7 +43,7 @@ export default function AccountContextMenu({
 }: AccountContextMenuProps) {
   const utils = api.useUtils();
 
-  const { mutateAsync: recheck, isLoading: isRechecking } =
+  const { mutateAsync: recheck, isPending: isRechecking } =
     api.account.recheck.useMutation({
       onSuccess: async () => {
         await utils.account.getWithCursor.invalidate();

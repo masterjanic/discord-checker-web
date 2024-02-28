@@ -16,7 +16,7 @@ export default function CollectionOverview() {
   const { collections, page } = usePaginatedCollections({});
 
   const utils = api.useUtils();
-  const { mutateAsync: createCollection, isLoading: isCreatingCollection } =
+  const { mutateAsync: createCollection, isPending: isCreatingCollection } =
     api.collection.create.useMutation({
       onSuccess: async () => {
         await utils.collection.getWithCursor.invalidate();

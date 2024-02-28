@@ -8,11 +8,9 @@ import {
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
+import SuperJSON from "superjson";
 
 import { type AppRouter } from "~/server/api/root";
-import { getUrl, transformer } from "./shared";
-
-export const api = createTRPCReact<AppRouter>();
 
 export const isTRPCClientError = (
   cause: unknown,
@@ -20,15 +18,25 @@ export const isTRPCClientError = (
   return cause instanceof TRPCClientError;
 };
 
-export function TRPCReactProvider(props: {
-  children: React.ReactNode;
-  cookies: string;
-}) {
-  const [queryClient] = useState(() => new QueryClient());
+export const api = createTRPCReact<AppRouter>();
+
+const createQueryClient = () => new QueryClient();
+
+let clientQueryClientSingleton: QueryClient | undefined = undefined;
+const getQueryClient = () => {
+  if (typeof window === "undefined") {
+    // Server: always make a new query client
+    return createQueryClient();
+  }
+  // Browser: use singleton pattern to keep the same query client
+  return (clientQueryClientSingleton ??= createQueryClient());
+};
+
+export function TRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (op) =>
@@ -36,12 +44,12 @@ export function TRPCReactProvider(props: {
             (op.direction === "down" && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
-          url: getUrl(),
+          transformer: SuperJSON,
+          url: `${getBaseUrl()}/api/trpc`,
           headers() {
-            return {
-              cookie: props.cookies,
-              "x-trpc-source": "react",
-            };
+            const headers = new Headers();
+            headers.set("x-trpc-source", "nextjs-react");
+            return headers;
           },
         }),
       ],
@@ -55,4 +63,10 @@ export function TRPCReactProvider(props: {
       </api.Provider>
     </QueryClientProvider>
   );
+}
+
+function getBaseUrl() {
+  if (typeof window !== "undefined") return window.location.origin;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
 }

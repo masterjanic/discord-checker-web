@@ -3,7 +3,7 @@
 import { api } from "~/trpc/react";
 
 export default function useCheckout() {
-  const { mutateAsync: createCheckout, isLoading: isCreatingCheckout } =
+  const { mutateAsync: createCheckout, isPending: isCreatingCheckout } =
     api.sellix.createCheckout.useMutation();
 
   return {

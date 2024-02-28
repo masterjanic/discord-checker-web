@@ -41,7 +41,7 @@ export default function AccountExportMultiDialog({
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogTrigger>) {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutateAsync: exportAccounts, isLoading: isExporting } =
+  const { mutateAsync: exportAccounts, isPending: isExporting } =
     api.account.export.useMutation({
       onSuccess: (result) => {
         if (!result) return;

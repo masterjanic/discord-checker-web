@@ -28,7 +28,7 @@ export default function DeveloperSettingsCard() {
     const [isVisible, setIsVisible] = useState(false);
 
     const utils = api.useUtils();
-    const { mutateAsync: deleteKey, isLoading: isDeletingKey } =
+    const { mutateAsync: deleteKey, isPending: isDeletingKey } =
       api.user.developer.deleteKey.useMutation({
         onSettled: async () => {
           await utils.user.developer.getKeys.invalidate();
