@@ -1,18 +1,5 @@
 version: '3.8'
 services:
-  # TODO: Rework cron  job
-  cron:
-    platform: "linux/amd64"
-    build:
-      context: .
-      dockerfile: Dockerfile.cron
-    restart: unless-stopped
-    depends_on:
-      - pgbouncer
-    env_file:
-      - .env
-    networks:
-      - db-network
   web:
     platform: "linux/amd64"
     image: masterjanic/dtc-web:latest
@@ -22,8 +9,6 @@ services:
       args:
         - DATABASE_URL=${DATABASE_URL}
         - DATABASE_URL_NON_POOLING=${DATABASE_URL_NON_POOLING}
-        - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
-        - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
     restart: unless-stopped
     depends_on:
       - postgres

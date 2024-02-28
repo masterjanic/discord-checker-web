@@ -27,12 +27,9 @@ export const env = createEnv({
     DISCORD_BOT_TOKEN: z.string(),
     SELLIX_API_KEY: z.string(),
     SELLIX_WEBHOOK_SECRET: z.string(),
-    SENTRY_AUTH_TOKEN: z.string().optional(),
   },
 
-  client: {
-    NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
-  },
+  client: {},
 
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -51,8 +48,6 @@ export const env = createEnv({
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
     SELLIX_API_KEY: process.env.SELLIX_API_KEY,
     SELLIX_WEBHOOK_SECRET: process.env.SELLIX_WEBHOOK_SECRET,
-    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

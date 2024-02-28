@@ -15,8 +15,6 @@ FROM --platform=linux/amd64 node:18-alpine AS builder
 
 ARG DATABASE_URL
 ARG DATABASE_URL_NON_POOLING
-ARG NEXT_PUBLIC_SENTRY_DSN
-ARG SENTRY_AUTH_TOKEN
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

@@ -1,7 +1,6 @@
 import crypto from "crypto";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type Role } from "@prisma/client";
-import * as Sentry from "@sentry/nextjs";
 import {
   getServerSession,
   type DefaultSession,
@@ -215,15 +214,6 @@ export const authOptions: NextAuthOptions = {
           },
         });
       }
-
-      Sentry.setUser({
-        id: user.id,
-        email: user.email ?? profile?.email ?? undefined,
-        username: user.name ?? profile?.name ?? undefined,
-      });
-    },
-    signOut() {
-      Sentry.setUser(null);
     },
   },
   adapter: PrismaAdapter(db),

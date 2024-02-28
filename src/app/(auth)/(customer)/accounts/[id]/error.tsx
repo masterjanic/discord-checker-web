@@ -1,9 +1,6 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { useEffect } from "react";
 
 import Container from "~/components/common/container";
 import { Button, buttonVariants } from "~/components/ui/button";
@@ -25,18 +22,6 @@ export default function Page({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    if (isTRPCClientError(error)) {
-      // Exclude 404 errors from Sentry since they are handled
-      if (error.data?.httpStatus === 404) {
-        return;
-      }
-    }
-
-    // Log the error to Sentry
-    Sentry.captureException(error);
-  }, [error]);
-
   // TODO: Better messages according to status code
   return (
     <div className="pt-32 grid place-items-center">
