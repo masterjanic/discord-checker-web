@@ -5,7 +5,6 @@ import { PiEnvelopeDuotone } from "react-icons/pi";
 
 import BackgroundGrid from "~/components/common/background-grid";
 import Container from "~/components/common/container";
-import { buttonVariants } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,8 +13,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { generateMetadata } from "~/lib/metadata";
-import { cn } from "~/lib/utils";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = generateMetadata({
   title: "Verification Request",
@@ -28,7 +26,7 @@ export const metadata = generateMetadata({
 });
 
 export default async function Page() {
-  const session = await getServerAuthSession();
+  const session = await auth();
   if (session) {
     redirect("/dashboard");
   }

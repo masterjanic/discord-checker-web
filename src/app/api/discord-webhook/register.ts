@@ -7,7 +7,7 @@ import {
   type APIApplicationCommand,
 } from "discord-api-types/v10";
 
-const APPLICATION_ID = process.env.DISCORD_CLIENT_ID!;
+const APPLICATION_ID = process.env.AUTH_DISCORD_ID!;
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN!;
 
 const commands = [

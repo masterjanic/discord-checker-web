@@ -45,7 +45,7 @@ export default function SignInForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await signIn("email", values);
+    await signIn("nodemailer", values);
   }
 
   return (

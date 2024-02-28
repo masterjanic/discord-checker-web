@@ -13,7 +13,7 @@ import NewAccountsCard from "~/components/customer/dashboard/new-accounts/new-ac
 import SkeletonNewAccountsCard from "~/components/customer/dashboard/new-accounts/skeleton-new-accounts-card";
 import RequiredSubscriptionWrapper from "~/components/customer/required-subscription-wrapper";
 import { generateMetadata } from "~/lib/metadata";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = generateMetadata({
   title: "Dashboard",
@@ -25,7 +25,7 @@ export const metadata = generateMetadata({
 });
 
 export default async function Page() {
-  const session = await getServerAuthSession();
+  const session = await auth();
 
   return (
     <>

@@ -14,7 +14,7 @@ import ImportContext from "~/components/customer/import/import-context";
 import { buttonVariants } from "~/components/ui/button";
 import { Toaster } from "~/components/ui/sonner";
 import { CHROME_EXTENSION_URL, SUPPORT_DISCORD_URL } from "~/consts/internal";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 const SIDEBAR_SECTIONS = [
   {
@@ -66,7 +66,7 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession();
+  const session = await auth();
   if (!session) {
     redirect("/");
   }

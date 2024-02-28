@@ -15,7 +15,7 @@ export const command: ICommand = {
 
     const inviteButton = new ButtonBuilder({
       style: ButtonStyle.Link,
-      url: `https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands`,
+      url: `https://discord.com/api/oauth2/authorize?client_id=${env.AUTH_DISCORD_ID}&scope=applications.commands`,
       label: "Click to invite",
     });
 

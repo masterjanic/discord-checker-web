@@ -1,16 +1,11 @@
 import crypto from "crypto";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type Role } from "@prisma/client";
-import {
-  getServerSession,
-  type DefaultSession,
-  type NextAuthOptions,
-} from "next-auth";
+import { isFakeEmail } from "fakefilter";
+import NextAuth, { type DefaultSession } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
-import EmailProvider, {
-  type SendVerificationRequestParams,
-} from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
+import EmailProvider from "next-auth/providers/nodemailer";
 import nodemailer from "nodemailer";
 
 import { env } from "~/env";
@@ -29,22 +24,6 @@ declare module "next-auth" {
     role: Role;
     subscribedTill?: Date;
   }
-}
-
-async function sendVerificationRequest({
-  identifier: email,
-  url,
-  provider: { server, from },
-}: SendVerificationRequestParams) {
-  const { host } = new URL(url);
-  const transport = nodemailer.createTransport(server);
-  await transport.sendMail({
-    to: email,
-    from,
-    subject: `Verify your Login | DTC-Web`,
-    text: text({ url, host }),
-    html: html({ url, host, email }),
-  });
 }
 
 // Email HTML body
@@ -118,7 +97,10 @@ const generateGravatar = (email: string | undefined) => {
   return `https://www.gravatar.com/avatar/${hash}?d=identicon`;
 };
 
-export const authOptions: NextAuthOptions = {
+export const {
+  handlers: { GET, POST },
+  auth,
+} = NextAuth({
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
@@ -126,53 +108,12 @@ export const authOptions: NextAuthOptions = {
     verifyRequest: "/auth/verify-request",
   },
   callbacks: {
-    async signIn({ user, account, email }) {
-      // Only allow sign in with email addresses
-      if (!user.email) {
-        return false;
-      }
-
-      // If the request is a verification request, allow it
+    signIn({ user, email }) {
+      // If email provider is used, only allow users with a specific email domain
       if (email?.verificationRequest) {
-        return true;
+        return !isFakeEmail(user.email!, false);
       }
 
-      const existingAccount = await db.account.findFirst({
-        where: { providerAccountId: account!.providerAccountId },
-        select: { id: true },
-      });
-      // If OAuth account already exists, allow it
-      if (existingAccount) {
-        return true;
-      }
-
-      const existingUser = await db.user.findUnique({
-        where: { email: user.email },
-        select: { id: true },
-      });
-      // If user already exists, link the OAuth account and continue
-      if (existingUser) {
-        await db.account.create({
-          data: {
-            provider: account!.provider,
-            type: account!.type,
-            providerAccountId: account!.providerAccountId,
-            access_token: account!.access_token,
-            expires_at: account!.expires_at,
-            scope: account!.scope,
-            token_type: account!.token_type,
-            id_token: account!.id_token,
-            refresh_token: account!.refresh_token,
-            user: {
-              connect: { id: existingUser.id },
-            },
-          },
-        });
-
-        return true;
-      }
-
-      // Allow new users to sign in, create a new account
       return true;
     },
     session: ({ session, user }) => ({
@@ -222,17 +163,23 @@ export const authOptions: NextAuthOptions = {
       server: env.EMAIL_SERVER,
       from: env.EMAIL_FROM,
       maxAge: 5 * 60, // valid for 5 minutes
-      sendVerificationRequest,
+      async sendVerificationRequest({
+        identifier: email,
+        url,
+        provider: { server, from },
+      }) {
+        const { host } = new URL(url);
+        const transport = nodemailer.createTransport(server);
+        await transport.sendMail({
+          to: email,
+          from,
+          subject: `Verify your Login | DTC-Web`,
+          text: text({ url, host }),
+          html: html({ url, host, email }),
+        });
+      },
     }),
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-    GitHubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    }),
+    DiscordProvider({ allowDangerousEmailAccountLinking: true }),
+    GitHubProvider({ allowDangerousEmailAccountLinking: true }),
   ],
-};
-
-export const getServerAuthSession = () => getServerSession(authOptions);
+});

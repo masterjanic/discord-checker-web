@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { generateMetadata } from "~/lib/metadata";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = generateMetadata({
   title: "Sign In",
@@ -33,7 +33,7 @@ export default async function Page({
 }: {
   searchParams: { error: string | undefined };
 }) {
-  const session = await getServerAuthSession();
+  const session = await auth();
   if (session) {
     redirect("/dashboard");
   }

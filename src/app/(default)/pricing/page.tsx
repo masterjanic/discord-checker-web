@@ -2,7 +2,7 @@ import Container from "~/components/common/container";
 import PricingHero from "~/components/pricing/pricing-hero";
 import { Separator } from "~/components/ui/separator";
 import { generateMetadata } from "~/lib/metadata";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = generateMetadata({
   title: "View Pricing",
@@ -12,7 +12,7 @@ export const metadata = generateMetadata({
 });
 
 export default async function Page() {
-  const session = await getServerAuthSession();
+  const session = await auth();
 
   return (
     <div className="py-16 lg:py-20">

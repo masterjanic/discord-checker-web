@@ -6,7 +6,7 @@ import DeveloperSettingsCard from "~/components/customer/profile/developer-setti
 import SkeletonDeveloperSettingsCard from "~/components/customer/profile/developer-settings/skeleton-developer-settings-card";
 import ManageSubscriptionCard from "~/components/customer/profile/manage-subscription-card";
 import { generateMetadata } from "~/lib/metadata";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = generateMetadata({
   title: "Manage Profile",
@@ -18,8 +18,7 @@ export const metadata = generateMetadata({
 });
 
 export default async function Page() {
-  const session = await getServerAuthSession();
-
+  const session = await auth();
   return (
     <>
       <div className="grid grid-cols-12 gap-6">

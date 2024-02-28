@@ -6,7 +6,7 @@ import Footer from "~/components/common/footer";
 import Navbar from "~/components/common/nav/navbar";
 import { buttonVariants } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 
 export const metadata = {
   title: "Oops! Site not found!",
@@ -18,8 +18,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const session = await getServerAuthSession();
-
+  const session = await auth();
   return (
     <>
       <Navbar session={session} />

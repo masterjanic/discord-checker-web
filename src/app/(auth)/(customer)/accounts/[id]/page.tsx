@@ -22,7 +22,7 @@ import RequiredSubscriptionWrapper from "~/components/customer/required-subscrip
 import { Separator } from "~/components/ui/separator";
 import { usernameOrTag } from "~/lib/discord-utils";
 import { generateMetadata as _generateMetadata } from "~/lib/metadata";
-import { getServerAuthSession } from "~/server/auth";
+import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
-  const session = await getServerAuthSession();
+  const session = await auth();
 
   return (
     <>
