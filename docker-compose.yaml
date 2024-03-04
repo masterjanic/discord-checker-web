@@ -22,12 +22,6 @@ services:
     networks:
       - web-network
       - db-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
-      timeout: 5s
-      start_period: 5s
-      interval: 30s
-      retries: 3
   redis:
     image: bitnami/redis:latest
     restart: unless-stopped

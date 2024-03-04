@@ -30,7 +30,6 @@ RUN SKIP_ENV_VALIDATION=1 bun run build
 
 ##### RUNNER
 FROM base AS runner
-RUN apk add --no-cache curl
 
 WORKDIR /app
 
@@ -51,8 +50,5 @@ ENV PORT 3000
 
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000 || exit 1
 
 CMD ["bun", "run", "server.js"]
