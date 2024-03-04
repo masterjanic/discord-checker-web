@@ -2,7 +2,7 @@ FROM node:18-bookworm-slim AS base
 
 WORKDIR /app
 
-npm install -g bun
+RUN npm install -g bun
 
 ##### DEPENDENCIES
 FROM base AS deps
