@@ -2,6 +2,8 @@ FROM node:18-bookworm-slim AS base
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y openssl
+
 RUN npm install -g bun
 
 ##### DEPENDENCIES
