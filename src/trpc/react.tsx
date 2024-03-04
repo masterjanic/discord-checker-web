@@ -18,8 +18,6 @@ export const isTRPCClientError = (
   return cause instanceof TRPCClientError;
 };
 
-export const api = createTRPCReact<AppRouter>();
-
 const createQueryClient = () => new QueryClient();
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
@@ -31,6 +29,8 @@ const getQueryClient = () => {
   // Browser: use singleton pattern to keep the same query client
   return (clientQueryClientSingleton ??= createQueryClient());
 };
+
+export const api = createTRPCReact<AppRouter>();
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

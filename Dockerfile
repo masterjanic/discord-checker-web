@@ -1,31 +1,35 @@
-##### DEPENDENCIES
-FROM --platform=linux/amd64 node:18-alpine AS deps
+FROM imbios/bun-node:18-alpine AS base
+
 WORKDIR /app
+
+##### DEPENDENCIES
+FROM base AS deps
 
 # Install Prisma Client
 COPY prisma ./
 
-# Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml ./
+# Install dependencies
+COPY package.json bun.lockb ./
 
-RUN yarn global add pnpm && pnpm install
+RUN bun install --frozen-lockfile
 
 ##### BUILDER
-FROM --platform=linux/amd64 node:18-alpine AS builder
+FROM base AS builder
 
 ARG DATABASE_URL
 ARG DATABASE_URL_NON_POOLING
 
-WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Set a fake env variable to bypass Auth.js validation
+ENV EMAIL_SERVER not.configured
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN yarn global add pnpm && SKIP_ENV_VALIDATION=1 pnpm run build
+RUN SKIP_ENV_VALIDATION=1 bun run build
 
 ##### RUNNER
-FROM --platform=linux/amd64 node:18-alpine AS runner
+FROM base AS runner
 RUN apk add --no-cache curl
 
 WORKDIR /app
@@ -33,17 +37,15 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+USER bun
 
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=bun:bun /app/.next/standalone ./
+COPY --from=builder --chown=bun:bun /app/.next/static ./.next/static
 
-USER nextjs
 EXPOSE 3000
 ENV PORT 3000
 
@@ -53,4 +55,4 @@ ENV HOSTNAME "0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000 || exit 1
 
-CMD ["node", "server.js"]
+CMD ["bun", "run", "server.js"]

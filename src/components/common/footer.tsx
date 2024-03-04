@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { type IconType } from "react-icons";
 import {
   PiDiscordLogoDuotone,
   PiGithubLogoDuotone,
@@ -19,17 +18,17 @@ const FOOTER_SOCIALS = [
   {
     title: "GitHub",
     href: GITHUB_URL,
-    icon: PiGithubLogoDuotone as IconType,
+    icon: PiGithubLogoDuotone,
   },
   {
     title: "Discord",
     href: SUPPORT_DISCORD_URL,
-    icon: PiDiscordLogoDuotone as IconType,
+    icon: PiDiscordLogoDuotone,
   },
   {
     title: "Chrome Addon",
     href: CHROME_EXTENSION_URL,
-    icon: PiGoogleChromeLogoDuotone as IconType,
+    icon: PiGoogleChromeLogoDuotone,
   },
 ];
 

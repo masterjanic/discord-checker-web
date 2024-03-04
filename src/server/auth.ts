@@ -86,7 +86,7 @@ function text({ url, host }: Record<"url" | "host", string>) {
  * Generate a gravatar image URL from an email address.
  * @param email The email address to generate the gravatar for.
  */
-const generateGravatar = (email: string | undefined) => {
+const generateGravatar = (email: string | null | undefined) => {
   if (!email) {
     return undefined;
   }

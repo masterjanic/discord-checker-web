@@ -24,17 +24,11 @@ export default function LeaderboardCard({
 }: {
   session: Session | null;
 }) {
-  const [users] = api.public.leaderboard.getRanking.useSuspenseQuery(
-    undefined,
-    {
-      refetchInterval: 30_000,
-    },
-  );
-
+  const [users] = api.public.leaderboard.getRanking.useSuspenseQuery();
   return (
     <Container>
       {users.map((user, index) => (
-        <div key={`leaderboard-user-${user.id}`}>
+        <div key={index}>
           <div
             className={cn(
               "py-4 px-4 bg-muted/30 hover:bg-muted/40 transition duration-300 border-x border-t",

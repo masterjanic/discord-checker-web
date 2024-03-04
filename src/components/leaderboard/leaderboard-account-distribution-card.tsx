@@ -6,12 +6,8 @@ import { Card } from "~/components/ui/card";
 import { api } from "~/trpc/react";
 
 export default function LeaderboardAccountDistributionCard() {
-  const [data] = api.public.leaderboard.getAccountDistribution.useSuspenseQuery(
-    undefined,
-    {
-      refetchInterval: 30_000,
-    },
-  );
+  const [data] =
+    api.public.leaderboard.getAccountDistribution.useSuspenseQuery();
 
   return (
     <Card className="bg-muted/30 p-6">

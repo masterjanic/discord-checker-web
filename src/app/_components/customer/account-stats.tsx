@@ -1,7 +1,6 @@
 "use client";
 
 import clsx from "clsx";
-import { type IconType } from "react-icons";
 import {
   PiCheckCircleDuotone,
   PiStarDuotone,
@@ -14,7 +13,7 @@ import { api } from "~/trpc/react";
 const entries = [
   {
     name: "Verified Accounts",
-    icon: PiCheckCircleDuotone as IconType,
+    icon: PiCheckCircleDuotone,
     key: "verified",
     textColor: "text-green-100",
     gradient: "from-green-700 via-green-800 to-green-900",
@@ -22,7 +21,7 @@ const entries = [
   },
   {
     name: "Unverified Accounts",
-    icon: PiWarningDuotone as IconType,
+    icon: PiWarningDuotone,
     key: "unverified",
     textColor: "text-yellow-100",
     gradient: "from-yellow-700 via-yellow-800 to-yellow-900",
@@ -30,7 +29,7 @@ const entries = [
   },
   {
     name: "Nitro Accounts",
-    icon: PiStarDuotone as IconType,
+    icon: PiStarDuotone,
     key: "nitro",
     textColor: "text-purple-100",
     gradient: "from-purple-700 via-purple-800 to-purple-900",
@@ -38,7 +37,7 @@ const entries = [
   },
   {
     name: "Flagged Accounts",
-    icon: PiXCircleDuotone as IconType,
+    icon: PiXCircleDuotone,
     key: "flagged",
     textColor: "text-red-100",
     gradient: "from-red-700 via-red-800 to-red-900",

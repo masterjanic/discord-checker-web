@@ -8,7 +8,6 @@ export default function usePaginatedAccounts(props: TPaginatedAccountProps) {
   const [accounts, { fetchNextPage, isFetching, hasNextPage }] =
     api.account.getWithCursor.useSuspenseInfiniteQuery(props, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      keepPreviousData: true,
     });
 
   return {

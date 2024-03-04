@@ -1,0 +1,11 @@
+- [ ] Fix rechecking -> correct redirect to 404
+- [ ] Add 404, error pages
+- [ ] Persist pages and filters on /accounts/
+- [ ] Fix Chrome Addon
+- [ ] Open API with API key and IP address
+- [ ] Rework Discord integration
+- [ ] Discord Integration with webhook to receive updates when token state changes
+- [ ] Return of Discord QR features? EMBED?
+- [ ] Public Profile / Badge that shows stats?
+- [ ] Import token process stays open globally with sonner information
+- [ ] Leaderboard for most accounts owned (option to opt-out of leaderboard)

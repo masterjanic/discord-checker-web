@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { type IconType } from "react-icons";
 import { BiLogoVenmo } from "react-icons/bi";
 import {
   PiCreditCardDuotone,
@@ -25,21 +24,21 @@ import { api } from "~/trpc/react";
 
 // TODO: Add missing payment method icons
 const PAYMENT_METHODS = [
-  { name: "Credit Card", icon: PiCreditCardDuotone as IconType },
-  { name: "PayPal", icon: PiPaypalLogoDuotone as IconType },
-  { name: "Sofort", icon: SiKlarna as IconType },
-  { name: "Przelewy24", icon: PiQuestionDuotone as IconType },
-  { name: "Klarna", icon: SiKlarna as IconType },
-  { name: "Paysafecard", icon: PiQuestionDuotone as IconType },
-  { name: "GCash", icon: PiQuestionDuotone as IconType },
-  { name: "CrabPay", icon: PiQuestionDuotone as IconType },
-  { name: "Venmo", icon: BiLogoVenmo as IconType },
-  { name: "GoPay", icon: PiQuestionDuotone as IconType },
-  { name: "KaKao Pay", icon: SiKakao as IconType },
-  { name: "Bancontact", icon: PiQuestionDuotone as IconType },
-  { name: "EPS", icon: PiQuestionDuotone as IconType },
-  { name: "iDeal", icon: PiQuestionDuotone as IconType },
-  { name: "Cash App Pay", icon: SiCashapp as IconType },
+  { name: "Credit Card", icon: PiCreditCardDuotone },
+  { name: "PayPal", icon: PiPaypalLogoDuotone },
+  { name: "Sofort", icon: SiKlarna },
+  { name: "Przelewy24", icon: PiQuestionDuotone },
+  { name: "Klarna", icon: SiKlarna },
+  { name: "Paysafecard", icon: PiQuestionDuotone },
+  { name: "GCash", icon: PiQuestionDuotone },
+  { name: "CrabPay", icon: PiQuestionDuotone },
+  { name: "Venmo", icon: BiLogoVenmo },
+  { name: "GoPay", icon: PiQuestionDuotone },
+  { name: "KaKao Pay", icon: SiKakao },
+  { name: "Bancontact", icon: PiQuestionDuotone },
+  { name: "EPS", icon: PiQuestionDuotone },
+  { name: "iDeal", icon: PiQuestionDuotone },
+  { name: "Cash App Pay", icon: SiCashapp },
 ];
 
 // TODO: Payment Method Details Dialog

@@ -17,7 +17,6 @@ export default function usePaginatedCollections(
   const [collections, { fetchNextPage, isFetching }] =
     api.collection.getWithCursor.useSuspenseInfiniteQuery(props, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      keepPreviousData: true,
     });
 
   return {

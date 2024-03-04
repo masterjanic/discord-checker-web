@@ -15,7 +15,6 @@ export default function usePaginatedUsers(props: TPaginatedUsersProps) {
   const [users, { fetchNextPage, isFetching }] =
     api.user.getWithCursor.useSuspenseInfiniteQuery(props, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      keepPreviousData: true,
     });
 
   return {

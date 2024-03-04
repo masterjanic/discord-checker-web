@@ -69,10 +69,26 @@ async function apiRequest<ReturnType>(
  * @param config
  */
 export const fetchUser = async (id: string, config: IRequestConfig) => {
-  return apiRequest<APIUser>({
+  const user = await apiRequest<APIUser>({
     ...config,
     url: `/users/${id}`,
   });
+
+  if (user) {
+    // remove fields , TODO: Check schema
+    const toRemove = [
+      "avatar_decoration_data",
+      "linked_users",
+      "authenticator_types",
+    ] as const;
+    for (const accessor of toRemove) {
+      if (accessor in user) {
+        delete (user as never)[accessor];
+      }
+    }
+  }
+
+  return user;
 };
 
 interface IBillingCountryResponse {

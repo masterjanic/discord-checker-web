@@ -17,6 +17,6 @@ export const appRouter = createTRPCRouter({
   public: publicRouter,
 });
 
-export type AppRouter = typeof appRouter;
-
 export const createCaller = createCallerFactory(appRouter);
+
+export type AppRouter = typeof appRouter;

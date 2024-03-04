@@ -1,4 +1,3 @@
-import { type IconType } from "react-icons";
 import {
   PiClockDuotone,
   PiDiscordLogoDuotone,
@@ -20,31 +19,31 @@ export const NAV_LINKS = [
         href: "/features/chrome-addon",
         description:
           "Fast login to your stored accounts with the Chrome extension.",
-        icon: PiGoogleChromeLogoDuotone as IconType,
+        icon: PiGoogleChromeLogoDuotone,
       },
       {
         title: "Discord Integration",
         href: "/features/discord-integration",
         description: "Import and export your accounts to and from Discord.",
-        icon: PiDiscordLogoDuotone as IconType,
+        icon: PiDiscordLogoDuotone,
       },
       {
         title: "Interval Token Checking",
         href: "/features/interval-token-checking",
         description: "Automatically recheck your accounts at a set interval.",
-        icon: PiClockDuotone as IconType,
+        icon: PiClockDuotone,
       },
       {
         title: "Advanced Account Details",
         href: "/features/advanced-account-details",
         description: "Get the most out of your accounts with advanced details.",
-        icon: PiInfoDuotone as IconType,
+        icon: PiInfoDuotone,
       },
       {
         title: "API Access",
         href: "/features/api-access",
         description: "Access your accounts programmatically with the API.",
-        icon: PiShareNetworkDuotone as IconType,
+        icon: PiShareNetworkDuotone,
       },
     ],
   },

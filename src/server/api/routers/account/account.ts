@@ -22,7 +22,6 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { fetchCached } from "~/server/redis/utils";
-import { api } from "~/trpc/server";
 
 const zodUserShape = z.object({
   id: z.string().refine(isValidSnowflake),
@@ -294,6 +293,7 @@ export const accountRouter = createTRPCRouter({
       );
       return billing ?? [];
     }),
+  // TODO: Extract methods to reuse
   recheck: protectedProcedure
     .input(z.string().refine(isValidSnowflake))
     .mutation(async ({ ctx, input: id }) => {
@@ -327,25 +327,98 @@ export const accountRouter = createTRPCRouter({
         if (!user) {
           validTokens--;
           if (validTokens === 0) {
-            await api.account.delete.mutate(id);
+            await db.discordAccount.delete({
+              where: { id, ownerId: getOwnerId(ctx.session.user) },
+            });
             return {
               deleted: true,
             };
           }
 
-          await api.account.update.mutate({
-            id,
-            tokens: account.tokens
-              .filter((t) => t.value !== token.value)
-              .map((t) => t.value),
+          await ctx.db.discordAccount.update({
+            where: { id, ownerId: getOwnerId(ctx.session.user) },
+            data: {
+              tokens: {
+                set: account.tokens
+                  .filter((t) => t.value !== token.value)
+                  .map((t) => ({ value: t.value })),
+              },
+            },
           });
           continue;
         }
 
-        await api.account.create.mutate({
-          user,
-          tokens: [token.value],
-          origin: token.origin ?? undefined,
+        await db.$transaction(async (tx) => {
+          const currentAccount = await tx.discordAccount.findUnique({
+            where: {
+              id: user.id,
+            },
+            select: {
+              email: true,
+              phone: true,
+              username: true,
+              discriminator: true,
+              avatar: true,
+              premium_type: true,
+              accent_color: true,
+              bio: true,
+              banner: true,
+              banner_color: true,
+              global_name: true,
+              avatar_decoration: true,
+              mfa_enabled: true,
+              verified: true,
+              flags: true,
+              public_flags: true,
+            },
+          });
+
+          await db.discordAccount.upsert({
+            where: {
+              id: user.id,
+            },
+            create: {
+              ...user,
+              rating: getAccountRating(user as unknown as DiscordAccount),
+              ownerId: session.user.id,
+              tokens: {
+                createMany: {
+                  data: [
+                    { value: token.value, origin: token.origin ?? undefined },
+                  ],
+                },
+              },
+            },
+            update: {
+              ...user,
+              rating: getAccountRating(user as unknown as DiscordAccount),
+              tokens: {
+                upsert: {
+                  where: {
+                    value: token.value,
+                  },
+                  create: {
+                    value: token.value,
+                    origin: token.origin ?? undefined,
+                    lastCheckedAt: new Date(),
+                  },
+                  update: {
+                    lastCheckedAt: new Date(),
+                  },
+                },
+              },
+              history: {
+                create: hasChanged(
+                  currentAccount as unknown as TCompareableUser,
+                  user as unknown as TCompareableUser,
+                )
+                  ? {
+                      data: currentAccount as Prisma.JsonObject,
+                    }
+                  : undefined,
+              },
+            },
+          });
         });
       }
 

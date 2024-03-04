@@ -50,7 +50,11 @@ export default function ProfileAccountActionsCard() {
 
       const prevData = utils.user.me.getData();
       utils.user.me.setData(undefined, (old) => {
-        return Object.assign(old, input);
+        if (!old) return;
+        return {
+          ...old,
+          ...input,
+        };
       });
       return {
         prevData,
