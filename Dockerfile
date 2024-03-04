@@ -11,7 +11,7 @@ COPY prisma ./
 # Install dependencies
 COPY package.json bun.lockb ./
 
-RUN bun install --frozen-lockfile
+RUN bun install
 
 ##### BUILDER
 FROM base AS builder
