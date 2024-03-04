@@ -182,4 +182,5 @@ export const {
     DiscordProvider({ allowDangerousEmailAccountLinking: true }),
     GitHubProvider({ allowDangerousEmailAccountLinking: true }),
   ],
+  trustHost: true,
 });
