@@ -105,10 +105,10 @@ export const {
   auth,
 } = NextAuth({
   pages: {
-    signIn: `${authUrl}/auth/login`,
-    error: `${authUrl}/auth/error`,
-    signOut: `${authUrl}/auth/logout`,
-    verifyRequest: `${authUrl}/auth/verify-request`,
+    signIn: `/auth/login`,
+    error: `/auth/error`,
+    signOut: `/auth/logout`,
+    verifyRequest: `/auth/verify-request`,
   },
   callbacks: {
     signIn({ user, email }) {
