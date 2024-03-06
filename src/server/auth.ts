@@ -97,15 +97,18 @@ const generateGravatar = (email: string | null | undefined) => {
   return `https://www.gravatar.com/avatar/${hash}?d=identicon`;
 };
 
+// TODO: Temporary fix according to https://github.com/nextauthjs/next-auth/discussions/8449
+const authUrl = env.AUTH_URL;
+
 export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
   pages: {
-    signIn: "/auth/login",
-    error: "/auth/error",
-    signOut: "/auth/logout",
-    verifyRequest: "/auth/verify-request",
+    signIn: `${authUrl}/auth/login`,
+    error: `${authUrl}/auth/error`,
+    signOut: `${authUrl}/auth/logout`,
+    verifyRequest: `${authUrl}/auth/verify-request`,
   },
   callbacks: {
     signIn({ user, email }) {
