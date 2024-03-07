@@ -102,10 +102,10 @@ export const {
   auth,
 } = NextAuth({
   pages: {
-    signIn: `/auth/login`,
-    error: `/auth/error`,
-    signOut: `/auth/logout`,
-    verifyRequest: `/auth/verify-request`,
+    signIn: "/auth/login",
+    error: "/auth/error",
+    signOut: "/auth/logout",
+    verifyRequest: "/auth/verify-request",
   },
   callbacks: {
     signIn({ user, email }) {
@@ -183,5 +183,4 @@ export const {
     GitHubProvider({ allowDangerousEmailAccountLinking: true }),
   ],
   trustHost: true,
-  basePath: "/api/auth",
 });
