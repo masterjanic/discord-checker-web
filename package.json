@@ -30,6 +30,7 @@
     "@next-auth/prisma-adapter": "^1.0.7",
     "@nivo/core": "^0.84.0",
     "@nivo/geo": "^0.84.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^5.10.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
