@@ -24,14 +24,13 @@
     "discord:register": "node --loader ts-node/esm src/app/api/discord-webhook/register.ts"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^0.8.0",
     "@discordjs/builders": "^1.7.0",
     "@discordjs/rest": "^2.2.0",
     "@hookform/resolvers": "^3.3.4",
-    "@next-auth/prisma-adapter": "^1.0.7",
     "@nivo/core": "^0.84.0",
     "@nivo/geo": "^0.84.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^5.10.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-context-menu": "^2.1.5",
@@ -110,10 +109,9 @@
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "prisma": "^5.10.2",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "trustedDependencies": ["prisma", "@prisma/client", "sharp"]
+  "trustedDependencies": ["sharp"]
 }
