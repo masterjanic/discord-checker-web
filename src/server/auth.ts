@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { type Role } from "@prisma/client";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { eq } from "drizzle-orm";
 import { isFakeEmail } from "fakefilter";
 import NextAuth, { type DefaultSession } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
@@ -10,19 +10,20 @@ import nodemailer from "nodemailer";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
+import { createTable, sessions, users } from "~/server/db/schema";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      role: Role;
-      subscribedTill?: Date;
+      role: "CUSTOMER" | "ADMIN";
+      subscribedTill: Date | null;
     } & DefaultSession["user"];
   }
 
   interface User {
-    role: Role;
-    subscribedTill?: Date;
+    role: "CUSTOMER" | "ADMIN";
+    subscribedTill: Date | null;
   }
 }
 
@@ -119,7 +120,12 @@ export const {
     session: ({ session, user }) => ({
       ...session,
       user: {
-        ...session.user,
+        //...session.user,
+        // TODO: Currently we need to pass the values due to the adapter issue described below
+        name: user.name,
+        image: user.image,
+        email: user.email,
+        //
         id: user.id,
         role: user.role,
         subscribedTill: user.subscribedTill,
@@ -129,35 +135,69 @@ export const {
   session: {
     maxAge: 3 * 24 * 60 * 60, // 3 days
   },
-  // TODO: Setup Discord webhook events for personal use (profile settings)
+  /**
+   * TODO:
+   * Integrate Discord webhook notifications to be configured in the users profile. This way users can get
+   * notified when someone logs into their account.
+   */
   events: {
     createUser: async ({ user }) => {
-      // If user has no image set, use gravatar
+      if (!user.id) {
+        // Somehow user has no id, return
+        return;
+      }
+
       if (!user.image && user.email) {
-        await db.user.update({
-          where: { id: user.id },
-          data: {
-            // If user has no name set, use the part before the @ in the email
-            name: user.name ?? user.email.split("@")[0],
-            image: generateGravatar(user.email),
-          },
-        });
+        // If user has no image set, use gravatar
+        await db
+          .update(users)
+          .set({ image: generateGravatar(user.email) })
+          .where(eq(users.id, user.id));
+      }
+
+      if (!user.name && user.email) {
+        // If user has no name set, use the part before the @ in the email
+        await db
+          .update(users)
+          .set({ name: user.name ?? user.email.split("@")[0] })
+          .where(eq(users.id, user.id));
       }
     },
     async signIn({ user, profile }) {
-      if (profile) {
-        // Update existing user -> new profile picture or name
-        await db.user.updateMany({
-          where: { id: user.id },
-          data: {
-            name: profile.name,
-            image: profile.image ?? generateGravatar(profile.email),
-          },
-        });
+      if (user.id && profile) {
+        if (profile.name && user.name !== profile.name) {
+          // The user's name has changed, possibly by using an OAuth provider instead of email
+          await db
+            .update(users)
+            .set({ name: profile.name })
+            .where(eq(users.id, user.id));
+        }
+
+        if ("image_url" in profile && user.image !== profile.image_url) {
+          // The user's image has changed, so update it
+          await db
+            .update(users)
+            .set({ image: profile.image_url as string })
+            .where(eq(users.id, user.id));
+        }
       }
     },
   },
-  adapter: PrismaAdapter(db),
+  // TODO: https://github.com/nextauthjs/next-auth/pull/8561
+  adapter: {
+    ...DrizzleAdapter(db, createTable),
+    async getSessionAndUser(data) {
+      return db
+        .select({
+          session: sessions,
+          user: users,
+        })
+        .from(sessions)
+        .where(eq(sessions.sessionToken, data))
+        .innerJoin(users, eq(users.id, sessions.userId))
+        .then((res) => res[0] ?? null);
+    },
+  },
   providers: [
     EmailProvider({
       server: env.EMAIL_SERVER,

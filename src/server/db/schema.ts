@@ -288,7 +288,7 @@ export const apiKeyRelations = relations(apiKeys, ({ one }) => ({
 
 export const userRoleEnum = pgEnum("user_role", ["CUSTOMER", "ADMIN"]);
 
-export const UserRole = z.enum(userRoleEnum.enumValues);
+export const UserRole = z.enum(userRoleEnum.enumValues).Enum;
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
