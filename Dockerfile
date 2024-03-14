@@ -21,7 +21,6 @@ RUN bun install
 FROM base AS builder
 
 ARG DATABASE_URL
-ARG DATABASE_URL_NON_POOLING
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

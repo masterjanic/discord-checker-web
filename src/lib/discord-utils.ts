@@ -8,6 +8,7 @@ import {
   type APIEmbed,
   type APIUser,
 } from "discord-api-types/v10";
+import { sql } from "drizzle-orm";
 
 import {
   CDN_URL,
@@ -18,6 +19,7 @@ import {
   TOKEN_REGEX,
   TOKEN_REGEX_LEGACY,
 } from "~/consts/discord";
+import { discordAccounts } from "~/server/db/schema";
 
 /**
  * Function to convert a locale to a country code.
@@ -191,13 +193,19 @@ export const isFlagged = (flags: number | bigint | undefined | null) => {
 
 /**
  * Function to generate the SQL query for the critical flags.
+ *
+ * @param hasFlag Whether the account has the flags or not.
  */
-export const generateFlaggedAccountsQuery = () => {
+export const generateFlaggedAccountsQuery = (hasFlag = true) => {
   const flags = CRITICAL_FLAGS.map((flag) => {
-    return `(flags & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} = ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
+    if (hasFlag) {
+      return sql`(${discordAccounts.flags} & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} = ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
+    }
+
+    return sql`(${discordAccounts.flags} & ${DISCORD_UNDOCUMENTED_FLAGS[flag]} <> ${DISCORD_UNDOCUMENTED_FLAGS[flag]})`;
   });
 
-  return `(${flags.join(" OR ")})`;
+  return sql`(${flags.join(" OR ")})`;
 };
 
 /**

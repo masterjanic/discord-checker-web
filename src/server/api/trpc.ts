@@ -1,11 +1,11 @@
-import { Role } from "@prisma/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { isUserSubscribed } from "~/lib/auth";
+import { isAdministrator, isUserSubscribed } from "~/lib/auth";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
+import { UserRole } from "~/server/db/schema";
 
 /**
  * 1. CONTEXT
@@ -83,7 +83,10 @@ export const publicProcedure = t.procedure;
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You must be signed in to perform this action.",
+    });
   }
   return next({
     ctx: {
@@ -94,11 +97,27 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 
 const enforceUserIsAdmin = enforceUserIsAuthed.unstable_pipe(
   ({ ctx, next }) => {
-    if (ctx.session.user.role !== Role.ADMIN) {
-      throw new TRPCError({ code: "FORBIDDEN" });
+    if (!isAdministrator(ctx.session.user)) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message:
+          "You must have the administrators role to perform this action.",
+      });
     }
 
-    return next({ ctx });
+    return next({
+      ctx: {
+        ...ctx,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+            // Infer the `role` property is `ADMIN` since we checked if the user is an administrator.
+            role: UserRole.ADMIN,
+          },
+        },
+      },
+    });
   },
 );
 
@@ -112,7 +131,19 @@ const enforceActiveSubscription = enforceUserIsAuthed.unstable_pipe(
       });
     }
 
-    return next({ ctx });
+    return next({
+      ctx: {
+        ...ctx,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+            // Infer the `subscribedTill` property is not null since we checked if the user is subscribed.
+            subscribedTill: user.subscribedTill!,
+          },
+        },
+      },
+    });
   },
 );
 
