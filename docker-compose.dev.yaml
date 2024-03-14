@@ -15,23 +15,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-  pgbouncer:
-    image: bitnami/pgbouncer:latest
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "6432:6432"
-    environment:
-      - PGBOUNCER_DATABASE=dtc-web
-      - POSTGRESQL_HOST=postgres
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=postgres
-      - POSTGRESQL_PASSWORD=postgres
-      - POSTGRESQL_DATABASE=dtc-web
-      - PGBOUNCER_POOL_MODE=transaction
-      - PGBOUNCER_MIN_POOL_SIZE=10
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
