@@ -1,19 +1,13 @@
-import { accountRouter } from "~/server/api/routers/account/account";
+import { accountsRouter } from "~/server/api/routers/accounts";
 import { adminRouter } from "~/server/api/routers/admin";
-import { collectionRouter } from "~/server/api/routers/collection";
-import { dashboardRouter } from "~/server/api/routers/dashboard";
-import { publicRouter } from "~/server/api/routers/public/public";
-import { sellixRouter } from "~/server/api/routers/sellix";
-import { userRouter } from "~/server/api/routers/user/user";
+import { profileRouter } from "~/server/api/routers/profile";
+import { publicRouter } from "~/server/api/routers/public";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 export const appRouter = createTRPCRouter({
-  user: userRouter,
-  account: accountRouter,
-  dashboard: dashboardRouter,
-  sellix: sellixRouter,
-  collection: collectionRouter,
+  accounts: accountsRouter,
   admin: adminRouter,
+  profile: profileRouter,
   public: publicRouter,
 });
 

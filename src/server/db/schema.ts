@@ -177,7 +177,7 @@ export const discordAccountCollections = createTable(
     // A user-friendly name for the collection, e.g. "Spam Bots"
     name: varchar("name", { length: 32 }).notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
-    updatedAt: timestamp("updatedAt"),
+    updatedAt: timestamp("updatedAt").defaultNow(),
     // The time the collection was deleted (soft delete)
     deletedAt: timestamp("deletedAt"),
   },
@@ -224,7 +224,7 @@ export const discordAccountCollectionsToDiscordAccounts = createTable(
 
 export const discordAccountCollectionToDiscordAccountRelations = relations(
   discordAccountCollectionsToDiscordAccounts,
-  ({ one, many }) => ({
+  ({ one }) => ({
     account: one(discordAccounts, {
       fields: [discordAccountCollectionsToDiscordAccounts.discordAccountId],
       references: [discordAccounts.id],
