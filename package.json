@@ -15,8 +15,8 @@
   },
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbo",
-    "dev:turbo": "next dev",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbo",
     "lint": "next lint",
     "start": "next start",
     "db:push": "drizzle-kit push:pg",
